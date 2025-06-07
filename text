@@ -1,0 +1,365 @@
+"use client";
+
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Bell, Plus } from "lucide-react";
+import ProfileButton from "./ProfileButton";
+import { cn } from "@/lib/utils";
+
+const Navbar = () => {
+  const links = [
+    { id: "local-destinations", label: "Local destinations", href: "#" },
+    { id: "seasons", label: "Seasons", href: "#" },
+    { id: "reviews", label: "Reviews", href: "#" },
+    { id: "travel-tips", label: "Travel Tips", href: "#" },
+  ];
+
+  const [active, setActive] = useState("local-destinations");
+  const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const index = links.findIndex((link) => link.id === active);
+    const currentLink = linkRefs.current[index];
+    if (currentLink) {
+      setUnderlineStyle({
+        left: currentLink.offsetLeft,
+        width: currentLink.offsetWidth,
+      });
+    }
+  }, [active]);
+
+  return (
+    <nav className={cn("text-secondary fixed top-0 right-0 left-0 z-100 flex items-center justify-between px-8 text-sm font-semibold transition-all duration-300", isScrolled  ? "text-slightly-muted bg-background/95 backdrop-blur-md border-b shadow-sm py-3" : "bg-transparent py-5")}>
+      <div className="container flex items-center justify-between">
+
+      <div className="relative flex h-full gap-6">
+        <span className="flex items-center">LOGO</span>
+        <div className="flex items-center justify-stretch gap-8">
+          {links.map(({ id, href, label }, i) => (
+            <Link
+            key={id}
+            href={href}
+            ref={(el) => {
+              linkRefs.current[i] = el;
+            }}
+            className={cn({ "text-primary": active === id && isScrolled })}
+            onClick={(e) => {
+              // e.preventDefault();
+              setActive(id);
+            }}
+            >
+              {label}
+            </Link>
+          ))}
+          {/* <span
+            className="bg-primary absolute bottom-0 h-0.5 transition-all duration-300"
+            style={{
+              left: underlineStyle.left,
+              width: underlineStyle.width,
+              }}
+              /> */}
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button className="h-full rounded-sm">
+          <Plus />
+          <span>Add Review</span>
+        </Button>
+        <Bell />
+        <ProfileButton src="https://github.com/shadcn.png" />
+              </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
+
+
+[text-shadow:_1px_1px_2px_var(--primary)] 
+
+<div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide h-[400px]">
+  {[1, 2, 3, 4].map((_, index) => (
+    <Link
+      href="#"
+      key={index}
+      className="snap-start flex-shrink-0 w-full"
+    >
+      <div className="group relative h-full overflow-hidden rounded-lg shadow-sm dark:shadow-gray-800">
+        <Image
+          src={img1}
+          alt="season-image"
+          className="w-full h-full object-cover brightness-90 group-hover:brightness-100 group-hover:scale-105 transition-all duration-500"
+        />
+        <div className="text-white absolute inset-0 flex flex-col justify-end p-4">
+          <h1 className="text-xl font-bold">Winter Wonderlands</h1>
+          <p className="leading-relaxed mb-2">Snow-capped mountains and cozy retreats</p>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-fit py-5 px-3.5 border-primary/20 border"
+          >
+            Explore Winter
+          </Button>
+        </div>
+      </div>
+    </Link>
+  ))}
+</div>
+
+
+<svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Sun placed slightly more below between 3rd and 4th peaks -->
+  <circle cx="260" cy="160" r="35" fill="#FFD56B" opacity="0.9" />
+
+  <!-- Back Mountains - Pointier and dramatic -->
+  <path d="M0 200 
+           L60 90 
+           L90 140 
+           L130 70 
+           L170 150 
+           L210 100 
+           L250 170 
+           L290 130 
+           L310 90 
+           L340 130 
+           L380 70 
+           L420 140 
+           L460 90 
+           L500 160 
+           L540 120 
+           L580 170 
+           L600 130 
+           L600 300 
+           L0 300 Z" 
+        fill="#A0C4C4"/>
+
+  <!-- Middle Mountains - Softer peaks -->
+  <path d="M0 230 
+           Q40 200 80 220 
+           Q120 240 160 210 
+           Q200 190 240 220 
+           Q280 250 320 210 
+           Q360 180 400 220 
+           Q440 240 480 200 
+           Q520 180 560 210 
+           Q580 230 600 200 
+           L600 300 
+           L0 300 Z" 
+        fill="#6D9C8F"/>
+
+  <!-- Foreground Hills -->
+  <path d="M0 260 
+           Q30 230 60 250 
+           Q90 270 120 240 
+           Q150 210 180 250 
+           Q210 280 240 250 
+           Q270 220 300 240 
+           Q330 260 360 240 
+           Q390 220 420 250 
+           Q450 270 480 240 
+           Q510 210 540 250 
+           Q570 270 600 230 
+           L600 300 
+           L0 300 Z" 
+        fill="#3F6F65"/>
+
+  <!-- Trees -->
+  <path d="M75 245 L70 255 L80 255 Z" fill="#2E4F4F"/>
+  <rect x="74" y="255" width="2" height="8" fill="#2E4F4F"/>
+
+  <path d="M180 235 L175 245 L185 245 Z" fill="#2E4F4F"/>
+  <rect x="179" y="245" width="2" height="8" fill="#2E4F4F"/>
+
+  <path d="M300 240 L295 250 L305 250 Z" fill="#2E4F4F"/>
+  <rect x="299" y="250" width="2" height="8" fill="#2E4F4F"/>
+
+  <path d="M420 238 L415 248 L425 248 Z" fill="#2E4F4F"/>
+  <rect x="419" y="248" width="2" height="8" fill="#2E4F4F"/>
+
+  <path d="M510 243 L505 253 L515 253 Z" fill="#2E4F4F"/>
+  <rect x="509" y="253" width="2" height="8" fill="#2E4F4F"/>
+</svg>
+
+
+const WhyChooseUsSection = () => {
+  return (
+    <section className="my-14 px-4 sm:px-8">
+        <h2 className="mb-6 text-2xl font-bold">Why Choose Us</h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="bg-background border-border/50 rounded-xl border p-6 shadow-sm">
+            <div className="flex gap-3 items-center">
+                <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <svg
+                className="text-primary h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">Verified Reviews</h3>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              All our reviews are from verified travelers who have experienced
+              the destinations firsthand.
+            </p>
+          </div>
+          <div className="bg-background border-border/50 rounded-xl border p-6 shadow-sm">
+            <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <svg
+                className="text-primary h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">24/7 Support</h3>
+            <p className="text-muted-foreground text-sm">
+              Our travel experts are available around the clock to assist you
+              with any questions or issues.
+            </p>
+          </div>
+          <div className="bg-background border-border/50 rounded-xl border p-6 shadow-sm">
+            <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <svg
+                className="text-primary h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">Best Price Guarantee</h3>
+            <p className="text-muted-foreground text-sm">
+              Find a lower price elsewhere? We'll match it and give you an
+              additional 10% discount.
+            </p>
+          </div>
+          <div className="bg-background border-border/50 rounded-xl border p-6 shadow-sm">
+            <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <svg
+                className="text-primary h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">
+              Community Contributions
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              Discover hidden gems shared by our community of travelers who know
+              Nepal's best natural retreats.
+            </p>
+          </div>
+        </div>
+    </section>
+  );
+};
+
+"use server";
+
+import { signIn } from "@/auth";
+import { LoginValues } from "@/lib/validation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { redirect } from "next/navigation";
+
+// export const login = async (
+//   credentials: LoginValues,
+// ): Promise<{ error: string }> => {
+//   try {
+//     const result = await signIn("credentials", {
+//       ...credentials,
+//     });
+
+//     console.log({ result });
+//     return redirect("/");
+//   } catch (error) {
+//     if (isRedirectError(error)) throw error
+//     console.log(error);
+//     return { error: "Something went wrong. Please try again" };
+//   }
+// };
+
+// export const login = async (credentials: LoginValues) => {
+//   try {
+//     console.log("before signin action");
+//     const result = await signIn("credentials", {
+//       redirect: false,
+//       ...credentials,
+//     });
+//     console.log({ result });
+//     return redirect("/");
+//   } catch (error) {
+//     console.log(error);
+//     return { error: "error this" };
+//   }
+// };
+
+export const login = async (credentials: LoginValues) => {
+  try {
+    console.log("before signin action");
+
+    const result = await signIn("credentials", {
+      ...credentials,
+      redirect: false,
+    });
+
+    console.log("after signin:", result);
+
+    if (!result || result?.error) {
+      return { error: result?.error ?? "Login failed" };
+    }
+
+    return { success: true }; // or redirect("/") if needed
+  } catch (error) {
+    console.error("Login exception:", error);
+    return { error: "Something went wrong" };
+  }
+};

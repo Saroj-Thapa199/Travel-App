@@ -1,0 +1,14 @@
+{
+  // ✅ Ensure this is set
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // ❌ Make sure this is not enabled if you don’t want auto-format
+  "editor.formatOnSave": false
+}
