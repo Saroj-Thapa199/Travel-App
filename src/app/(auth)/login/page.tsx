@@ -3,6 +3,11 @@ import Link from "next/link";
 import signUpImage from "@/assets/hero-image-2.jpg"
 import Image from "next/image";
 import LoginForm from "./LoginForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login"
+};
 
 const page = () => {
   return (

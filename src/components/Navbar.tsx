@@ -14,8 +14,6 @@ const Navbar = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  console.log(session);
-
   const links = [
     { id: "home", label: "Home", href: "/" },
     { id: "destinations", label: "Destinations", href: "/#destinations" },
@@ -70,13 +68,13 @@ const Navbar = () => {
   return (
     <nav
       className={cn(
-        "text-secondary dark:text-primary fixed top-0 right-0 left-0 z-100 text-sm transition-all duration-300",
+        "text-secondary dark:text-primary fixed top-0 right-0 left-0 z-50 text-sm transition-all duration-300",
         isScrolled || pathname !== "/"
           ? "text-slightly-muted bg-background/95 border-b py-3 shadow-sm backdrop-blur-md"
           : "bg-transparent py-5",
       )}
     >
-      <div className="mx-auto flex w-full items-center justify-between px-4 sm:px-8 xl:container">
+      <div className="mx-auto flex w-full items-center justify-between px-4 sm:px-8 md:px-14 lg:px-20 xl:container">
         <div className="relative flex h-full gap-10">
           <span className="flex items-center">LOGO</span>
           <div className="hidden items-center justify-stretch gap-6 md:flex">
@@ -90,7 +88,7 @@ const Navbar = () => {
                 className={cn(
                   {
                     "text-primary":
-                      (active === id && isScrolled) || `/${id}` === pathname,
+                      (active === id && isScrolled) || pathname.startsWith(`/${id}`),
                   },
                   "py-2 font-medium",
                 )}
@@ -125,9 +123,9 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {!session?.user && (
             <Button
-              variant={isScrolled ? "outline" : "secondary"}
+              variant={(isScrolled && pathname === "/") ? "outline" : "secondary"}
               className={
-                !isScrolled
+                (!isScrolled && pathname === "/")
                   ? "bg-primary/10 text-primary-foreground border-primary/20 hover:bg-secondary/20 dark:hover:bg-primary/20 hover:text-primary"
                   : ""
               }

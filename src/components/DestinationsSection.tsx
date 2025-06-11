@@ -7,11 +7,11 @@ import { Button } from "./ui/button";
 const DestinationsSection = () => {
   return (
     <section
-      className="mx-auto my-14 scroll-mt-20 px-4 sm:px-8"
+      className="mx-auto my-14 scroll-mt-20 px-4 sm:px-8 md:px-14 lg:px-20"
       id="destinations"
     >
-      <div className="flex items-center justify-between">
-        <h1 className="mb-4 text-xl font-semibold sm:text-3xl">
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold sm:text-3xl">
           Nature Retreats in Nepal
         </h1>
         <Link href={"/destinations"} className="text-sm hover:underline">
@@ -24,8 +24,9 @@ const DestinationsSection = () => {
             key={index}
             name="Bethanchowk Narayanthan"
             region="Destination, Nepal"
-            description="Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance."
+            shortDescription="Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance."
             ratings={3.6}
+            slug="#"
           />
         ))}
       </div>
@@ -35,14 +36,14 @@ const DestinationsSection = () => {
             Discover by Season
           </h1>
         </div>
-        <div className="hidden sm:grid grid-cols-2 gap-3 md:gap-4 lg:gap-6 lg:grid-cols-4">
+        <div className="hidden grid-cols-2 gap-3 sm:grid md:gap-4 lg:grid-cols-4 lg:gap-5">
           {[1, 2, 3, 4].map((_, index) => (
             <Link href={"#"} key={index}>
               <div className="group relative overflow-clip rounded-lg shadow-sm dark:shadow-gray-800">
                 <Image
                   src={img1}
                   alt="season-image"
-                  className="h-full w-full object-cover brightness-90 transition-all duration-500 group-hover:scale-105 group-hover:brightness-100"
+                  className="h-64 w-full object-cover brightness-90 transition-all duration-500 group-hover:scale-105 group-hover:brightness-100"
                 />
                 <div className="absolute inset-0 flex flex-col justify-end p-4 text-white">
                   <h1 className="text-xl font-bold">Winter Wonderlands</h1>
@@ -62,7 +63,7 @@ const DestinationsSection = () => {
           ))}
         </div>
 
-        <div className="hidden max-sm:flex gap-6 snap-x snap-mandatory overflow-x-auto scroll-smooth scrollbar-hide">
+        <div className="scrollbar-hide hidden snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth max-sm:flex">
           {[1, 2, 3, 4].map((_, index) => (
             <Link
               href={"#"}
@@ -93,7 +94,6 @@ const DestinationsSection = () => {
           ))}
         </div>
       </div>
-      DestinationsSection
     </section>
   );
 };

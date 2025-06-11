@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 
 const AddDestinationCTA = () => {
   return (
-    <section className="mt-4 my-14 px-4 sm:px-8 scroll-mt-20" id="add-destination">
+    <section className="mt-4 my-14 px-4 sm:px-8 md:px-14 lg:px-20 scroll-mt-20" id="add-destination">
       <div className="bg-muted w-full rounded-lg p-10 relative overflow-hidden">
         <div className="max-w-3xl">
           <h2 className="mb-2.5 text-2xl font-bold md:mb-4 md:text-3xl">
@@ -16,7 +16,7 @@ const AddDestinationCTA = () => {
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="rounded-sm px-5 py-5" asChild>
-              <Link href="/destinations/add">Add a Destination</Link>
+              <Link href="/add-destination">Add a Destination</Link>
             </Button>
             <Button variant={"outline"} className="rounded-sm px-5 py-4">
               Learn More

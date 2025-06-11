@@ -14,8 +14,8 @@ import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { signUp } from "./actions";
 import LoadingButton from "@/components/LoadingButton";
+import { signUp } from "@/lib/actions/auth";
 
 const SignUpForm = () => {
   const [error, setError] = useState<string>();
@@ -25,7 +25,7 @@ const SignUpForm = () => {
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
-      username: "",
+      name: "",
       password: "",
     },
   });
@@ -43,12 +43,12 @@ const SignUpForm = () => {
         {error && <p className="text-destructive text-center">{error}</p>}
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="username" {...field} />
+                <Input placeholder="Enter full name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

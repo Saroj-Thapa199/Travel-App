@@ -14,9 +14,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import logOut from "@/app/(auth)/actions";
 import { useTheme } from "next-themes";
 import { Check, Monitor, Moon, Sun } from "lucide-react";
+import { logOut } from "@/lib/actions/auth";
 
 interface ProfileButtonProps {
   src?: string;
@@ -30,7 +30,6 @@ const ProfileButton = ({ src }: ProfileButtonProps) => {
         <Avatar>
           {src ? (
             <>
-              {" "}
               <AvatarImage src={src} alt="avatar" />
             </>
           ) : (

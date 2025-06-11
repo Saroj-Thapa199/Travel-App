@@ -1,22 +1,22 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import { DestinationType } from "@/lib/validation";
 import Destination from "@/model/Destination";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
-import slugify from "slugify"
+import slugify from "slugify";
+import { DestinationFormType } from "../types";
 
 export const addDestination = async (
-  values: DestinationType,
+  values: DestinationFormType,
 ): Promise<{ error: string }> => {
   try {
     await dbConnect();
-    await Destination.syncIndexes()
+    await Destination.syncIndexes();
 
     const createdDestination = await Destination.create({
       ...values,
-      slug: slugify(values.name)
+      slug: slugify(values.name),
     });
 
     return redirect(`/destinations/${createdDestination.slug}`);
@@ -33,5 +33,29 @@ export const addDestination = async (
       return { error: "Destination name already taken" };
     }
     return { error: "Something went wrong. PLease try again" };
+  }
+};
+
+export const getAllDestinaitons = async () => {
+  try {
+    await dbConnect();
+
+    const destinations = Destination.find();
+
+    return destinations;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getDestinationFromSlug = async (slug: string) => {
+  try {
+    await dbConnect();
+
+    const destination = await Destination.findOne({ slug });
+
+    return destination;
+  } catch (error) {
+    console.log(error);
   }
 };

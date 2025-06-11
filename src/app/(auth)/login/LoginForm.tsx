@@ -14,8 +14,10 @@ import { loginSchema, LoginValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { login } from "./actions";
 import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { login } from "@/lib/actions/auth";
 
 const LoginForm = () => {
   const [error, setError] = useState<string>();
@@ -66,9 +68,14 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <LoadingButton type="submit" loading={isPending} className="w-full">
+        <div className="space-y-1.5">
+          <LoadingButton type="submit" loading={isPending} className="w-full">
           Submit
         </LoadingButton>
+        <Button type="button" variant={"secondary"} className="w-full border-border border" asChild>
+          <Link href={"/"}>Continue without login</Link>
+        </Button>
+        </div>
       </form>
     </Form>
   );

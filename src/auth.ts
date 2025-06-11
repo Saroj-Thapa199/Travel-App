@@ -41,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           
           return {
             id: String(user._id),
-            username: user.username,
+            name: user.name,
             email: user.email,
           }
         } catch (error) {
@@ -55,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({token, user}) {
       if (user) {
         token._id = user.id
-        token.username = user.username
+        token.name = user.name
         token.email = user.email
       }
       return token
@@ -63,7 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({session, token, user}) {
       if (token) {
         session.user.id = token._id as string
-        session.user.username = token.username as string
+        session.user.name = token.name as string
       }
       return session
     },

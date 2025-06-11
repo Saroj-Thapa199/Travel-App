@@ -19,7 +19,7 @@ const Hero = () => {
         <div className="drk:from-white/20 absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
       </div>
 
-      <div className="relative z-10 xl:container flex h-full items-center px-6 sm:px-8 mx-auto">
+      <div className="relative z-10 xl:container flex h-full items-center px-6 sm:px-8 md:px-14 lg:px-20 mx-auto">
         <div className="max-w-2xl">
           <h1 className="via-muted w-fit bg-gradient-to-b from-white/70 to-black/20 bg-clip-text text-4xl leading-tight font-bold text-transparent sm:text-5xl md:text-7xl dark:text-white">
             Discover Nepal's
