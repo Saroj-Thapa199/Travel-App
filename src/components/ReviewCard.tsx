@@ -50,14 +50,14 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 "text-xs",
                 review.rating >= 4
                   ? "border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
-                  : review.rating === 3
+                  : review.rating >= 2
                     ? "border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400"
                     : "border-red-200 bg-red-50 text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400",
               )}
             >
               {review.rating >= 4
                 ? "Excellent"
-                : review.rating === 3
+                : review.rating >= 2
                   ? "Good"
                   : "Poor"}
             </Badge>

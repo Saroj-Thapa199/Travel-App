@@ -23,9 +23,10 @@ import { useForm } from "react-hook-form";
 type ReviewFormProps = {
   destinationName: string;
   destinationId: string;
+  closeDialog: () => void
 };
 
-const ReviewForm = ({ destinationName, destinationId }: ReviewFormProps) => {
+const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -55,6 +56,7 @@ const ReviewForm = ({ destinationName, destinationId }: ReviewFormProps) => {
       console.log("review", review);
     }
     setError (res.error)
+    closeDialog()
   };
   return (
     <Form {...form}>

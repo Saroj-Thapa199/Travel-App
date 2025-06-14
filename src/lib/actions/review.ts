@@ -54,8 +54,6 @@ export const getDestinationReviews = async (destinationId: string) => {
     }).populate<{ user: IUserDocument }>("user", "name image -_id");
     if (reviewsDoc.length === 0) return { success: false, error: "No reviews" };
 
-    console.log("reviewDocs: ", reviewsDoc[0]);
-
     // const formattedReviewsDoc = reviewsDoc.map((review) => {
     //   const obj = review.toObject();
     //   return { ...obj };

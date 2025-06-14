@@ -1,9 +1,9 @@
 "use client";
 
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
-import { seedDestinations, seedReviews } from "@/lib/actions/seed";
-import React, { useState } from "react";
+import { seedDestinations, seedReviews } from "@/lib/seed";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const page = () => {
   const [loading1, setLoading1] = useState(false);
@@ -20,6 +20,15 @@ const page = () => {
     await seedReviews();
     setLoading2(false);
   };
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const res = await axios.get("/api/reviews/684bbb26eb5e7bd4c944be23")
+      console.log(res)
+    }
+
+    fetchReviews()
+  }, [])
 
   return (
     <div className="grid h-screen w-full place-items-center">

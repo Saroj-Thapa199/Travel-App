@@ -78,7 +78,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // console.dir(query, { depth: null, colors: true });
-    console.log(JSON.stringify(query, null, 2))
+    console.log(JSON.stringify(query, null, 2));
 
     const results = await Destination.find(query)
       .sort(sort)
@@ -96,6 +96,7 @@ export const GET = async (request: NextRequest) => {
           }
         : null;
 
+    // TODO: remove this delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return NextResponse.json({
@@ -104,7 +105,7 @@ export const GET = async (request: NextRequest) => {
     });
   } catch (error) {
     console.error(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to fetch destinations" },
       { status: 500 },
     );

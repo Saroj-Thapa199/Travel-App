@@ -9,6 +9,7 @@ import Image from "next/image";
 import React from "react";
 import { z } from "zod";
 import ReviewSection from "./ReviewSection";
+import { notFound } from "next/navigation";
 
 // export async function generateStaticParams() {
 //   const res = await fetch("http://localhost:3000/api/destinations/all");
@@ -24,17 +25,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const {slug} = await params;
   console.log({slug})
   const data = await getDestinationFromSlug(slug)
+  if(!data) return notFound()
+
   const destination = destinationSchema.parse(data)
-  // const destination = {
-  //   image:
-  //     "https://5yeh6d47mm.ufs.sh/f/tVQQQp1yyJVmSvmD4kesxzXhMFg1ZWCODtUj7K6b54plyJAY",
-  //   name: "Bethanchowk Narayan",
-  //   region: "Kavlepalanchowk, Nepal",
-  //   shortDescription:
-  //     "Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance.",
-  //   longDescription:
-  //     "Bethanchowk Narayanthan is a hidden gem located at an altitude of 3,000 meters in the Kavrepalanchok district. This tranquil destination offers breathtaking panoramic views of the Himalayan range, including Langtang, Dorje Lakpa, and Gaurishankar. The area is known for its pristine pine forests, rhododendron blooms in spring, and the sacred Narayanthan temple dedicated to Lord Vishnu. Visitors can enjoy peaceful nature walks, meditation in serene surroundings, and authentic local experiences in nearby villages. The relatively untouched nature of this destination makes it perfect for those seeking to escape the crowds and connect with nature.",
-  // };
   return (
     <main className="my-15">
       <DestinationHeaderImage
