@@ -51,7 +51,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    if (pathname === "/destinations") setActive("destinations");
+    if (pathname.startsWith("/destinations")) setActive("destinations");
+    if (pathname.startsWith("/add-destination")) setActive("add-destination");
   }, []);
 
   useEffect(() => {
@@ -88,7 +89,8 @@ const Navbar = () => {
                 className={cn(
                   {
                     "text-primary":
-                      (active === id && isScrolled) || pathname.startsWith(`/${id}`),
+                      (active === id && isScrolled) ||
+                      pathname.startsWith(`/${id}`),
                   },
                   "py-2 font-medium",
                 )}
@@ -123,9 +125,9 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {!session?.user && (
             <Button
-              variant={(isScrolled && pathname === "/") ? "outline" : "secondary"}
+              variant={isScrolled && pathname === "/" ? "outline" : "secondary"}
               className={
-                (!isScrolled && pathname === "/")
+                !isScrolled && pathname === "/"
                   ? "bg-primary/10 text-primary-foreground border-primary/20 hover:bg-secondary/20 dark:hover:bg-primary/20 hover:text-primary"
                   : ""
               }

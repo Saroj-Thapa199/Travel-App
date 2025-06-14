@@ -28,7 +28,9 @@ const DestinationCard = ({
           <Image
             src={image || Image1}
             alt="destination-pic"
+            priority
             fill
+            sizes="600px"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </div>
@@ -52,11 +54,11 @@ const DestinationCard = ({
               {[...Array(5)].map((_, index) => (
                 <Star
                   key={index}
-                  className={`h-4 w-4 ${index < Math.floor(ratings) ? "fill-yellow-400 text-yellow-400" : "fill-gray-300 text-gray-300"}`}
+                  className={`h-4 w-4 ${index < Math.round(ratings) ? "fill-yellow-400 text-yellow-400" : "fill-gray-300 text-gray-300"}`}
                   strokeWidth={0}
                 />
               ))}
-              <span className="tex ml-1 font-semibold">3.6</span>
+              <span className="tex ml-1 font-semibold">{ratings}</span>
             </div>
             <p className="text-muted-foreground">
               •{" "}

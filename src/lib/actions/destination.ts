@@ -14,6 +14,7 @@ export const addDestination = async (
     await dbConnect();
     await Destination.syncIndexes();
 
+    
     const createdDestination = await Destination.create({
       ...values,
       slug: slugify(values.name),

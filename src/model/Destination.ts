@@ -39,6 +39,14 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       type: String,
       required: true,
     },
+    averageRating: {
+      type: Number,
+      default: null
+    },
+    reviewCount: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true },
 );

@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { MessageSquare } from "lucide-react";
 import ReviewForm from "./ReviewForm";
 import { getDestinationReviews } from "@/lib/actions/review";
 import ReviewCard from "@/components/ReviewCard";
+import { useQuery } from "@tanstack/react-query";
 
 type ReviewSectionProps = {
   destinationName: string;
@@ -26,6 +27,8 @@ const ReviewSection = async ({
 }: ReviewSectionProps) => {
   const reviews = await getDestinationReviews(destinationId);
   console.log(reviews);
+  // const {data} = useQuery({ queryKey: ['todos'], queryFn: getDestinationReviews })
+  // const reviews = data.data
   return (
     <section className="space-y-6">
       <div className="flex justify-between">

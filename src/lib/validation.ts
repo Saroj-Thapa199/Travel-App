@@ -11,10 +11,7 @@ const requiredString = (message?: string) => {
 
 export const signUpSchema = z.object({
   email: requiredString().email("Invalid email address"),
-  name: requiredString().regex(
-    /^[a-zA-z0-9_-]+$/,
-    "Only letters, numbers and special characters - and _ allowed",
-  ),
+  name: requiredString(),
   password: requiredString()
     .min(8, "Must be minimum 8 characters")
     .max(32, "Must be maximum 32 characters"),
@@ -37,8 +34,20 @@ export const destinationSchema = z.object({
   image: requiredString("Please upload the image"),
   shortDescription: requiredString().max(150, "Maximum 150 characters allowed"),
   longDescription: requiredString(),
-  createdAt: z.preprocess((val) => val?.toString(), z.string()).optional(),
-  updatedAt: z.preprocess((val) => val?.toString(), z.string()).optional(),
+  averageRating: z.number().lte(5).nullable(),
+  reviewCount: z.number(),
+  createdAt: z
+    .preprocess(
+      (val) => (typeof val === "string" ? new Date(val) : val),
+      z.date(),
+    )
+    .optional(),
+  updatedAt: z
+    .preprocess(
+      (val) => (typeof val === "string" ? new Date(val) : val),
+      z.date(),
+    )
+    .optional(),
 });
 
 export type DestinationType = z.infer<typeof destinationSchema>;

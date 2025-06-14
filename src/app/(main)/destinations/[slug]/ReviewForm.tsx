@@ -1,6 +1,7 @@
 "use client";
 
 import InteractiveStarRating from "@/components/InteractiveStarRating";
+import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -47,6 +48,7 @@ const ReviewForm = ({ destinationName, destinationId }: ReviewFormProps) => {
     setLoading(true);
     setError(undefined)
     const res = await createReview({ ...values, destination: destinationId });
+    setLoading(false)
     if (res.success) {
       console.log("success");
       const review = reviewSchema.parse(res.data);
@@ -92,7 +94,7 @@ const ReviewForm = ({ destinationName, destinationId }: ReviewFormProps) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit Review</Button>
+        <LoadingButton loading={loading} type="submit">Submit Review</LoadingButton>
       </form>
     </Form>
   );
