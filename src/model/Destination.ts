@@ -41,7 +41,7 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
     },
     averageRating: {
       type: Number,
-      default: null
+      default: 0
     },
     reviewCount: {
       type: Number,

@@ -18,12 +18,16 @@ const page = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<DestinationFormType>({
-    resolver: zodResolver(destinationSchema.omit({
-      _id: true,
-      slug: true,
-      createdAt: true,
-      updatedAt: true
-    })),
+    resolver: zodResolver(
+      destinationSchema.omit({
+        _id: true,
+        slug: true,
+        createdAt: true,
+        updatedAt: true,
+        averageRating: true,
+        reviewCount: true,
+      }),
+    ),
     defaultValues: {
       name: "",
       region: "",
@@ -55,7 +59,7 @@ const page = () => {
   }, [values]);
 
   return (
-    <main className="min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
+    <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       <div className="mx-auto my-6 max-w-3xl text-center">
         <h1 className="mb-4 text-3xl font-bold md:text-4xl">
           Add a Hidden Gem

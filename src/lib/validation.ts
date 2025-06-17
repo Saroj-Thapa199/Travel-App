@@ -34,7 +34,7 @@ export const destinationSchema = z.object({
   image: requiredString("Please upload the image"),
   shortDescription: requiredString().max(150, "Maximum 150 characters allowed"),
   longDescription: requiredString(),
-  averageRating: z.number().lte(5).nullable(),
+  averageRating: z.number().lte(5),
   reviewCount: z.number(),
   createdAt: z
     .preprocess(

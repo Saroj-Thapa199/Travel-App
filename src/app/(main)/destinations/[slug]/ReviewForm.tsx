@@ -48,7 +48,7 @@ const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormP
   const onSubmit = async (values: ReviewFormType) => {
     setLoading(true);
     setError(undefined)
-    const res = await createReview({ ...values, destination: destinationId });
+    const res = await createReview({ ...values, destinationId });
     setLoading(false)
     if (res.success) {
       console.log("success");
@@ -56,7 +56,7 @@ const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormP
       console.log("review", review);
     }
     setError (res.error)
-    closeDialog()
+    // closeDialog()
   };
   return (
     <Form {...form}>

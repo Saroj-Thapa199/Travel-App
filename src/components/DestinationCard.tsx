@@ -8,22 +8,22 @@ type DestinationCardProps = {
   name: string;
   region: string;
   shortDescription: string;
-  ratings: number;
-  image?: string,
-  slug: string
+  rating: number;
+  image?: string;
+  slug: string;
 };
 
 const DestinationCard = ({
   name,
   region,
   shortDescription,
-  ratings,
+  rating,
   image,
   slug,
 }: DestinationCardProps) => {
   return (
     <Link href={`/destinations/${slug}`} className="group">
-      <div className="border-border/50 dark:border-border bg-card ese-out overflow-clip rounded-lg border shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg dark:shadow-gray-800">
+      <div className="border-border/50 dark:border-border bg-card ese-out h-full overflow-clip rounded-lg border shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg dark:shadow-gray-800">
         <div className="relative h-56 overflow-hidden">
           <Image
             src={image || Image1}
@@ -38,7 +38,7 @@ const DestinationCard = ({
           <div className="mb-2">
             <Badge
               variant="outline"
-              className="bg-primary/10 text-primary border-primary/20 rounded-xl flex items-center gap-1"
+              className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 rounded-xl"
             >
               <MapPin />
               {region}
@@ -54,11 +54,11 @@ const DestinationCard = ({
               {[...Array(5)].map((_, index) => (
                 <Star
                   key={index}
-                  className={`h-4 w-4 ${index < Math.round(ratings) ? "fill-yellow-400 text-yellow-400" : "fill-gray-300 text-gray-300"}`}
+                  className={`h-4 w-4 ${index < Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-300 text-gray-300"}`}
                   strokeWidth={0}
                 />
               ))}
-              <span className="tex ml-1 font-semibold">{ratings}</span>
+              <span className="tex ml-1 font-semibold">{rating}</span>
             </div>
             <p className="text-muted-foreground">
               •{" "}

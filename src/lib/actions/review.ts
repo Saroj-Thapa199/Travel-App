@@ -5,12 +5,17 @@ import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
 import mongoose from "mongoose";
 import { ReviewFormType } from "../types";
-import { destinationSchema, populatedReviewSchema, reviewSchema } from "../validation";
+import {
+  destinationSchema,
+  populatedReviewSchema,
+  reviewSchema,
+} from "../validation";
 import { z } from "zod";
 import { IUserDocument } from "@/model/User";
+import Destination from "@/model/Destination";
 
 export const createReview = async (
-  values: ReviewFormType & { destination: string },
+  values: ReviewFormType & { destinationId: string },
 ) => {
   try {
     await dbConnect();
@@ -20,21 +25,46 @@ export const createReview = async (
       return { success: false, error: "Unauthenticated" };
     }
 
-    if (!mongoose.Types.ObjectId.isValid(values.destination)) {
+    if (!mongoose.Types.ObjectId.isValid(values.destinationId)) {
       return { success: false, error: "Invalid destination ID" };
     }
 
+    // TODO: remove unnecessary consoles
     console.log({
       ...values,
-      user: new mongoose.Types.ObjectId(session.user.id),
-      destination: new mongoose.Types.ObjectId(values.destination),
+      user: session.user.id,
+      destination: values.destinationId,
     });
 
     const reviewDoc = await Review.create({
       ...values,
-      user: new mongoose.Types.ObjectId(session.user.id),
-      destination: new mongoose.Types.ObjectId(values.destination),
+      user: session.user.id,
+      destination: values.destinationId,
     });
+
+    const destination = await Destination.findById(
+      values.destinationId,
+    );
+
+    if (destination) {
+      let avgRating: number;
+      if (destination.reviewCount === 0) {
+        avgRating = reviewDoc.rating;
+      } else {
+        avgRating =
+          (destination.averageRating * destination.reviewCount +
+            reviewDoc.rating) /
+          (destination.reviewCount + 1);
+      }
+      destination.averageRating = avgRating;
+      destination.reviewCount += 1;
+      await destination.save()
+    }
+
+    // await Destination.findByIdAndUpdate(
+    //   new mongoose.Types.ObjectId(values.destination),
+    //   { $inc: { reviewCount: 1 } },
+    // );
 
     const review = reviewSchema.parse(reviewDoc);
 

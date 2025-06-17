@@ -11,6 +11,7 @@ export const addDestination = async (
   values: DestinationFormType,
 ): Promise<{ error: string }> => {
   try {
+    console.log("submitted")
     await dbConnect();
     await Destination.syncIndexes();
 

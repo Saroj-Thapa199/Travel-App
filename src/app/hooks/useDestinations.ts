@@ -17,7 +17,7 @@ interface UseDestinationsParams {
   sortBy?: "rating-asc" | "rating-desc" | "default";
   limit?: number;
 }
-useInfiniteQuery
+
 const useDestinations = ({
   searchTerm = "",
   sortBy = "default",

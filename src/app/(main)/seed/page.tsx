@@ -1,7 +1,7 @@
 "use client";
 
 import LoadingButton from "@/components/LoadingButton";
-import { seedDestinations, seedReviews } from "@/lib/seed";
+import { seedDestinations, seedReviews } from "@/lib/actions/seed";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 

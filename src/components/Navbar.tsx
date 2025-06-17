@@ -53,7 +53,7 @@ const Navbar = () => {
   useEffect(() => {
     if (pathname.startsWith("/destinations")) setActive("destinations");
     if (pathname.startsWith("/add-destination")) setActive("add-destination");
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const index = links.findIndex((link) => link.id === active);

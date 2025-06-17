@@ -1,7 +1,7 @@
 "use server";
 
 import Destination from "@/model/Destination";
-import dbConnect from "./dbConnect";
+import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
 import mongoose from "mongoose";
 import Review from "@/model/Review";
@@ -158,24 +158,41 @@ const reviewsData = [
 ];
 
 export const seedReviews = async () => {
-  
   try {
-    const session = await auth()
-  if(!session) return
+    const session = await auth();
+    if (!session) return;
 
-  await dbConnect()
+    await dbConnect();
 
-  const reviews = reviewsData.map(review => ({
-    user: new mongoose.Types.ObjectId(session.user.id),
-    destination: new mongoose.Types.ObjectId("684bbb26eb5e7bd4c944be23"),
-    rating: Math.floor(Math.random() * 5 + 1),
-    comment: review
-  }))
+    const firstDestination = await Destination.findOne();
 
-  await Review.deleteMany()
-  await Review.insertMany(reviews)
+    if (!firstDestination) {
+      throw Error("No any destinations");
+    }
 
-  console.log("✅ 50 reviews seeded!");
+    let ratings: number[] = [];
+
+    const reviews = reviewsData.map((review) => {
+      const randomRating = Math.floor(Math.random() * 5 + 1);
+      ratings.push(randomRating);
+      return {
+        user: session.user.id,
+        destination: firstDestination._id,
+        rating: randomRating,
+        comment: review,
+      };
+    });
+
+    await Review.deleteMany();
+    await Review.insertMany(reviews);
+
+    const totalRatings = ratings.reduce((sum, rating) => sum + rating, 0);
+
+    firstDestination.reviewCount = reviews.length;
+    firstDestination.averageRating = (totalRatings / reviews.length);
+    await firstDestination.save();
+
+    console.log("✅ 50 reviews seeded!");
   } catch (err) {
     console.error("❌ Seeding error:", err);
   }

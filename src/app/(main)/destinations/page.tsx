@@ -32,10 +32,14 @@ const page = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [searchTerm, setSearchTerm] = useState<string>();
-  const [selectedValue, setSelectedValue] = useState<"rating-asc" | "rating-desc" | "default">("default")
-  const [sortBy, setSortBy] = useState<"rating-asc" | "rating-desc" | "default">("default");
+  const [selectedValue, setSelectedValue] = useState<
+    "rating-asc" | "rating-desc" | "default"
+  >("default");
+  const [sortBy, setSortBy] = useState<
+    "rating-asc" | "rating-desc" | "default"
+  >("default");
   const [hasSearched, setHasSearched] = useState(false);
-  console.log({searchTerm, sortBy});
+  console.log({ searchTerm, sortBy });
   const {
     data,
     isFetching,
@@ -48,7 +52,7 @@ const page = () => {
   const destinations = data?.pages.flatMap((page) => page.destinations) || [];
 
   return (
-    <main className="min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
+    <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       <div className="mx-auto my-6 max-w-3xl text-center">
         <h1 className="mb-4 text-3xl font-bold md:text-4xl">
           Explore Amazing Destinations
@@ -58,28 +62,28 @@ const page = () => {
           adventure.
         </h2>
       </div>
-      <div className="mx-auto mb-8 flex flex-col sm:flex-row max-sm:items-center max-w-xl justify-evenly gap-2">
+      <div className="mx-auto mb-8 flex max-w-xl flex-col justify-evenly gap-2 max-sm:items-center sm:flex-row">
         <div className="flex gap-2">
           <div className="relative">
-          <Input
-            ref={searchInputRef}
-            name="query"
-            placeholder="Search destinations..."
-            className="max-w-sm ps-10"
-          />
-          <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-5 -translate-y-1/2 transform" />
-        </div>
-        <LoadingButton
-          disabled={status === "pending"}
-          loading={status === "pending" && hasSearched}
-          onClick={() => {
-            setSearchTerm(searchInputRef.current?.value);
-            setSortBy(selectedValue)
-            setHasSearched(true);
-          }}
-        >
-          Search
-        </LoadingButton>
+            <Input
+              ref={searchInputRef}
+              name="query"
+              placeholder="Search destinations..."
+              className="max-w-sm ps-10"
+            />
+            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-5 -translate-y-1/2 transform" />
+          </div>
+          <LoadingButton
+            disabled={status === "pending"}
+            loading={status === "pending" && hasSearched}
+            onClick={() => {
+              setSearchTerm(searchInputRef.current?.value);
+              setSortBy(selectedValue);
+              setHasSearched(true);
+            }}
+          >
+            Search
+          </LoadingButton>
         </div>
         <Select onValueChange={setSelectedValue as () => void}>
           <SelectTrigger className="w-[180px]">
@@ -114,7 +118,7 @@ const page = () => {
                 region={destination.region}
                 shortDescription={destination.shortDescription}
                 image={destination.image}
-                ratings={destination?.averageRating || 0}
+                rating={destination?.averageRating || 0}
                 slug={destination.slug}
               />
             ))}

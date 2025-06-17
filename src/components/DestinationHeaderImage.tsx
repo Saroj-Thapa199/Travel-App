@@ -23,6 +23,7 @@ const DestinationHeaderImage = ({name, region, image, rating, className}: Destin
                 <Image
                   src={image}
                   fill
+                  priority
                   sizes="(max-width: 768px) 100vw, 700px"
                   alt="destination-image"
                   className="object-cover"
@@ -51,7 +52,7 @@ const DestinationHeaderImage = ({name, region, image, rating, className}: Destin
                       />
                     ))}
                     <span className="tex text-secondary ml-2 font-medium">
-                      {rating}
+                      {rating.toFixed(1)}
                     </span>
                   </div>
                 </div>

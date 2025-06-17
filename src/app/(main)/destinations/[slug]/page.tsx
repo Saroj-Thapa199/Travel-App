@@ -1,13 +1,10 @@
 import DestinationHeaderImage from "@/components/DestinationHeaderImage";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getAllDestinaitons, getDestinationFromSlug } from "@/lib/actions/destination";
+import {
+  getDestinationFromSlug,
+} from "@/lib/actions/destination";
 import { destinationSchema } from "@/lib/validation";
-import { ImageIcon, Star } from "lucide-react";
-import Image from "next/image";
 import React from "react";
-import { z } from "zod";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
 
@@ -22,23 +19,23 @@ import { notFound } from "next/navigation";
 // }
 
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
-  const {slug} = await params;
-  console.log({slug})
-  const data = await getDestinationFromSlug(slug)
-  if(!data) return notFound()
+  const { slug } = await params;
+  console.log({ slug });
+  const data = await getDestinationFromSlug(slug);
+  if (!data) return notFound();
 
-  const destination = destinationSchema.parse(data)
+  const destination = destinationSchema.parse(data);
   return (
     <main className="my-15">
       <DestinationHeaderImage
         image={destination.image}
         name={destination.name}
         region={destination.region}
-        rating={2.6}
+        rating={destination.averageRating}
         className="h-[50vh] rounded-none border-0"
       />
 
-      <div className="grid grid-cols-1 gap-8 px-4 py-8 sm:px-8 md:px-14 lg:grid-cols-3 lg:px-20 xl:container">
+      <div className="mx-auto grid grid-cols-1 gap-8 px-4 py-8 sm:px-8 md:px-14 lg:grid-cols-3 lg:px-20 xl:container">
         <section className="md:col-span-2">
           <Tabs defaultValue="overview" className="">
             <TabsList className="mb-6 w-full">
@@ -71,7 +68,12 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
               Change your password here.
             </TabsContent>
             <TabsContent value="review">
-              <ReviewSection destinationName={destination.name} destinationId={destination._id} />
+              <ReviewSection
+                destinationName={destination.name}
+                destinationId={destination._id}
+                averageRating={destination.averageRating}
+                reviewCount={destination.reviewCount}
+              />
             </TabsContent>
           </Tabs>
         </section>

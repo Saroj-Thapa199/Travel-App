@@ -41,7 +41,7 @@ const Hero = () => {
               size="lg" asChild
               className="rounded-sm border-white/20 bg-white/10 text-white hover:bg-white/20 gap-1"
             >
-              <Link href={"#"}>
+              <Link href={"/"}>
                 Share Your Hidden Gem <ArrowRight size={4} />
               </Link>
             </Button>

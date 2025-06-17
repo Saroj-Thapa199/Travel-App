@@ -23,6 +23,7 @@ export const GET = async (request: NextRequest) => {
 
     const andConditions: any[] = [];
 
+    // TODO: remove unnecessary console logs
     if (searchTerm) {
       andConditions.push({
         $or: [
@@ -62,23 +63,20 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    // if (cursor) {
-    //   andConditions.push({ _id: { $gt: new mongoose.Types.ObjectId(cursor) } });
-    // }
-
     if (andConditions.length > 0) {
       query.$and = andConditions;
     }
 
-    let sort: any = { _id: 1 };
+    let sort: any = { _id: 1 }; //default: oldest to latest
     if (sortBy === "rating-asc") {
       sort = { averageRating: 1, _id: 1 };
     } else if (sortBy === "rating-desc") {
       sort = { averageRating: -1, _id: 1 };
     }
 
-    // console.dir(query, { depth: null, colors: true });
-    console.log(JSON.stringify(query, null, 2));
+    // TODO: remove unnecessary consoles
+    console.dir(query, { depth: null, colors: true });
+    // console.log(JSON.stringify(query, null, 2));
 
     const results = await Destination.find(query)
       .sort(sort)

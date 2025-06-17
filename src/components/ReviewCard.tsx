@@ -39,7 +39,11 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                   />
                 ))}
                 <span className="text-muted-foreground ml-2 text-xs">
-                  {review.createdAt.toDateString()}
+                  {review.createdAt.toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                  })}
                 </span>
               </div>
             </div>
