@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import ReviewSummary from "@/components/ReviewSummary";
 import useGetReviews from "@/app/hooks/useGetReviews";
+import ReviewCardSkeleton from "@/components/ReviewCardSkeleton";
+import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 
 type ReviewSectionProps = {
   destinationName: string;
@@ -133,14 +135,25 @@ const ReviewSection = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="latest">Most recent</SelectItem>
-                <SelectItem disabled={filter !== "all"} value="rating-desc">Highest rated</SelectItem>
-                <SelectItem disabled={filter !== "all"} value="rating-asc">Lowest rated</SelectItem>
+                <SelectItem disabled={filter !== "all"} value="rating-desc">
+                  Highest rated
+                </SelectItem>
+                <SelectItem disabled={filter !== "all"} value="rating-asc">
+                  Lowest rated
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="max-h-[600px] space-y-4 overflow-y-auto">
+          <InfiniteScrollContainer
+            onBottomReached={() =>
+              hasNextPage && !isFetching && fetchNextPage()
+            }
+            className="max-h-[600px] space-y-4 overflow-y-auto"
+          >
             {status === "pending" ? (
-              <Loader2 className="animate-spin" />
+              Array.from({ length: 3 }).map((_, index) => (
+                <ReviewCardSkeleton key={index} />
+              ))
             ) : reviews && reviews.length > 0 ? (
               reviews.map((review) => (
                 <ReviewCard
@@ -153,19 +166,10 @@ const ReviewSection = ({
                 No reviews yet. Be the first to review
               </p>
             )}
-            <div>
-              <Button
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetching}
-              >
-                {isFetchingNextPage
-                  ? "Loading more..."
-                  : hasNextPage
-                    ? "Load More"
-                    : "Nothing more to load"}
-              </Button>
-            </div>
-          </div>
+            {isFetchingNextPage && (
+              <Loader2 className="mx-auto my-6 size-8 animate-spin font-light" />
+            )}
+          </InfiniteScrollContainer>
         </div>
       </div>
     </section>

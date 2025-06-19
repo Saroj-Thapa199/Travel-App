@@ -11,9 +11,16 @@ export const useCreateReviewMutation = () => {
 
   return useMutation({
     mutationFn: createReview,
-    onSuccess: async ({ success, data }) => {
+    onSuccess: async ({ success, data, error }) => {
+      if (!success) {
+        throw new Error(error)
+      };
+      
       const newReview = populatedReviewSchema.parse(data);
-      if (!success || !newReview) return;
+      if (!newReview) {
+        throw new Error("Something went wrong")
+      }
+      
       const queryFilter = {
         queryKey: ["reviews"],
         predicate: (query) =>

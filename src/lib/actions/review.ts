@@ -16,15 +16,16 @@ export const createReview = async (
   try {
     await dbConnect();
 
+    
     const session = await auth();
     if (!session || !session.user?.id) {
       return { success: false, error: "Unauthenticated" };
     }
-
+    
     if (!mongoose.Types.ObjectId.isValid(values.destinationId)) {
       return { success: false, error: "Invalid destination ID" };
     }
-
+    
     // TODO: remove unnecessary consoles
     // console.log({
     //   ...values,
@@ -58,6 +59,8 @@ export const createReview = async (
     const populatedReview = await reviewDoc.populate<{
       user: IUserDocument;
     }>("user", "name image -_id");
+
+    console.log(populatedReview)
 
     const review = populatedReviewSchema.parse(populatedReview);
 

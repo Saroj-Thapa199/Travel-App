@@ -32,15 +32,20 @@ const DestinationHeaderImage = ({name, region, image, rating, className}: Destin
                 <ImageIcon className="text-muted-foreground size-16 opacity-50" />
               )}
             </div>
-            <div className="from-primary/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"></div>
+            <div className="from-primary/60 dark:from-secondary/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"></div>
             <figcaption className="absolute inset-0 flex items-end p-6">
               <div>
                 {region && (
-                  <Badge className="rounded-full px-2.5">
+                  <Badge className="rounded-full px-2.5 dark:hidden">
                     {region}
                   </Badge>
                 )}
-                <h2 className="text-secondary text-3xl leading-relaxed font-bold">
+                {region && (
+                  <Badge variant={'secondary'} className="rounded-full px-2.5 not-dark:hidden">
+                    {region}
+                  </Badge>
+                )}
+                <h2 className="text-secondary dark:text-primary text-3xl leading-relaxed font-bold">
                   {name}
                 </h2>
                 <div>
@@ -51,7 +56,7 @@ const DestinationHeaderImage = ({name, region, image, rating, className}: Destin
                         className={`h-4 w-4 ${index < Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                       />
                     ))}
-                    <span className="tex text-secondary ml-2 font-medium">
+                    <span className="text-secondary dark:text-primary ml-2 font-medium">
                       {rating.toFixed(1)}
                     </span>
                   </div>

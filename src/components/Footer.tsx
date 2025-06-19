@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-muted/50 border-t">
       <div className="xl:container mx-auto px-4 sm:px-8 md:px-14 lg:px-20 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Link href="/" className="font-bold text-xl flex items-center gap-2 mb-4">
               <Globe className="h-6 w-6 text-primary" />

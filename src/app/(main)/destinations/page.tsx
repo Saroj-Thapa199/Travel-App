@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 
 const categories = [
   "All",
@@ -106,7 +107,10 @@ const page = () => {
           </Badge>
         ))}
       </div>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <InfiniteScrollContainer
+        onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {status === "pending"
           ? Array.from({ length: 6 }).map((_, index) => (
               <DestinationCardSkeleton key={index} />
@@ -122,30 +126,17 @@ const page = () => {
                 slug={destination.slug}
               />
             ))}
-        {/* {[1, 2, 3, 4, 5, 6].map((destination, index) => (
-          <DestinationCard
-            key={index}
-            name="Bethanchowk Narayanthan"
-            region="Destination, Nepal"
-            shortDescription="Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance."
-            ratings={3.6}
-            slug="#"
-          />
-        ))} */}
-      </div>
-      <div>
-        <Button
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetching}
-        >
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-              ? "Load More"
-              : "Nothing more to load"}
-        </Button>
-      </div>
-      <div>{isFetchingNextPage ? "Fetching..." : null}</div>
+            </InfiniteScrollContainer>
+        {isFetchingNextPage && (
+          <div className="hidden sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <DestinationCardSkeleton key={index} />
+            ))}
+          </div>
+        )}
+        {isFetchingNextPage && (
+          <Loader2 className="mx-auto my-6 animate-spin size-8 font-light" />
+        )}
     </main>
   );
 };

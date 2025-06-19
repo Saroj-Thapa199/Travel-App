@@ -113,7 +113,7 @@ const Navbar = () => {
                 "absolute bottom-0 h-0.5 transition-all duration-300",
                 isScrolled || (pathname !== "/" && !pathname.startsWith("/#"))
                   ? "bg-primary"
-                  : "bg-secondary",
+                  : "bg-secondary dark:bg-primary",
               )}
               style={{
                 left: underlineStyle.left,
@@ -128,14 +128,17 @@ const Navbar = () => {
               variant={isScrolled && pathname === "/" ? "outline" : "secondary"}
               className={
                 !isScrolled && pathname === "/"
-                  ? "bg-primary/10 text-primary-foreground border-primary/20 hover:bg-secondary/20 dark:hover:bg-primary/20 hover:text-primary"
+                  ? "bg-primary/10 text-primary-foreground dark:text-secondary-foreground border-primary/20 hover:bg-secondary/20 dark:hover:bg-primary/20 hover:text-primary"
                   : ""
               }
             >
               <Link href={"/login"}>Sign In</Link>
             </Button>
           )}
-          <Button className="cursor-pointer rounded-sm">
+          <Button
+            variant={(!isScrolled && pathname === "/") ? "secondary" : "default"}
+            className="cursor-pointer rounded-sm"
+          >
             <Plus />
             <span>Plan a trip</span>
           </Button>
