@@ -1,13 +1,13 @@
-import { ReviewType } from "@/lib/validation";
+import { PopulatedReviewType, ReviewType } from "@/lib/validation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export interface ReviewsApiResponse {
-  reviews: ReviewType[];
+  reviews: PopulatedReviewType[];
   nextCursor: ReviewCursor | null;
 }
 
-interface ReviewCursor {
+export interface ReviewCursor {
   cursorRating: number;
   cursorId: string;
 }
@@ -18,7 +18,7 @@ interface useGetReviewsParams {
   sortBy?: string;
   limit?: number;
 }
-useInfiniteQuery;
+
 const useGetReviews = ({
   destinationId,
   filter = "all",

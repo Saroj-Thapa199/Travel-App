@@ -70,7 +70,7 @@ const ReviewSection = ({
 
   const reviews = data?.pages.flatMap((page) => page.reviews);
 
-  console.log("reviews:", reviews);
+  // console.log("reviews:", reviews);
 
   // const ratingCounts = {
   //   5:
@@ -133,8 +133,8 @@ const ReviewSection = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="latest">Most recent</SelectItem>
-                <SelectItem value="rating-desc">Highest rated</SelectItem>
-                <SelectItem value="rating-asc">Lowest rated</SelectItem>
+                <SelectItem disabled={filter !== "all"} value="rating-desc">Highest rated</SelectItem>
+                <SelectItem disabled={filter !== "all"} value="rating-asc">Lowest rated</SelectItem>
               </SelectContent>
             </Select>
           </div>

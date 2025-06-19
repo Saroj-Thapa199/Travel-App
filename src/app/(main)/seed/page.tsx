@@ -23,8 +23,11 @@ const page = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const res = await axios.get("/api/reviews/684bbb26eb5e7bd4c944be23")
-      console.log(res)
+      // const res = await axios.get("/api/reviews/685286ab9840c4a1504186c8")
+      // const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c8/stats")
+      const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c9/stats")
+      // console.log(res)
+      console.log(res2.data)
     }
 
     fetchReviews()

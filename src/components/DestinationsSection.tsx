@@ -7,11 +7,11 @@ import { Button } from "./ui/button";
 const DestinationsSection = () => {
   return (
     <section
-      className="mx-auto my-14 scroll-mt-20 px-4 sm:px-8 md:px-14 lg:px-20"
+      className="mx-auto my-16 scroll-mt-20 px-4 sm:px-8 md:px-14 lg:px-20"
       id="destinations"
     >
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-semibold sm:text-3xl">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold sm:text-2xl">
           Nature Retreats in Nepal
         </h1>
         <Link href={"/destinations"} className="text-sm hover:underline">
@@ -25,14 +25,14 @@ const DestinationsSection = () => {
             name="Bethanchowk Narayanthan"
             region="Destination, Nepal"
             shortDescription="Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance."
-            ratings={3.6}
+            rating={3.6}
             slug="#"
           />
         ))}
       </div>
       <div className="mt-10">
         <div className="flex items-center justify-start">
-          <h1 className="my-4 text-xl font-semibold sm:text-3xl">
+          <h1 className="my-6 text-2xl font-semibold sm:text-2xl">
             Discover by Season
           </h1>
         </div>

@@ -58,7 +58,7 @@ const DestinationCard = ({
                   strokeWidth={0}
                 />
               ))}
-              <span className="tex ml-1 font-semibold">{rating}</span>
+              <span className="tex ml-1 font-semibold">{rating.toFixed(1)}</span>
             </div>
             <p className="text-muted-foreground">
               •{" "}

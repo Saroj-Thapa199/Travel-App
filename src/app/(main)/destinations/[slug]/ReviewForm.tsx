@@ -2,7 +2,6 @@
 
 import InteractiveStarRating from "@/components/InteractiveStarRating";
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { createReview } from "@/lib/actions/review";
+import { useCreateReviewMutation } from "@/lib/mutations/review";
 import { ReviewFormType } from "@/lib/types";
 import { reviewSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,10 +23,14 @@ import { useForm } from "react-hook-form";
 type ReviewFormProps = {
   destinationName: string;
   destinationId: string;
-  closeDialog: () => void
+  closeDialog: () => void;
 };
 
-const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormProps) => {
+const ReviewForm = ({
+  destinationName,
+  destinationId,
+  closeDialog,
+}: ReviewFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -45,18 +49,23 @@ const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormP
     },
   });
 
+  const mutation = useCreateReviewMutation();
+
   const onSubmit = async (values: ReviewFormType) => {
     setLoading(true);
-    setError(undefined)
-    const res = await createReview({ ...values, destinationId });
-    setLoading(false)
-    if (res.success) {
-      console.log("success");
-      const review = reviewSchema.parse(res.data);
-      console.log("review", review);
-    }
-    setError (res.error)
-    // closeDialog()
+    mutation.mutate(
+      { ...values, destinationId },
+      {
+        onSuccess: () => {
+          setLoading(false);
+          closeDialog();
+        },
+        onError: (error) => {
+          console.log(error);
+          setError("Something went wrong. Please try again");
+        },
+      },
+    );
   };
   return (
     <Form {...form}>
@@ -96,7 +105,9 @@ const ReviewForm = ({ destinationName, destinationId, closeDialog }: ReviewFormP
             </FormItem>
           )}
         />
-        <LoadingButton loading={loading} type="submit">Submit Review</LoadingButton>
+        <LoadingButton loading={loading} type="submit">
+          Submit Review
+        </LoadingButton>
       </form>
     </Form>
   );

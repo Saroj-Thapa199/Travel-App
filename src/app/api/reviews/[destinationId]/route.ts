@@ -18,6 +18,8 @@ export const GET = async (
 
     const searchParams = request.nextUrl.searchParams;
 
+    // const getAll = searchParams.get("getAll") === "true";
+
     const cursorRatingRaw = searchParams.get("cursorRating");
     const cursorRating = cursorRatingRaw
       ? parseFloat(cursorRatingRaw)
@@ -27,6 +29,11 @@ export const GET = async (
     const filter = searchParams.get("filter");
     const sortBy = searchParams.get("sortBy");
     const limit = Number(searchParams.get("limit")) || 5;
+
+    // if (getAll) {
+    //   const reviews = await Review.find({ destination: destinationId }).populate<{user: IUserDocument}>("user", "name image -_id").lean()
+    //   return NextResponse.json({ reviews, nextCursor: null });
+    // }
 
     const query: any = {};
     const andConditions: any[] = [];
@@ -101,12 +108,6 @@ export const GET = async (
           cursorRating: results[results.length - 1].rating,
         }
       : null;
-
-      console.log(results)
-      console.log("has next page:", results.length > limit)
-
-    // if (reviews.length === 0)
-    //   return NextResponse.json({ error: "No reviews yet" }, { status: 404 });
 
     // TODO: remove this delay
     await new Promise((resolve) => setTimeout(resolve, 2000));

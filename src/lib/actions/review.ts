@@ -5,11 +5,7 @@ import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
 import mongoose from "mongoose";
 import { ReviewFormType } from "../types";
-import {
-  destinationSchema,
-  populatedReviewSchema,
-  reviewSchema,
-} from "../validation";
+import { populatedReviewSchema } from "../validation";
 import { z } from "zod";
 import { IUserDocument } from "@/model/User";
 import Destination from "@/model/Destination";
@@ -30,11 +26,11 @@ export const createReview = async (
     }
 
     // TODO: remove unnecessary consoles
-    console.log({
-      ...values,
-      user: session.user.id,
-      destination: values.destinationId,
-    });
+    // console.log({
+    //   ...values,
+    //   user: session.user.id,
+    //   destination: values.destinationId,
+    // });
 
     const reviewDoc = await Review.create({
       ...values,
@@ -42,9 +38,7 @@ export const createReview = async (
       destination: values.destinationId,
     });
 
-    const destination = await Destination.findById(
-      values.destinationId,
-    );
+    const destination = await Destination.findById(values.destinationId);
 
     if (destination) {
       let avgRating: number;
@@ -58,15 +52,14 @@ export const createReview = async (
       }
       destination.averageRating = avgRating;
       destination.reviewCount += 1;
-      await destination.save()
+      await destination.save();
     }
 
-    // await Destination.findByIdAndUpdate(
-    //   new mongoose.Types.ObjectId(values.destination),
-    //   { $inc: { reviewCount: 1 } },
-    // );
+    const populatedReview = await reviewDoc.populate<{
+      user: IUserDocument;
+    }>("user", "name image -_id");
 
-    const review = reviewSchema.parse(reviewDoc);
+    const review = populatedReviewSchema.parse(populatedReview);
 
     return { success: true, data: review };
   } catch (error) {

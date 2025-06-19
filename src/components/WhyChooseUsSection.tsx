@@ -6,7 +6,7 @@ const WhyChooseUsSection = () => {
       <h2 className="mb-6 text-2xl font-bold">Why Choose Us</h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="bg-card border-border/50 rounded-xl border p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 className="text-primary h-6 w-6"
@@ -31,7 +31,7 @@ const WhyChooseUsSection = () => {
         </div>
 
         <div className="bg-card border-border/50 rounded-xl border p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 className="text-primary h-6 w-6"
@@ -56,7 +56,7 @@ const WhyChooseUsSection = () => {
         </div>
 
         <div className="bg-card border-border/50 rounded-xl border p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 className="text-primary h-6 w-6"
@@ -81,7 +81,7 @@ const WhyChooseUsSection = () => {
         </div>
 
         <div className="bg-card border-border/50 rounded-xl border p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 className="text-primary h-6 w-6"
@@ -97,9 +97,7 @@ const WhyChooseUsSection = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold">
-              Community Contributions
-            </h3>
+            <h3 className="text-xl font-semibold">Community Contributions</h3>
           </div>
           <p className="text-muted-foreground">
             Discover hidden gems shared by our community of travelers who know
