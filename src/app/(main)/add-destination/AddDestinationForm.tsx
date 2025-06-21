@@ -19,6 +19,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationFormType } from "@/lib/types";
+import CategoriesSelect from "@/components/CategoriesSelect";
 
 type AddDestinationFormProps = {
   form: UseFormReturn<DestinationFormType>;
@@ -123,7 +124,7 @@ const AddDestinationForm = ({
               )}
             />
           </div>
-          <div>
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="longDescription"
@@ -137,6 +138,19 @@ const AddDestinationForm = ({
                       rows={7}
                       className="field-sizing-fixed resize-none"
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="categories"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select Categories</FormLabel>
+                  <FormControl>
+                    <CategoriesSelect categories={field.value} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -11,6 +11,7 @@ type DestinationCardProps = {
   rating: number;
   image?: string;
   slug: string;
+  isNew: boolean
 };
 
 const DestinationCard = ({
@@ -20,6 +21,7 @@ const DestinationCard = ({
   rating,
   image,
   slug,
+  isNew
 }: DestinationCardProps) => {
   return (
     <Link href={`/destinations/${slug}`} className="group">
@@ -33,6 +35,9 @@ const DestinationCard = ({
             sizes="600px"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
+          {isNew && 
+          <Badge className="absolute top-3 right-3 bg-green-500/90 hover:bg-green-500">New</Badge>
+          }
         </div>
         <div className="p-5">
           <div className="mb-2">

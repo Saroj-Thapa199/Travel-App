@@ -7,6 +7,7 @@ import { destinationSchema } from "@/lib/validation";
 import React from "react";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
+import { isNew } from "@/lib/utils";
 
 // export async function generateStaticParams() {
 //   const res = await fetch("http://localhost:3000/api/destinations/all");
@@ -25,6 +26,10 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   if (!data) return notFound();
 
   const destination = destinationSchema.parse(data);
+  console.log(destination)
+  if(destination) {
+    console.log(isNew({createdAt: destination.createdAt, type: "hour", range: 1}))
+  }
   return (
     <main className="my-15">
       <DestinationHeaderImage

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface InfiniteScrollContainerProps extends React.PropsWithChildren {
@@ -10,14 +11,27 @@ const InfiniteScrollContainer = ({
   onBottomReached,
   className,
 }: InfiniteScrollContainerProps) => {
-  const { ref } = useInView({
+  const [key, setKey] = useState(0); 
+  const { ref, inView } = useInView({
     rootMargin: "200px",
-    onChange: (inView) => {
-      if (inView) {
-        onBottomReached();
-      }
-    },
+    // onChange: (inView) => {
+    //   if (inView) {
+    //     onBottomReached();
+    //   }
+    // },
   });
+
+  useEffect(() => {
+    if (inView) {
+      onBottomReached();
+    }
+  }, [inView]);
+
+  // Optional: Expose a key-based reset from parent if needed
+  useEffect(() => {
+    // When children change significantly, rebind the observer
+    setKey((prev) => prev + 1);
+  }, [children]);
   return (
     <div className={className}>
       {children}

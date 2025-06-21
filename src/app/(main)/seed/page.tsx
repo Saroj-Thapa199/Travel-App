@@ -1,5 +1,6 @@
 "use client";
 
+import CategoriesSelect from "@/components/CategoriesSelect";
 import LoadingButton from "@/components/LoadingButton";
 import ProtectedActionButton from "@/components/ProtectedActionButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -53,6 +54,7 @@ const page = () => {
           <UserRound />
         </AvatarFallback>
       </Avatar>
+      {/* <CategoriesSelect /> */}
     </div>
   );
 };

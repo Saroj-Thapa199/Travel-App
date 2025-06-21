@@ -10,6 +10,7 @@ export const GET = async (request: NextRequest) => {
     const searchParams = request.nextUrl.searchParams;
 
     const limit = Number(searchParams.get("limit")) || 12;
+    const category = searchParams.get("category") || "";
     const searchTerm = searchParams.get("searchTerm") || "";
     const sortBy = searchParams.get("sortBy");
     const cursorRatingRaw = searchParams.get("cursorRating");
@@ -31,6 +32,12 @@ export const GET = async (request: NextRequest) => {
           { region: { $regex: searchTerm, $options: "i" } },
         ],
       });
+    }
+
+    if (category && (category !== "all")) {
+      andConditions.push({
+        categories: category
+      })
     }
 
     if (
@@ -75,7 +82,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // TODO: remove unnecessary consoles
-    console.dir(query, { depth: null, colors: true });
+    // console.dir(query, { depth: null, colors: true });
     // console.log(JSON.stringify(query, null, 2));
 
     const results = await Destination.find(query)
@@ -95,7 +102,7 @@ export const GET = async (request: NextRequest) => {
         : null;
 
     // TODO: remove this delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return NextResponse.json({
       destinations,

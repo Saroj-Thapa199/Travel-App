@@ -34,20 +34,34 @@ export const destinationSchema = z.object({
   image: requiredString("Please upload the image"),
   shortDescription: requiredString().max(150, "Maximum 150 characters allowed"),
   longDescription: requiredString(),
+  categories: z
+    .array(
+      z.enum([
+        "Mountain",
+        "Hill Station",
+        "City",
+        "Village",
+        "Pilgrimage",
+        "Adventure",
+        "Wildlife",
+        "Cultural Heritage",
+        "Natural Attraction",
+      ]),
+    )
+    .min(1, "Select at least 1 category")
+    .max(3, "You can select up to 3 categories"),
   averageRating: z.number().lte(5),
   reviewCount: z.number(),
   createdAt: z
     .preprocess(
       (val) => (typeof val === "string" ? new Date(val) : val),
       z.date(),
-    )
-    .optional(),
+    ),
   updatedAt: z
     .preprocess(
       (val) => (typeof val === "string" ? new Date(val) : val),
       z.date(),
-    )
-    .optional(),
+    ),
 });
 
 export type DestinationType = z.infer<typeof destinationSchema>;

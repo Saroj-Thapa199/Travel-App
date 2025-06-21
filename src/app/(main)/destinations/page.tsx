@@ -17,21 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
-
-const categories = [
-  "All",
-  "Popular",
-  "Beach",
-  "Mountain",
-  "City",
-  "Cultural",
-  "Adventure",
-  "Relaxation",
-];
+import { categoriesList } from "@/lib/data";
+import { isNew } from "@/lib/utils";
 
 const page = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState<string>();
   const [selectedValue, setSelectedValue] = useState<
     "rating-asc" | "rating-desc" | "default"
@@ -40,7 +32,6 @@ const page = () => {
     "rating-asc" | "rating-desc" | "default"
   >("default");
   const [hasSearched, setHasSearched] = useState(false);
-  console.log({ searchTerm, sortBy });
   const {
     data,
     isFetching,
@@ -48,9 +39,15 @@ const page = () => {
     hasNextPage,
     status,
     fetchNextPage,
-  } = useDestinations({ searchTerm, sortBy });
+  } = useDestinations({ searchTerm, sortBy, category });
 
   const destinations = data?.pages.flatMap((page) => page.destinations) || [];
+
+  const handleBottomReached = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   return (
     <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
@@ -97,25 +94,27 @@ const page = () => {
         </Select>
       </div>
       <div className="mb-8 flex flex-wrap justify-center gap-2">
-        {categories.map((category) => (
+        {categoriesList.map((individualCat) => (
           <Badge
-            key={category}
-            variant="outline"
-            className="hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors"
+            key={individualCat}
+            variant={category === individualCat ? "default" : "outline"}
+            className="hover:bg-primary hover:text-primary-foreground cursor-pointer capitalize transition-colors"
+            onClick={() => setCategory(individualCat)}
           >
-            {category}
+            {individualCat}
           </Badge>
         ))}
       </div>
       <InfiniteScrollContainer
-        onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
+        // onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
+        onBottomReached={handleBottomReached}
         className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         {status === "pending"
           ? Array.from({ length: 6 }).map((_, index) => (
               <DestinationCardSkeleton key={index} />
             ))
-          : destinations?.map((destination, index) => (
+          : destinations?.map((destination) => (
               <DestinationCard
                 key={destination._id}
                 name={destination.name}
@@ -124,19 +123,20 @@ const page = () => {
                 image={destination.image}
                 rating={destination?.averageRating || 0}
                 slug={destination.slug}
+                isNew={isNew({ createdAt: destination.createdAt })}
               />
             ))}
-            </InfiniteScrollContainer>
-        {isFetchingNextPage && (
-          <div className="hidden sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <DestinationCardSkeleton key={index} />
-            ))}
-          </div>
-        )}
-        {isFetchingNextPage && (
-          <Loader2 className="mx-auto my-6 animate-spin size-8 font-light" />
-        )}
+      </InfiniteScrollContainer>
+      {isFetchingNextPage && (
+        <div className="hidden sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <DestinationCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
+      {isFetchingNextPage && (
+        <Loader2 className="mx-auto my-6 size-8 animate-spin font-light" />
+      )}
     </main>
   );
 };

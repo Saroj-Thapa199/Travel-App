@@ -18,7 +18,7 @@ export const addDestination = async (
     
     const createdDestination = await Destination.create({
       ...values,
-      slug: slugify(values.name),
+      slug: slugify(values.name, {lower: true}),
     });
 
     return redirect(`/destinations/${createdDestination.slug}`);

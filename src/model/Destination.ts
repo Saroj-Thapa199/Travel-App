@@ -35,18 +35,37 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       type: String,
       required: true,
     },
+    categories: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: (val: string[]) => val.length >= 1 && val.length <= 3,
+        message: "Select 1 to 3 categories only",
+      },
+      enum: [
+        "Mountain",
+        "Hill Station",
+        "City",
+        "Village",
+        "Pilgrimage",
+        "Adventure",
+        "Wildlife",
+        "Cultural Heritage",
+        "Natural Attraction",
+      ],
+    },
     image: {
       type: String,
       required: true,
     },
     averageRating: {
       type: Number,
-      default: 0
+      default: 0,
     },
     reviewCount: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   { timestamps: true },
 );

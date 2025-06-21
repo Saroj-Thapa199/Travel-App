@@ -1,33 +1,49 @@
-"use server";
+"use server"
 
-import Destination from "@/model/Destination";
-import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
-import mongoose from "mongoose";
+import dbConnect from "@/lib/dbConnect";
+import Destination from "@/model/Destination";
 import Review from "@/model/Review";
+import slugify from "slugify";
 
+// Dummy images and utils
 const imageUrls = [
-  "https://5yeh6d47mm.ufs.sh/f/tVQQQp1yyJVmoFYcdF1hAl0tn5eV4GcH2zZRJakNQOiwLBbr",
-  "https://5yeh6d47mm.ufs.sh/f/tVQQQp1yyJVmMZ6xnfv7JrTDHf0yWvus1A5hq9zaeLVgQiOc",
+  "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bW91bnRhaW4lMjBsYWtlfGVufDB8fDB8fHww",
+  "https://images.unsplash.com/photo-1607836046730-3317bd58a31b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1747118435378-50b16d63dd4b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1717054493682-ffe9e25fd82f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTh8fHZpbGxhZ2UlMjBsYW5kc2NhcGV8ZW58MHx8MHx8fDA%3D",
+  "https://images.unsplash.com/photo-1623492701360-fb4a1205c789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
-function slugify(name: string) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
+const getRandomRating = () => parseFloat((Math.random() * 4 + 1).toFixed(1));
 
-function getRandomRating(): number {
-  const num = Math.floor(Math.random() * 51) / 10; // gives 0.0 to 5.0 in 0.1 steps
-  return num % 1 === 0 ? num : parseFloat(num.toFixed(1));
-}
+// Predefined categories
+const categoriesPool = [
+  "Mountain",
+  "Hill Station",
+  "City",
+  "Village",
+  "Pilgrimage",
+  "Adventure",
+  "Wildlife",
+  "Cultural Heritage",
+  "Natural Attraction",
+] as const;
+
+type Category = (typeof categoriesPool)[number];
+
+const getRandomCategories = (): Category[] => {
+  const count = Math.floor(Math.random() * 3) + 1; // 1 to 3
+  const shuffled = [...categoriesPool].sort(() => 0.5 - Math.random()); // Make it mutable
+  return shuffled.slice(0, count);
+};
 
 export const seedDestinations = async () => {
-  const list: { name: string; region: string }[] = [
-    { name: "Kathmandu Durbar Square", region: "Kathmandu, Kathmandu, Nepal" },
-    { name: "Patan Durbar Square", region: "Lalitpur, Lalitpur, Nepal" },
-    { name: "Bhaktapur Durbar Square", region: "Bhaktapur, Bhaktapur, Nepal" },
+  const destinationsList: { name: string; region: string }[] = [
+    { name: "Kathmandu Durbar Square", region: "Kathmandu, Nepal" },
+    { name: "Patan Durbar Square", region: "Lalitpur, Nepal" },
+    { name: "Bhaktapur Durbar Square", region: "Bhaktapur, Nepal" },
     { name: "Nagarkot Sunrise Point", region: "Nagarkot, Bhaktapur, Nepal" },
     {
       name: "Dhulikhel View Tower",
@@ -75,7 +91,7 @@ export const seedDestinations = async () => {
     { name: "Besisahar Gate", region: "Besisahar, Lamjung, Nepal" },
     {
       name: "Muktinath Temple Trail",
-      region: "Besisahar–Jomsom, Lamjung/Manang, Nepal",
+      region: "Besisahar-Jomsom, Lamjung/Manang, Nepal",
     },
     { name: "Kakani View Point", region: "Kakani, Nuwakot, Nepal" },
     { name: "Nuwakot Durbar", region: "Nuwakot, Nuwakot, Nepal" },
@@ -84,21 +100,28 @@ export const seedDestinations = async () => {
     { name: "Halesi Mahadev Temple", region: "Halesi, Khotang, Nepal" },
   ];
 
-  const destinations = list.map((loc, idx) => ({
-    name: loc.name,
-    slug: slugify(loc.name),
-    region: loc.region,
-    shortDescription: `Discover the beauty of ${loc.name} in ${loc.region}.`,
-    longDescription: `Explore ${loc.name}, located in ${loc.region}. Enjoy the blend of cultural richness, scenic beauty, and unforgettable experiences.`,
-    image: imageUrls[idx % imageUrls.length],
-    averageRating: getRandomRating(),
-  }));
+  const destinations = destinationsList.map((loc, idx) => {
+    const categories = getRandomCategories();
+
+    return {
+      name: loc.name,
+      slug: slugify(loc.name, { lower: true }),
+      region: loc.region,
+      categories,
+      shortDescription: `Discover the beauty of ${loc.name} in ${loc.region}.`,
+      longDescription: `${loc.name} is a remarkable destination in ${loc.region}, offering travelers a unique blend of culture, nature, and unforgettable experiences. From scenic landscapes to deep spiritual roots, this location provides a perfect escape into the heart of Nepal's rich heritage. Whether you're an adventurer or a peace-seeker, ${loc.name} promises something memorable for every visitor.`,
+      image: imageUrls[idx % imageUrls.length],
+      averageRating: getRandomRating(),
+    };
+  });
 
   try {
     await dbConnect();
     await Destination.deleteMany({});
     await Destination.insertMany(destinations);
-    console.log("✅ 50 Nepali destinations seeded with refined region format!");
+    console.log(
+      "✅ Destinations seeded with categories and extended descriptions!",
+    );
   } catch (err) {
     console.error("❌ Seeding error:", err);
   }
@@ -156,22 +179,16 @@ const reviewsData = [
   "Felt very safe throughout the trip.",
   "Wish there were more food options nearby.",
 ];
-
 export const seedReviews = async () => {
   try {
     const session = await auth();
     if (!session) return;
-
     await dbConnect();
-
     const firstDestination = await Destination.findOne();
-
     if (!firstDestination) {
       throw Error("No any destinations");
     }
-
     let ratings: number[] = [];
-
     const reviews = reviewsData.map((review) => {
       const randomRating = Math.floor(Math.random() * 5 + 1);
       ratings.push(randomRating);
@@ -182,16 +199,12 @@ export const seedReviews = async () => {
         comment: review,
       };
     });
-
     await Review.deleteMany();
     await Review.insertMany(reviews);
-
     const totalRatings = ratings.reduce((sum, rating) => sum + rating, 0);
-
     firstDestination.reviewCount = reviews.length;
-    firstDestination.averageRating = (totalRatings / reviews.length);
+    firstDestination.averageRating = totalRatings / reviews.length;
     await firstDestination.save();
-
     console.log("✅ 50 reviews seeded!");
   } catch (err) {
     console.error("❌ Seeding error:", err);

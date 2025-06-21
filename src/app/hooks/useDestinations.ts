@@ -16,9 +16,11 @@ interface UseDestinationsParams {
   searchTerm?: string;
   sortBy?: "rating-asc" | "rating-desc" | "default";
   limit?: number;
+  category?: string
 }
 
 const useDestinations = ({
+  category = "all",
   searchTerm = "",
   sortBy = "default",
   limit = 12,
@@ -27,12 +29,13 @@ const useDestinations = ({
     DestinationsApiResponse,
     Error,
     InfiniteData<DestinationsApiResponse>,
-    [string, string, string],
+    [string, string, string, string],
     DestinationCursor | null
   >({
-    queryKey: ["destinations", searchTerm, sortBy],
+    queryKey: ["destinations", category, searchTerm, sortBy],
     queryFn: async ({ pageParam }) => {
       const params: Record<string, any> = {
+        category,
         limit,
         searchTerm,
         sortBy,

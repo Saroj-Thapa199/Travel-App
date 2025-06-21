@@ -26,6 +26,7 @@ const page = () => {
         updatedAt: true,
         averageRating: true,
         reviewCount: true,
+        // categories: true
       }),
     ),
     defaultValues: {
@@ -34,10 +35,12 @@ const page = () => {
       shortDescription: "",
       longDescription: "",
       image: "",
+      categories: [],
     },
   });
 
   const values = form.watch();
+  console.log(values)
 
   const onSubmit = async (values: DestinationFormType) => {
     setError(undefined);
@@ -49,10 +52,10 @@ const page = () => {
 
   useEffect(() => {
     const hasAnyValue = Object.values(values).some((value) => {
-      // return typeof value === "string"
-      //   ? value.trim() !== ""
-      //   : value !== undefined && value !== null;
-      return Boolean(value.trim());
+      return typeof value === "string"
+        ? value.trim() !== ""
+        : value !== undefined && value !== null;
+      // return Boolean(value.trim());
     });
 
     setFormHasValues(hasAnyValue);
