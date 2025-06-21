@@ -49,7 +49,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="example@xyz.com" {...field} />
+                <Input autoComplete="email" placeholder="example@xyz.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,7 +62,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="********" {...field} />
+                <PasswordInput autoComplete="current-password" placeholder="********" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

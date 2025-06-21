@@ -61,7 +61,7 @@ const SignUpForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="example@xyz.com" {...field} />
+                <Input autoComplete="email" placeholder="example@xyz.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,7 +74,7 @@ const SignUpForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="********" {...field} />
+                <PasswordInput autoComplete="new-password" placeholder="********" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

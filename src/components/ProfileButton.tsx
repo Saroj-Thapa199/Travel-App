@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useTheme } from "next-themes";
-import { Check, Monitor, Moon, Sun } from "lucide-react";
+import { Check, Monitor, Moon, Sun, UserRound } from "lucide-react";
 import { logOut } from "@/lib/actions/auth";
 
 interface ProfileButtonProps {
@@ -27,15 +27,13 @@ const ProfileButton = ({ src }: ProfileButtonProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
-          {src ? (
-            <>
-              <AvatarImage src={src} alt="avatar" />
-            </>
-          ) : (
-            <Image src={avatarPlaceholder} alt="avatar" />
-          )}
-          <AvatarFallback>CN</AvatarFallback>
+        <Avatar className="size-9">
+          <AvatarImage src={src} alt="avatar" />
+          <AvatarFallback>
+            {/* <Image src={avatarPlaceholder} alt="avatar-image" /> */}
+            <UserRound />
+            {/* CN */}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

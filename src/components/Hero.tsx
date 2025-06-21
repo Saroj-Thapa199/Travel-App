@@ -3,10 +3,11 @@ import HeroImage1 from "../assets/hero-image-4.jpg";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import ProtectedActionButton from "./ProtectedActionButton";
 
 const Hero = () => {
   return (
-    <section className="relative h-screen w-full min-h-[550px]">
+    <section className="relative h-screen min-h-[550px] w-full">
       <div className="absolute inset-0 z-0">
         <Image
           src={HeroImage1}
@@ -19,7 +20,7 @@ const Hero = () => {
         <div className="drk:from-white/20 absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
       </div>
 
-      <div className="relative z-10 xl:container flex h-full items-center px-6 sm:px-8 md:px-14 lg:px-20 mx-auto">
+      <div className="relative z-10 mx-auto flex h-full items-center px-6 sm:px-8 md:px-14 lg:px-20 xl:container">
         <div className="max-w-2xl">
           <h1 className="via-muted w-fit bg-gradient-to-b from-white/70 to-black/20 bg-clip-text text-4xl leading-tight font-bold text-transparent sm:text-5xl md:text-7xl dark:text-white">
             Discover Nepal's
@@ -33,18 +34,23 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col gap-5 rounded-sm sm:flex-row">
-            <Button size="lg" variant="secondary" className="rounded-sm border-black border">
-              <Link href={"#"}>Explore Destinations</Link>
-            </Button>
             <Button
+              size="lg"
+              variant="secondary"
+              className="rounded-sm border border-black"
+            >
+              <Link href={"/destinations"}>Explore Destinations</Link>
+            </Button>
+            <ProtectedActionButton
               variant={"outline"}
-              size="lg" asChild
-              className="rounded-sm border-white/20 bg-white/10 text-white hover:bg-white/20 gap-1"
+              size="lg"
+              asChild
+              className="gap-1 rounded-sm border-white/20 bg-white/10 text-white hover:bg-white/20"
             >
               <Link href={"/"}>
                 Share Your Hidden Gem <ArrowRight size={4} />
               </Link>
-            </Button>
+            </ProtectedActionButton>
           </div>
 
           <div className="mt-12 flex items-center gap-6">
@@ -52,25 +58,27 @@ const Hero = () => {
               <img
                 src="https://randomuser.me/api/portraits/women/44.jpg"
                 alt="User"
-                className="w-10 h-10 rounded-full border-2 border-primary"
+                className="border-primary h-10 w-10 rounded-full border-2"
               />
               <img
                 src="https://randomuser.me/api/portraits/men/86.jpg"
                 alt="User"
-                className="w-10 h-10 rounded-full border-2 border-primary"
+                className="border-primary h-10 w-10 rounded-full border-2"
               />
               <img
                 src="https://randomuser.me/api/portraits/women/22.jpg"
                 alt="User"
-                className="w-10 h-10 rounded-full border-2 border-primary hidden sm:inline"
+                className="border-primary hidden h-10 w-10 rounded-full border-2 sm:inline"
               />
-              <div className="w-10 h-10 rounded-full border-2 border-primary bg-secondary flex items-center justify-center text-xs font-semibold text-primary">
+              <div className="border-primary bg-secondary text-primary flex h-10 w-10 items-center justify-center rounded-full border-2 text-xs font-semibold">
                 +2k
               </div>
             </div>
             <div className="text-white">
               <div className="font-medium">Trusted by thousands</div>
-              <div className="text-sm text-white/70">Join our community of nature enthusiasts</div>
+              <div className="text-sm text-white/70">
+                Join our community of nature enthusiasts
+              </div>
             </div>
           </div>
         </div>

@@ -1,8 +1,11 @@
 "use client";
 
 import LoadingButton from "@/components/LoadingButton";
+import ProtectedActionButton from "@/components/ProtectedActionButton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { seedDestinations, seedReviews } from "@/lib/actions/seed";
 import axios from "axios";
+import { UserRound } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
@@ -25,9 +28,9 @@ const page = () => {
     const fetchReviews = async () => {
       // const res = await axios.get("/api/reviews/685286ab9840c4a1504186c8")
       // const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c8/stats")
-      const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c9/stats")
+      // const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c9/stats")
       // console.log(res)
-      console.log(res2.data)
+      // console.log(res2.data)
     }
 
     fetchReviews()
@@ -42,7 +45,14 @@ const page = () => {
         <LoadingButton loading={loading2} onClick={reviewSeed}>
           Seed Reviews
         </LoadingButton>
+        <ProtectedActionButton onClick={() => console.log("clicked")}>Continue</ProtectedActionButton>
       </div>
+      <Avatar>
+        <AvatarImage />
+        <AvatarFallback>
+          <UserRound />
+        </AvatarFallback>
+      </Avatar>
     </div>
   );
 };

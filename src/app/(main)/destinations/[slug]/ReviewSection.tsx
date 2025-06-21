@@ -29,6 +29,7 @@ import ReviewSummary from "@/components/ReviewSummary";
 import useGetReviews from "@/app/hooks/useGetReviews";
 import ReviewCardSkeleton from "@/components/ReviewCardSkeleton";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
+import ProtectedActionButton from "@/components/ProtectedActionButton";
 
 type ReviewSectionProps = {
   destinationName: string;
@@ -93,10 +94,10 @@ const ReviewSection = ({
 
         <Dialog open={reviewdialogOpen} onOpenChange={setReviewDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full sm:w-fit">
+            <ProtectedActionButton className="w-full sm:w-fit">
               <MessageSquare />
               Write a Review
-            </Button>
+            </ProtectedActionButton>
           </DialogTrigger>
           <DialogContent className="space-y-8">
             <DialogHeader>
