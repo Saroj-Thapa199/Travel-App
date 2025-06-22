@@ -47,7 +47,7 @@ export const GET = async (
       ratings: Record<string, number | string>;
     } = {
       totalCount: rawStats?.totalCount || 0,
-      averageRating: rawStats.averageRating,
+      averageRating: rawStats?.averageRating || 0,
       ratings: {},
     };
 

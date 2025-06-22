@@ -11,6 +11,7 @@ type DestinationCardProps = {
   rating: number;
   image?: string;
   slug: string;
+  reviewCount: number
   isNew: boolean
 };
 
@@ -21,6 +22,7 @@ const DestinationCard = ({
   rating,
   image,
   slug,
+  reviewCount,
   isNew
 }: DestinationCardProps) => {
   return (
@@ -68,7 +70,7 @@ const DestinationCard = ({
             <p className="text-muted-foreground">
               •{" "}
               <span className="underline-offset-4 hover:underline">
-                3 reviews
+                {reviewCount === 0 ? "No reviews yet" : `${reviewCount} reviews`}
               </span>
             </p>
           </div>

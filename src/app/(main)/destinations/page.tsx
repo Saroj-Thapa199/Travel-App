@@ -123,6 +123,7 @@ const page = () => {
                 image={destination.image}
                 rating={destination?.averageRating || 0}
                 slug={destination.slug}
+                reviewCount={destination.reviewCount}
                 isNew={isNew({ createdAt: destination.createdAt })}
               />
             ))}

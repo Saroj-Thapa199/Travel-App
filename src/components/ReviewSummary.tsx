@@ -47,6 +47,10 @@ const ReviewSummary = ({
     },
   });
 
+  console.log(data)
+
+  const finalReviewCount = data?.totalCount ?? reviewCount;
+
   useEffect(() => {
     if (data) {
       setAnimatedWidth({
@@ -75,8 +79,8 @@ const ReviewSummary = ({
             ))}
           </div>
           <p className="text-muted-foreground text-sm">
-            {reviewCount !== 0
-              ? `Based on ${data?.totalCount || reviewCount} review${(data?.totalCount || reviewCount) > 1 ? "s" : ""}`
+            {finalReviewCount !== 0
+              ? `Based on ${finalReviewCount} review${(finalReviewCount) > 1 ? "s" : ""}`
               : "(No reviews yet)"}
           </p>
         </div>
