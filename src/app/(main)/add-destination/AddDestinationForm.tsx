@@ -20,6 +20,15 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationFormType } from "@/lib/types";
 import CategoriesSelect from "@/components/CategoriesSelect";
+import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectGroup,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from "@/components/ui/multi-select";
+import { DestinationType } from "@/lib/validation";
 
 type AddDestinationFormProps = {
   form: UseFormReturn<DestinationFormType>;
@@ -30,6 +39,18 @@ type AddDestinationFormProps = {
   isPending: boolean;
   setTabToPreview: () => void;
 };
+
+const categoriesOptions: DestinationType["categories"] = [
+  "Mountain",
+  "Hill Station",
+  "City",
+  "Village",
+  "Pilgrimage",
+  "Adventure",
+  "Wildlife",
+  "Cultural Heritage",
+  "Natural Attraction",
+];
 
 const AddDestinationForm = ({
   form,
@@ -143,7 +164,7 @@ const AddDestinationForm = ({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="categories"
               render={({ field }) => (
@@ -152,6 +173,35 @@ const AddDestinationForm = ({
                   <FormControl>
                     <CategoriesSelect categories={field.value} onChange={field.onChange} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+            <FormField
+              control={form.control}
+              name="categories"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Add Categories</FormLabel>
+                  <MultiSelect
+                    onValuesChange={field.onChange}
+                    values={field.value}
+                  >
+                    <FormControl>
+                      <MultiSelectTrigger className="w-full">
+                        <MultiSelectValue placeholder="Select categories..." />
+                      </MultiSelectTrigger>
+                    </FormControl>
+                    <MultiSelectContent>
+                      <MultiSelectGroup>
+                        {categoriesOptions.map((category) => (
+                          <MultiSelectItem key={category} value={category}>
+                            {category}
+                          </MultiSelectItem>
+                        ))}
+                      </MultiSelectGroup>
+                    </MultiSelectContent>
+                  </MultiSelect>
                   <FormMessage />
                 </FormItem>
               )}

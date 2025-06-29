@@ -22,7 +22,7 @@ const Navbar = () => {
     {
       id: "add-destination",
       label: "Add Destinations",
-      homeHref: "/#add-destination", href: "/add-destinations",
+      homeHref: "/#add-destination", href: "/add-destination",
       LogoIcon: PlusCircle,
     },
   ];

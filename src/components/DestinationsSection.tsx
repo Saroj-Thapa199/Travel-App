@@ -26,6 +26,7 @@ const DestinationsSection = () => {
             region="Destination, Nepal"
             shortDescription="Serene hilltop with panoramic Himalayan views, pristine forests, and spiritual significance."
             rating={3.6}
+            reviewCount={0}
             slug="#"
           />
         ))}

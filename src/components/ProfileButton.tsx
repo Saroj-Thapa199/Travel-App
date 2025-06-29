@@ -31,7 +31,7 @@ const ProfileButton = ({ src }: ProfileButtonProps) => {
           <AvatarImage src={src} alt="avatar" />
           <AvatarFallback>
             {/* <Image src={avatarPlaceholder} alt="avatar-image" /> */}
-            <UserRound />
+            <UserRound className="text-accent-foreground" />
             {/* CN */}
           </AvatarFallback>
         </Avatar>

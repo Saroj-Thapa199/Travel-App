@@ -12,7 +12,7 @@ type DestinationCardProps = {
   image?: string;
   slug: string;
   reviewCount: number
-  isNew: boolean
+  isNew?: boolean
 };
 
 const DestinationCard = ({
