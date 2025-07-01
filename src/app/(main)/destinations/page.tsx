@@ -124,7 +124,7 @@ const page = () => {
                 rating={destination?.averageRating || 0}
                 slug={destination.slug}
                 reviewCount={destination.reviewCount}
-                isNew={isNew({ createdAt: destination.createdAt })}
+                isNew={isNew({ createdAt: destination.createdAt, type:"day", range: 3 })}
               />
             ))}
       </InfiniteScrollContainer>

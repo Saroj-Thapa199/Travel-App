@@ -35,6 +35,10 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       type: String,
       required: true,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
     categories: {
       type: [String],
       required: true,

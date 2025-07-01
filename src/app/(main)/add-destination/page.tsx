@@ -36,6 +36,7 @@ const page = () => {
       longDescription: "",
       image: "",
       categories: [],
+      featured: false
     },
   });
 

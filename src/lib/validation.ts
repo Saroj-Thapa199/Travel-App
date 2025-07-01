@@ -1,4 +1,4 @@
-import { z, ZodNumber } from "zod";
+import { boolean, z, ZodNumber } from "zod";
 
 // const requiredString = z.string().trim().min(1, "Required");
 
@@ -34,6 +34,7 @@ export const destinationSchema = z.object({
   image: requiredString("Please upload the image"),
   shortDescription: requiredString().max(150, "Maximum 150 characters allowed"),
   longDescription: requiredString(),
+  featured: z.boolean(),
   categories: z
     .array(
       z.enum([

@@ -29,6 +29,7 @@ import {
   MultiSelectValue,
 } from "@/components/ui/multi-select";
 import { DestinationType } from "@/lib/validation";
+import { Switch } from "@/components/ui/switch";
 
 type AddDestinationFormProps = {
   form: UseFormReturn<DestinationFormType>;
@@ -84,7 +85,7 @@ const AddDestinationForm = ({
                 <FormItem>
                   <FormLabel>Destination Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Bethanchowk Narayan" {...field} />
+                    <Input placeholder="e.g. Bethanchowk Narayan" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -203,6 +204,23 @@ const AddDestinationForm = ({
                     </MultiSelectContent>
                   </MultiSelect>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="featured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center gap-3">
+                  <FormLabel>Featured Destination</FormLabel>
+                  <FormControl>
+                    <Switch
+                      size="lg"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
