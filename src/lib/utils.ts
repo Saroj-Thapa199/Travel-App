@@ -31,3 +31,23 @@ export const isNew = ({
 
   return differenceInType < range;
 };
+
+export const hasNonEmptyValue = (value: any): boolean => {
+    if (typeof value === "string") {
+      return value.trim() !== "";
+    }
+
+    if (typeof value === "number" || typeof value === "boolean") {
+      return true;
+    }
+
+    if (Array.isArray(value)) {
+      return value.some((item) => hasNonEmptyValue(item));
+    }
+
+    if (typeof value === "object" && value !== null) {
+      return Object.values(value).some((val) => hasNonEmptyValue(val));
+    }
+
+    return false;
+  }

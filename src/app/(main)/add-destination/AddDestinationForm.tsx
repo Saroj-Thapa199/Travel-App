@@ -16,7 +16,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
 import CustomUploader from "@/components/CustomUploader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Bus, Car, Footprints } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationFormType } from "@/lib/types";
 import CategoriesSelect from "@/components/CategoriesSelect";
@@ -30,14 +30,37 @@ import {
 } from "@/components/ui/multi-select";
 import { DestinationType } from "@/lib/validation";
 import { Switch } from "@/components/ui/switch";
+import PrivateVehicleRoutes from "./PrivateVehicleRoutes";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import PublicTransportRoutes from "./PublicTransportRoutes";
+import TrekkingRoute from "./TrekkingRoute";
 
 type AddDestinationFormProps = {
   form: UseFormReturn<DestinationFormType>;
   submit: (values: DestinationFormType) => void;
   errorMessage?: string;
+  noRouteErrorMsg?: string;
   isUploading: boolean;
   setIsUploading: Dispatch<SetStateAction<boolean>>;
   isPending: boolean;
+  trekkingRouteFieldOptions: {
+    duration: boolean;
+    distance: boolean;
+    difficulty: boolean;
+    altitudeGain: boolean;
+    maxAltitude: boolean;
+    trailDescription: boolean;
+    checkpoints: boolean;
+    notes: boolean;
+  };
+  setTrekkingRouteFieldOptions: Dispatch<
+    SetStateAction<AddDestinationFormProps["trekkingRouteFieldOptions"]>
+  >;
   setTabToPreview: () => void;
 };
 
@@ -57,9 +80,12 @@ const AddDestinationForm = ({
   form,
   submit,
   errorMessage,
+  noRouteErrorMsg,
   isUploading,
   setIsUploading,
   isPending,
+  trekkingRouteFieldOptions,
+  setTrekkingRouteFieldOptions,
   setTabToPreview,
 }: AddDestinationFormProps) => {
   return (
@@ -146,6 +172,7 @@ const AddDestinationForm = ({
               )}
             />
           </div>
+
           <div className="space-y-6">
             <FormField
               control={form.control}
@@ -224,6 +251,49 @@ const AddDestinationForm = ({
                 </FormItem>
               )}
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <p className="text-destructive text-sm">{noRouteErrorMsg}</p>
+            <Accordion type="multiple">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-xl font-semibold">
+                  <div className="flex items-center gap-2">
+                    <Car className="size-6" />
+                    Routes (Private Transport)
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PrivateVehicleRoutes form={form} />
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-xl font-semibold">
+                  <div className="flex items-center gap-2">
+                    <Bus className="size-6" />
+                    Routes (Public Transport)
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PublicTransportRoutes form={form} />
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-xl font-semibold">
+                  <div className="flex items-center gap-2">
+                    <Footprints className="size-6" />
+                    Routes (Trekking)
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <TrekkingRoute
+                    form={form}
+                    trekkingRouteFieldOptions={trekkingRouteFieldOptions}
+                    setTrekkingRouteFieldOptions={setTrekkingRouteFieldOptions}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
         <div className="flex justify-end gap-3">

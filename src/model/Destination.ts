@@ -1,6 +1,17 @@
 import { DestinationType } from "@/lib/validation";
 import mongoose, { Document, Schema } from "mongoose";
 
+const transportTypeEnum = [
+  "Bus",
+  "Jeep",
+  "Microbus",
+  "Van",
+  "Tempo",
+  "Train",
+  "Boat",
+  "Flight",
+] as const;
+
 interface DestinationInterface
   extends Omit<DestinationType, "_id" | "createdAt" | "updatedAt">,
     Document {
@@ -8,6 +19,60 @@ interface DestinationInterface
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+const PublicTransportSegmentSchema = new Schema(
+  {
+    from: { type: String, required: true },
+    to: { type: String, required: true },
+    // transportType: {
+    //   type: String,
+    //   enum: transportTypeEnum,
+    //   required: true,
+    // },
+    approxTime: { type: String },
+    fare: { type: String },
+    busTypes: [String],
+    lastDeparture: { type: String },
+    note: { type: String },
+  },
+  { _id: false },
+);
+
+const PublicTransportSchema = new Schema(
+  {
+    // requiresTransfer: { type: Boolean, default: false },
+    totalTime: { type: String },
+    segments: { type: [PublicTransportSegmentSchema], default: [] },
+  },
+  { _id: false },
+);
+
+const PersonalVehicleSchema = new Schema(
+  {
+    startingPoint: { type: String },
+    route: { type: String },
+    approxTime: { type: String },
+    roadCondition: { type: String },
+  },
+  { _id: false },
+);
+
+const TrekSchema = new Schema(
+  {
+    required: { type: Boolean, default: false },
+    startingPoint: { type: String },
+    duration: { type: String },
+    distance: { type: String },
+    difficulty: { type: String },
+    altitudeGain: { type: String },
+    maxAltitude: { type: String },
+    trailDescription: { type: String },
+    checkpoints: [String],
+    permits: [String],
+    notes: { type: String},
+  },
+  { _id: false },
+);
 
 const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
   {
@@ -69,6 +134,11 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
     reviewCount: {
       type: Number,
       default: 0,
+    },
+    destinationRoute: {
+      publicTransport: PublicTransportSchema,
+      personalVehicle: [PersonalVehicleSchema],
+      trek: TrekSchema,
     },
   },
   { timestamps: true },

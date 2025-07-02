@@ -108,7 +108,8 @@ const Preview = ({
       </div>
     </section>
   ) : (
-    "No Preview available"
+    // "No Preview available"
+    "Please fill the form to view preview"
   );
 };
 

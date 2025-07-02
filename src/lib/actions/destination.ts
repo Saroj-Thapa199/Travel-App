@@ -6,12 +6,27 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
 import { DestinationFormType } from "../types";
+import { destinationSchema } from "../validation";
 
 export const addDestination = async (
   values: DestinationFormType,
 ): Promise<{ error: string }> => {
   try {
     console.log("submitted")
+    const parsedValues = destinationSchema.omit({
+        _id: true,
+        slug: true,
+        createdAt: true,  
+        updatedAt: true,
+        averageRating: true,
+        reviewCount: true,
+        // categories: true
+      }).parse(values)
+    console.log("values:")
+    console.log(JSON.stringify(values, null, 2))
+    console.log("parsedValues:")
+    console.log(JSON.stringify(parsedValues, null, 2))
+    return { error: "Ok" }
     await dbConnect();
     await Destination.syncIndexes();
 

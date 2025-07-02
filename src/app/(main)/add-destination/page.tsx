@@ -3,20 +3,32 @@
 import { useEffect, useState, useTransition } from "react";
 import AddDestinationForm from "./AddDestinationForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { destinationSchema, DestinationType } from "@/lib/validation";
+import { destinationSchema } from "@/lib/validation";
 import Preview from "./Preview";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDestination } from "@/lib/actions/destination";
 import { DestinationFormType } from "@/lib/types";
+import { hasNonEmptyValue } from "@/lib/utils";
 
 const page = () => {
   const [tab, setTab] = useState("form");
   const [error, setError] = useState<string>();
+  const [noRouteErrorMsg, setNoRouteErrorMsg] = useState<string>();
   const [isPending, startTransition] = useTransition();
   const [formHasValues, setFormHasValues] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-
+  const [trekkingRouteFieldOptions, setTrekkingRouteFieldOptions] = useState({
+    duration: false,
+    distance: false,
+    difficulty: false,
+    altitudeGain: false,
+    maxAltitude: false,
+    trailDescription: false,
+    checkpoints: false,
+    notes: false,
+  });
+  console.log(formHasValues);
   const form = useForm<DestinationFormType>({
     resolver: zodResolver(
       destinationSchema.omit({
@@ -34,32 +46,61 @@ const page = () => {
       region: "",
       shortDescription: "",
       longDescription: "",
+      // image:
+      //   "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       image: "",
       categories: [],
-      featured: false
+      featured: false,
     },
   });
 
   const values = form.watch();
-  console.log(values)
+  console.log(values);
 
   const onSubmit = async (values: DestinationFormType) => {
+    console.log("clicked here also !!!");
     setError(undefined);
     startTransition(async () => {
       const { error } = await addDestination(values);
       if (error) setError(error);
     });
   };
+  
+  const isDestinationRouteEmpty = (
+    destinationRoute: DestinationFormType["destinationRoute"],
+  ) => {
+    if (!destinationRoute) return true;
+
+    const { publicTransport, personalVehicle, trek } = destinationRoute;
+
+    const isEmpty = [publicTransport, personalVehicle, trek].every(
+      (route) =>
+        route === undefined ||
+        (typeof route === "object" && !hasNonEmptyValue(route)),
+    );
+
+    return isEmpty;
+  };
 
   useEffect(() => {
-    const hasAnyValue = Object.values(values).some((value) => {
-      return typeof value === "string"
-        ? value.trim() !== ""
-        : value !== undefined && value !== null;
-      // return Boolean(value.trim());
-    });
+    // const { destinationRoute, featured, ...restValues } = values;
 
-    setFormHasValues(hasAnyValue);
+    // const hasAnyValue =
+    //   hasNonEmptyValue(restValues) ||
+    //   !isDestinationRouteEmpty(destinationRoute);
+
+    // setFormHasValues(hasAnyValue);
+    // setNoRouteErrorMsg(
+    //   isDestinationRouteEmpty(destinationRoute)
+    //     ? "Please add atleast one route"
+    //     : undefined,
+    // );
+
+    const result = destinationSchema.safeParse(values)
+    const routeSchema = destinationSchema.shape.destinationRoute
+    const routeResult = routeSchema.safeParse(values.destinationRoute)
+    setFormHasValues(result.success)
+    setNoRouteErrorMsg(routeResult.success ? undefined : "Please add at least one route")
   }, [values]);
 
   return (
@@ -89,8 +130,11 @@ const page = () => {
               form={form}
               submit={onSubmit}
               errorMessage={error}
+              noRouteErrorMsg={noRouteErrorMsg}
               isUploading={isUploading}
               setIsUploading={setIsUploading}
+              trekkingRouteFieldOptions={trekkingRouteFieldOptions}
+              setTrekkingRouteFieldOptions={setTrekkingRouteFieldOptions}
               isPending={isPending}
               setTabToPreview={() => {
                 setTab("preview");
