@@ -8,6 +8,7 @@ import React from "react";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
 import { isNew } from "@/lib/utils";
+import RouteSection from "./RouteSection";
 
 // export async function generateStaticParams() {
 //   const res = await fetch("http://localhost:3000/api/destinations/all");
@@ -47,6 +48,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
               <TabsTrigger value="overview" className="cursor-pointer">
                 Overview
               </TabsTrigger>
+              <TabsTrigger value="routes" className="cursor-pointer">
+                Routes
+              </TabsTrigger>
               <TabsTrigger value="attractions" className="cursor-pointer">
                 Attractions
               </TabsTrigger>
@@ -68,6 +72,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
                   </p>
                 </div>
               </div>
+            </TabsContent>
+            <TabsContent value="routes">
+              <RouteSection destinationRoute={destination.destinationRoute} />
             </TabsContent>
             <TabsContent value="attractions">
               Change your password here.

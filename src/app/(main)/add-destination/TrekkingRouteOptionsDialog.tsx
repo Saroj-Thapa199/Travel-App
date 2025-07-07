@@ -15,14 +15,14 @@ import { Label } from "@/components/ui/label";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const opts = [
+  { key: "trailDescription", label: "Trail Description" },
   { key: "duration", label: "Estimated Duration" },
   { key: "distance", label: "Total Distance" },
   { key: "difficulty", label: "Difficulty Level" },
   { key: "altitudeGain", label: "Altitude Gain" },
   { key: "maxAltitude", label: "Maximum Altitude" },
-  { key: "trailDescription", label: "Trail Description" },
   { key: "checkpoints", label: "Key Checkpoints" },
-  { key: "notes", label: "Additional Notes" },
+  { key: "note", label: "Additional Notes" },
 ];
 
 type TrekkingRouteOptionsDialogProps = {
@@ -34,7 +34,7 @@ type TrekkingRouteOptionsDialogProps = {
     maxAltitude: boolean;
     trailDescription: boolean;
     checkpoints: boolean;
-    notes: boolean;
+    note: boolean;
   };
   setValues: Dispatch<
     SetStateAction<TrekkingRouteOptionsDialogProps["values"]>
@@ -64,9 +64,9 @@ const TrekkingRouteOptionsDialog = ({
 
   useEffect(() => {
     if (open === true) {
-      setOptions(values)
+      setOptions(values);
     }
-  }, [open])
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -86,11 +86,15 @@ const TrekkingRouteOptionsDialog = ({
               <Checkbox
                 id={key}
                 checked={options[key as keyof typeof options]}
-                onCheckedChange={() =>
-                  handleToggle(key as keyof typeof options)
-                }
+                disabled={key === "trailDescription"}
+                onCheckedChange={() => {
+                  if (key === "trailDescription") return;
+                  handleToggle(key as keyof typeof options);
+                }}
               />
-              <Label htmlFor={key} className="cursor-pointer">{label}</Label>
+              <Label htmlFor={key} className="cursor-pointer">
+                {label}
+              </Label>
             </div>
           ))}
         </div>

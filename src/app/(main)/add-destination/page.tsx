@@ -24,9 +24,9 @@ const page = () => {
     difficulty: false,
     altitudeGain: false,
     maxAltitude: false,
-    trailDescription: false,
+    trailDescription: true,
     checkpoints: false,
-    notes: false,
+    note: false,
   });
   console.log(formHasValues);
   const form = useForm<DestinationFormType>({
@@ -46,9 +46,9 @@ const page = () => {
       region: "",
       shortDescription: "",
       longDescription: "",
-      // image:
-      //   "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      image: "",
+      image:
+        "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      // image: "",
       categories: [],
       featured: false,
     },

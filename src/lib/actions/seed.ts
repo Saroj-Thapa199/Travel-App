@@ -103,6 +103,37 @@ export const seedDestinations = async () => {
   const destinations = destinationsList.map((loc, idx) => {
     const categories = getRandomCategories();
 
+    // Add a dummy public transport segment
+    const publicTransport = {
+      segments: [
+        {
+          from: "Kathmandu",
+          to: loc.name,
+          approxTime: "2 hrs",
+          fare: "Rs. 300",
+          lastDeparture: "5:00 PM",
+          note: "Buses leave every hour.",
+        },
+      ],
+    };
+
+    // Add a dummy trek route if it's a nature or trekking-oriented destination
+    const trek =
+      categories.includes("Mountain") || categories.includes("Adventure")
+        ? {
+            startingPoint: "Base Camp",
+            duration: "3 days",
+            distance: "25 km",
+            difficulty: "Moderate",
+            altitudeGain: "1500 m",
+            maxAltitude: "4000 m",
+            trailDescription:
+              "The trail passes through dense forests, rivers, and mountain ridges.",
+            checkpoints: ["Checkpoint 1", "Checkpoint 2"],
+            note: "Best done in spring or autumn.",
+          }
+        : undefined;
+
     return {
       name: loc.name,
       slug: slugify(loc.name, { lower: true }),
@@ -112,6 +143,13 @@ export const seedDestinations = async () => {
       longDescription: `${loc.name} is a remarkable destination in ${loc.region}, offering travelers a unique blend of culture, nature, and unforgettable experiences. From scenic landscapes to deep spiritual roots, this location provides a perfect escape into the heart of Nepal's rich heritage. Whether you're an adventurer or a peace-seeker, ${loc.name} promises something memorable for every visitor.`,
       image: imageUrls[idx % imageUrls.length],
       averageRating: getRandomRating(),
+      reviewCount: 0,
+      featured: false,
+      destinationRoute: {
+        publicTransport,
+        trek,
+        // Leave out personalVehicle for now if not needed
+      },
     };
   });
 
@@ -119,13 +157,12 @@ export const seedDestinations = async () => {
     await dbConnect();
     await Destination.deleteMany({});
     await Destination.insertMany(destinations);
-    console.log(
-      "✅ Destinations seeded with categories and extended descriptions!",
-    );
+    console.log("✅ Destinations seeded with public transport and trek!");
   } catch (err) {
     console.error("❌ Seeding error:", err);
   }
 };
+
 
 const reviewsData = [
   "A bit pricey for food but the quality was good.",

@@ -60,7 +60,7 @@ const publicTransportSchema = z.object({
 });
 
 const individualPersonalVehicleSchema = z.object({
-  startingPoint: makeUndefinedIfEmpty(),
+  startingPoint: requiredString(),
   route: requiredString(),
   approxTime: makeUndefinedIfEmpty(),
   roadCondition: makeUndefinedIfEmpty(),
@@ -70,24 +70,23 @@ const personalVehicleSchema = z.array(individualPersonalVehicleSchema).min(1, "C
 
 const trekSchema = z
   .object({
-    required: z.boolean().default(false).optional(),
-    startingPoint: makeUndefinedIfEmpty(),
+    // required: z.boolean().default(false).optional(),
+    startingPoint: requiredString(),
     duration: makeUndefinedIfEmpty(),
     distance: makeUndefinedIfEmpty(),
     difficulty: makeUndefinedIfEmpty(),
     altitudeGain: makeUndefinedIfEmpty(),
     maxAltitude: makeUndefinedIfEmpty(),
-    trailDescription: makeUndefinedIfEmpty(),
+    trailDescription: requiredString(),
     checkpoints: z.array(z.string()).optional(),
     permits: z.array(z.string()).optional(),
-    notes: makeUndefinedIfEmpty(),
+    note: makeUndefinedIfEmpty(),
   })
   .transform((obj) => {
     const allEmpty = Object.values(obj).every(
       (val) =>
         val === undefined ||
-        (Array.isArray(val) && val.length === 0) ||
-        val === false,
+        (Array.isArray(val) && val.length === 0) 
     );
 
     return allEmpty ? undefined : obj;
@@ -151,6 +150,7 @@ export const destinationSchema = z.object({
 export type DestinationRouteType = z.infer<
   typeof destinationSchema
 >["destinationRoute"];
+
 export type DestinationType = z.infer<typeof destinationSchema>;
 
 export const reviewSchema = z.object({

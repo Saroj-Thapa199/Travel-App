@@ -26,14 +26,26 @@ export const addDestination = async (
     console.log(JSON.stringify(values, null, 2))
     console.log("parsedValues:")
     console.log(JSON.stringify(parsedValues, null, 2))
-    return { error: "Ok" }
+
+    const {success, data, error} = destinationSchema.omit({
+        _id: true,
+        slug: true,
+        createdAt: true,  
+        updatedAt: true,
+        averageRating: true,
+        reviewCount: true,
+      }).safeParse(values)
+      
+      if (!success) {
+        return {error: "Please fill out the form properly!"}
+      }
+
     await dbConnect();
     await Destination.syncIndexes();
-
     
     const createdDestination = await Destination.create({
-      ...values,
-      slug: slugify(values.name, {lower: true}),
+      ...data,
+      slug: slugify(data.name, {lower: true}),
     });
 
     return redirect(`/destinations/${createdDestination.slug}`);

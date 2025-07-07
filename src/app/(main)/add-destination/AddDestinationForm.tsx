@@ -56,7 +56,7 @@ type AddDestinationFormProps = {
     maxAltitude: boolean;
     trailDescription: boolean;
     checkpoints: boolean;
-    notes: boolean;
+    note: boolean;
   };
   setTrekkingRouteFieldOptions: Dispatch<
     SetStateAction<AddDestinationFormProps["trekkingRouteFieldOptions"]>
@@ -109,7 +109,9 @@ const AddDestinationForm = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Destination Name</FormLabel>
+                  <FormLabel>
+                    Destination Name <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Bethanchowk Narayan" {...field} />
                   </FormControl>
@@ -122,7 +124,9 @@ const AddDestinationForm = ({
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Region</FormLabel>
+                  <FormLabel>
+                    Region <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="e.g. Kavrepalanchowk, Nepal"
@@ -159,7 +163,10 @@ const AddDestinationForm = ({
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Destination Image</FormLabel>
+                  <FormLabel>
+                    Destination Image{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <CustomUploader
                       onChange={field.onChange}
@@ -179,7 +186,10 @@ const AddDestinationForm = ({
               name="longDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Detailed Description</FormLabel>
+                  <FormLabel>
+                    Detailed Description{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Provide a detailed description of the destination, including its natural features, cultural significance, and what makes it special."
@@ -192,25 +202,14 @@ const AddDestinationForm = ({
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="categories"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Categories</FormLabel>
-                  <FormControl>
-                    <CategoriesSelect categories={field.value} onChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
             <FormField
               control={form.control}
               name="categories"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Add Categories</FormLabel>
+                  <FormLabel>
+                    Add Categories <span className="text-destructive">*</span>
+                  </FormLabel>
                   <MultiSelect
                     onValuesChange={field.onChange}
                     values={field.value}

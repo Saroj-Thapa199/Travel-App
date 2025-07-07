@@ -49,8 +49,8 @@ const PublicTransportSchema = new Schema(
 
 const PersonalVehicleSchema = new Schema(
   {
-    startingPoint: { type: String },
-    route: { type: String },
+    startingPoint: { type: String, required: true },
+    route: { type: String, required: true },
     approxTime: { type: String },
     roadCondition: { type: String },
   },
@@ -59,17 +59,17 @@ const PersonalVehicleSchema = new Schema(
 
 const TrekSchema = new Schema(
   {
-    required: { type: Boolean, default: false },
-    startingPoint: { type: String },
+    // required: { type: Boolean, default: false },
+    startingPoint: { type: String, required: true },
     duration: { type: String },
     distance: { type: String },
     difficulty: { type: String },
     altitudeGain: { type: String },
     maxAltitude: { type: String },
-    trailDescription: { type: String },
+    trailDescription: { type: String, required: true },
     checkpoints: [String],
     permits: [String],
-    notes: { type: String},
+    note: { type: String },
   },
   { _id: false },
 );
@@ -137,7 +137,11 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
     },
     destinationRoute: {
       publicTransport: PublicTransportSchema,
-      personalVehicle: [PersonalVehicleSchema],
+      personalVehicle: {
+        type: [PersonalVehicleSchema],
+        required: false,
+        default: undefined,
+      },
       trek: TrekSchema,
     },
   },

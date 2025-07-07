@@ -24,9 +24,7 @@ type PublicTransportRoutesProps = {
   form: UseFormReturn<DestinationFormType>;
 };
 
-const PublicTransportRoutes = ({
-  form,
-}: PublicTransportRoutesProps) => {
+const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "destinationRoute.publicTransport.segments",
@@ -95,7 +93,9 @@ const PublicTransportRoutes = ({
                     name={`destinationRoute.publicTransport.segments.${index}.from`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>From:</FormLabel>
+                        <FormLabel>
+                          From: <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="e.g. Kathmandu" {...field} />
                         </FormControl>
@@ -108,7 +108,9 @@ const PublicTransportRoutes = ({
                     name={`destinationRoute.publicTransport.segments.${index}.to`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>To:</FormLabel>
+                        <FormLabel>
+                          To: <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="e.g. Pokhara" {...field} />
                         </FormControl>
@@ -194,6 +196,6 @@ const PublicTransportRoutes = ({
       </Button>
     </div>
   );
-}
+};
 
-export default PublicTransportRoutes
+export default PublicTransportRoutes;

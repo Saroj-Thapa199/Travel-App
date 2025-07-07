@@ -24,9 +24,7 @@ type PrivateVehicleRoutesProps = {
   form: UseFormReturn<DestinationFormType>;
 };
 
-const PrivateVehicleRoutes = ({
-  form,
-}: PrivateVehicleRoutesProps) => {
+const PrivateVehicleRoutes = ({ form }: PrivateVehicleRoutesProps) => {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "destinationRoute.personalVehicle",
@@ -84,13 +82,16 @@ const PrivateVehicleRoutes = ({
                 </li>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 rounded-md border p-4">
-                <div className="grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-4">
                   <FormField
                     control={form.control}
                     name={`destinationRoute.personalVehicle.${index}.startingPoint`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Starting Point</FormLabel>
+                        <FormLabel>
+                          Starting Point{" "}
+                          <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="e.g. Kathmandu" {...field} />
                         </FormControl>
@@ -118,7 +119,10 @@ const PrivateVehicleRoutes = ({
                   name={`destinationRoute.personalVehicle.${index}.route`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Route Description</FormLabel>
+                      <FormLabel>
+                        Route Description{" "}
+                        <span className="text-destructive">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Take BP Highway via Dhulikhel..."
@@ -182,6 +186,6 @@ const PrivateVehicleRoutes = ({
       </Button>
     </div>
   );
-}
+};
 
-export default PrivateVehicleRoutes
+export default PrivateVehicleRoutes;
