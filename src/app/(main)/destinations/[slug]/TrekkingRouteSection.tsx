@@ -22,14 +22,14 @@ type TrekkingRouteSectionProps = {
 const TrekkingRouteSection = ({ trek }: TrekkingRouteSectionProps) => {
   return (
     <Card className="overflow-hidden shadow-sm transition-shadow duration-200 hover:shadow-md">
-      <CardHeader className="bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 py-2 dark:from-orange-950/40 dark:via-amber-950/40 dark:to-yellow-950/40">
-        <CardTitle className="flex items-center gap-3 text-orange-700 dark:text-orange-300">
-          <div className="rounded-lg bg-orange-100 p-1.5 dark:bg-orange-900/60">
+      <CardHeader className="bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 py-2 dark:from-emerald-950/40 dark:via-green-950/40 dark:to-teal-950/40">
+        <CardTitle className="flex items-center gap-3 text-emerald-700 dark:text-emerald-300">
+          <div className="rounded-lg bg-emerald-100 p-1.5 dark:bg-emerald-900/60">
             <Mountain className="h-4 w-4" />
           </div>
           <div>
             <span className="text-lg">Trekking Route</span>
-            <p className="mt-0.5 text-sm font-normal text-orange-600/80 dark:text-orange-400/80">
+            <p className="mt-0.5 text-sm font-normal text-emerald-600/80 dark:text-emerald-400/80">
               Adventure hiking experience
             </p>
           </div>

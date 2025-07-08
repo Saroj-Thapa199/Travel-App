@@ -84,15 +84,23 @@ const TrekkingRoute = ({
         <FormField
           control={form.control}
           name="destinationRoute.trek.distance"
-          defaultValue=""
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center gap-3">
                 <FormLabel className="flex-1 whitespace-nowrap">
-                  Total Distance:
+                  Total Distance(in km):
                 </FormLabel>
                 <FormControl className="flex-2">
-                  <Input placeholder="12 km" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="12 km"
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // If empty string, set null (or undefined) in form state
+                      field.onChange(val === "" ? undefined : Number(val));
+                    }}
+                  />
                 </FormControl>
               </div>
               <FormMessage />
@@ -124,15 +132,24 @@ const TrekkingRoute = ({
         <FormField
           control={form.control}
           name="destinationRoute.trek.altitudeGain"
-          defaultValue=""
+          // defaultValue={0}
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center gap-3">
                 <FormLabel className="flex-1 whitespace-nowrap">
-                  Altitude Gain:
+                  Altitude Gain(meters):
                 </FormLabel>
                 <FormControl className="flex-2">
-                  <Input placeholder="800m" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="1500 m"
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // If empty string, set null (or undefined) in form state
+                      field.onChange(val === "" ? undefined : Number(val));
+                    }}
+                  />
                 </FormControl>
               </div>
               <FormMessage />
@@ -144,15 +161,24 @@ const TrekkingRoute = ({
         <FormField
           control={form.control}
           name="destinationRoute.trek.maxAltitude"
-          defaultValue=""
+          // defaultValue={0}
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center gap-3">
                 <FormLabel className="flex-1 whitespace-nowrap">
-                  Maximum Altitude:
+                  Maximum Altitude(meters):
                 </FormLabel>
                 <FormControl className="flex-2">
-                  <Input placeholder="5500m" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="3800 m"
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // If empty string, set null (or undefined) in form state
+                      field.onChange(val === "" ? undefined : Number(val));
+                    }}
+                  />
                 </FormControl>
               </div>
               <FormMessage />
@@ -160,7 +186,7 @@ const TrekkingRoute = ({
           )}
         />
       )}
-      <div className="md:col-span-2 space-y-4 mt-2">
+      <div className="mt-2 space-y-4 md:col-span-2">
         {options.checkpoints && (
           <div>
             <CheckpointsInput form={form} />

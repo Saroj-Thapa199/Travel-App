@@ -23,6 +23,7 @@ import {
 import type { DestinationRouteType } from "@/lib/validation";
 import PublicRouteSection from "./PublicRouteSection";
 import TrekkingRouteSection from "./TrekkingRouteSection";
+import PersonalRouteSection from "./PersonalRouteSection";
 
 interface RouteSectionProps {
   destinationRoute?: DestinationRouteType;
@@ -61,94 +62,14 @@ const RouteSection = ({ destinationRoute }: RouteSectionProps) => {
       </div>
 
       <div className="space-y-4">
+        {/* Personal Vehicle Section */}
+        {personalVehicle && personalVehicle.length > 0 && (
+          <PersonalRouteSection personalVehicle={personalVehicle} />
+        )}
+
         {/* Public Transport Section */}
         {publicTransport && (
           <PublicRouteSection publicTransport={publicTransport} />
-        )}
-
-        {/* Personal Vehicle Section */}
-        {personalVehicle && personalVehicle.length > 0 && (
-          <Card className="overflow-hidden shadow-sm transition-shadow duration-200 hover:shadow-md">
-            <CardHeader className="bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 pb-3 dark:from-emerald-950/40 dark:via-green-950/40 dark:to-teal-950/40">
-              <CardTitle className="flex items-center gap-3 text-emerald-700 dark:text-emerald-300">
-                <div className="rounded-lg bg-emerald-100 p-1.5 dark:bg-emerald-900/60">
-                  <Car className="h-4 w-4" />
-                </div>
-                <div>
-                  <span className="text-lg">Personal Vehicle</span>
-                  <p className="mt-0.5 text-sm font-normal text-emerald-600/80 dark:text-emerald-400/80">
-                    {personalVehicle.length} route
-                    {personalVehicle.length > 1 ? "s" : ""} available
-                  </p>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-3">
-                {personalVehicle.map((vehicle, index) => (
-                  <div
-                    key={index}
-                    className="bg-card space-y-3 rounded-lg border p-3"
-                  >
-                    <div className="flex items-center gap-2 text-sm font-semibold">
-                      <Route className="h-4 w-4 text-emerald-600" />
-                      <span>Route Option {index + 1}</span>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <div className="space-y-1">
-                          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                            <MapPin className="h-3.5 w-3.5 text-violet-600" />
-                            <span>Starting Point</span>
-                          </div>
-                          <p className="pl-5 text-sm font-medium">
-                            {vehicle.startingPoint}
-                          </p>
-                        </div>
-
-                        <div className="space-y-1">
-                          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                            <Compass className="h-3.5 w-3.5 text-purple-600" />
-                            <span>Route Description</span>
-                          </div>
-                          <p className="pl-5 text-sm font-medium">
-                            {vehicle.route}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-3 pt-1 md:grid-cols-2">
-                        {vehicle.approxTime && (
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <Clock className="h-3.5 w-3.5 text-violet-600" />
-                            <span className="text-muted-foreground">
-                              Duration:
-                            </span>
-                            <span className="font-medium">
-                              {vehicle.approxTime}
-                            </span>
-                          </div>
-                        )}
-
-                        {vehicle.roadCondition && (
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <AlertCircle className="h-3.5 w-3.5 text-orange-600" />
-                            <span className="text-muted-foreground">
-                              Road Condition:
-                            </span>
-                            <span className="font-medium">
-                              {vehicle.roadCondition}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         )}
 
         {/* Trek Section */}

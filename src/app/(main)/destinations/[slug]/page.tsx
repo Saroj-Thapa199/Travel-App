@@ -1,13 +1,10 @@
 import DestinationHeaderImage from "@/components/DestinationHeaderImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  getDestinationFromSlug,
-} from "@/lib/actions/destination";
+import { getDestinationFromSlug } from "@/lib/actions/destination";
 import { destinationSchema } from "@/lib/validation";
-import React from "react";
+import { cache } from "react";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
-import { isNew } from "@/lib/utils";
 import RouteSection from "./RouteSection";
 
 // export async function generateStaticParams() {
@@ -20,17 +17,32 @@ import RouteSection from "./RouteSection";
 //   }))
 // }
 
+export const getCachedDestinationFromSlug = cache(async (slug: string) => {
+  return getDestinationFromSlug(slug); // your actual DB call
+});
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
+  const { slug } = await params;
+  const data = await getCachedDestinationFromSlug(slug);
+
+  return {
+    title: data?.name,
+    description: data?.shortDescription,
+  };
+};
+
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  console.log({ slug });
-  const data = await getDestinationFromSlug(slug);
+
+  const data = await getCachedDestinationFromSlug(slug);
   if (!data) return notFound();
 
   const destination = destinationSchema.parse(data);
-  console.log(destination)
-  if(destination) {
-    console.log(isNew({createdAt: destination.createdAt, type: "hour", range: 1}))
-  }
+
   return (
     <main className="my-15">
       <DestinationHeaderImage

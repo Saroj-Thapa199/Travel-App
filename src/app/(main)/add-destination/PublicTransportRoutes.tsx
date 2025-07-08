@@ -27,7 +27,7 @@ type PublicTransportRoutesProps = {
 const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "destinationRoute.publicTransport.segments",
+    name: "destinationRoute.publicTransport",
   });
 
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -41,7 +41,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
       to: "",
       // transportType: "Bus",
       approxTime: "",
-      fare: "",
+      fare: undefined,
       note: "",
       lastDeparture: "",
     });
@@ -77,12 +77,12 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
               >
                 <li className="ml-6">
                   {form.getValues(
-                    `destinationRoute.publicTransport.segments.${index}.from`,
+                    `destinationRoute.publicTransport.${index}.from`,
                   ) &&
                   form.getValues(
-                    `destinationRoute.publicTransport.segments.${index}.to`,
+                    `destinationRoute.publicTransport.${index}.to`,
                   )
-                    ? `${form.getValues(`destinationRoute.publicTransport.segments.${index}.from`)} - ${form.getValues(`destinationRoute.publicTransport.segments.${index}.to`)}`
+                    ? `${form.getValues(`destinationRoute.publicTransport.${index}.from`)} - ${form.getValues(`destinationRoute.publicTransport.${index}.to`)}`
                     : `Segment ${index + 1}`}
                 </li>
               </AccordionTrigger>
@@ -90,7 +90,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
                 <div className="grid grid-cols-2 gap-x-2 gap-y-4 md:gap-x-4">
                   <FormField
                     control={form.control}
-                    name={`destinationRoute.publicTransport.segments.${index}.from`}
+                    name={`destinationRoute.publicTransport.${index}.from`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
@@ -105,7 +105,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name={`destinationRoute.publicTransport.segments.${index}.to`}
+                    name={`destinationRoute.publicTransport.${index}.to`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
@@ -120,7 +120,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name={`destinationRoute.publicTransport.segments.${index}.approxTime`}
+                    name={`destinationRoute.publicTransport.${index}.approxTime`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Duration</FormLabel>
@@ -133,12 +133,23 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
                   />
                   <FormField
                     control={form.control}
-                    name={`destinationRoute.publicTransport.segments.${index}.fare`}
+                    name={`destinationRoute.publicTransport.${index}.fare`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Transport Fare</FormLabel>
                         <FormControl>
-                          <Input placeholder="Rs 500" {...field} />
+                          <Input
+                            type="number"
+                            placeholder="Rs 500"
+                            value={field.value ?? ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              // If empty string, set null (or undefined) in form state
+                              field.onChange(
+                                val === "" ? undefined : Number(val),
+                              );
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -148,7 +159,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
 
                 <FormField
                   control={form.control}
-                  name={`destinationRoute.publicTransport.segments.${index}.note`}
+                  name={`destinationRoute.publicTransport.${index}.note`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Note</FormLabel>

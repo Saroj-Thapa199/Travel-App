@@ -7,8 +7,6 @@ const transportTypeEnum = [
   "Microbus",
   "Van",
   "Tempo",
-  "Train",
-  "Boat",
   "Flight",
 ] as const;
 
@@ -30,19 +28,10 @@ const PublicTransportSegmentSchema = new Schema(
     //   required: true,
     // },
     approxTime: { type: String },
-    fare: { type: String },
+    fare: { type: Number },  // Rs
     busTypes: [String],
     lastDeparture: { type: String },
     note: { type: String },
-  },
-  { _id: false },
-);
-
-const PublicTransportSchema = new Schema(
-  {
-    // requiresTransfer: { type: Boolean, default: false },
-    totalTime: { type: String },
-    segments: { type: [PublicTransportSegmentSchema], default: [] },
   },
   { _id: false },
 );
@@ -62,10 +51,10 @@ const TrekSchema = new Schema(
     // required: { type: Boolean, default: false },
     startingPoint: { type: String, required: true },
     duration: { type: String },
-    distance: { type: String },
+    distance: { type: Number },  // kms
     difficulty: { type: String },
-    altitudeGain: { type: String },
-    maxAltitude: { type: String },
+    altitudeGain: { type: Number }, // meters
+    maxAltitude: { type: Number }, // meters
     trailDescription: { type: String, required: true },
     checkpoints: [String],
     permits: [String],
@@ -136,7 +125,11 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       default: 0,
     },
     destinationRoute: {
-      publicTransport: PublicTransportSchema,
+      publicTransport: {
+        type: [PublicTransportSegmentSchema],
+        required: false,
+        default: undefined
+      },
       personalVehicle: {
         type: [PersonalVehicleSchema],
         required: false,

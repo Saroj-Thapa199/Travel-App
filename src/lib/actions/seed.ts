@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
@@ -6,19 +6,18 @@ import Destination from "@/model/Destination";
 import Review from "@/model/Review";
 import slugify from "slugify";
 
-// Dummy images and utils
+// Dummy images and utilities
 const imageUrls = [
   "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bW91bnRhaW4lMjBsYWtlfGVufDB8fDB8fHww",
   "https://images.unsplash.com/photo-1607836046730-3317bd58a31b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1747118435378-50b16d63dd4b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1717054493682-ffe9e25fd82f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTh8fHZpbGxhZ2UlMjBsYW5kc2NhcGV8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1623492701360-fb4a1205c789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  "https://images.unsplash.com/photo-1623492701360-fb4a1205c789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
 const getRandomRating = () => parseFloat((Math.random() * 4 + 1).toFixed(1));
 
-// Predefined categories
 const categoriesPool = [
   "Mountain",
   "Hill Station",
@@ -34,102 +33,93 @@ const categoriesPool = [
 type Category = (typeof categoriesPool)[number];
 
 const getRandomCategories = (): Category[] => {
-  const count = Math.floor(Math.random() * 3) + 1; // 1 to 3
-  const shuffled = [...categoriesPool].sort(() => 0.5 - Math.random()); // Make it mutable
+  const count = Math.floor(Math.random() * 3) + 1;
+  const shuffled = [...categoriesPool].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 };
 
-export const seedDestinations = async () => {
-  const destinationsList: { name: string; region: string }[] = [
-    { name: "Kathmandu Durbar Square", region: "Kathmandu, Nepal" },
-    { name: "Patan Durbar Square", region: "Lalitpur, Nepal" },
-    { name: "Bhaktapur Durbar Square", region: "Bhaktapur, Nepal" },
-    { name: "Nagarkot Sunrise Point", region: "Nagarkot, Bhaktapur, Nepal" },
-    {
-      name: "Dhulikhel View Tower",
-      region: "Dhulikhel, Kavrepalanchok, Nepal",
-    },
-    {
-      name: "Chandragiri Hills Cable Car",
-      region: "Thankot, Kathmandu, Nepal",
-    },
-    { name: "Shivapuri Peak", region: "Budhanilkantha, Kathmandu, Nepal" },
-    { name: "Chitwan National Park", region: "Chitwan, Chitwan, Nepal" },
-    { name: "Phewa Lake, Pokhara", region: "Pokhara, Kaski, Nepal" },
-    { name: "Sarangkot Hill", region: "Sarangkot, Kaski, Nepal" },
-    { name: "Begnas Lake", region: "Begnas Lake, Kaski, Nepal" },
-    { name: "Gosaikunda Lake", region: "Gosaikunda, Rasuwa, Nepal" },
-    { name: "Langtang Valley", region: "Langtang, Rasuwa, Nepal" },
-    { name: "Syabrubesi", region: "Syabrubesi, Rasuwa, Nepal" },
-    { name: "Everest Base Camp", region: "Everest Region, Solukhumbu, Nepal" },
-    { name: "Namche Bazaar", region: "Namche Bazaar, Solukhumbu, Nepal" },
-    { name: "Gokyo Lakes", region: "Gokyo, Solukhumbu, Nepal" },
-    { name: "Muktinath Temple", region: "Muktinath, Mustang, Nepal" },
-    { name: "Jomsom Valley", region: "Jomsom, Mustang, Nepal" },
-    { name: "Upper Mustang", region: "Lo Manthang, Mustang, Nepal" },
-    { name: "Tilicho Lake", region: "Tilicho, Manang, Nepal" },
-    { name: "Manang Village", region: "Manang, Manang, Nepal" },
-    { name: "Annapurna Base Camp", region: "Annapurna Region, Nepal" },
-    { name: "Ghandruk", region: "Ghandruk, Kaski, Nepal" },
-    { name: "Bandipur Bazaar", region: "Bandipur, Tanahun, Nepal" },
-    { name: "Maya Devi Temple, Lumbini", region: "Lumbini, Rupandehi, Nepal" },
-    { name: "Janaki Temple, Janakpur", region: "Janakpur, Dhanusha, Nepal" },
-    { name: "Chandragiri Temple, Dharan", region: "Dharan, Sunsari, Nepal" },
-    { name: "Bardiya National Park", region: "Thakurdwara, Bardiya, Nepal" },
-    { name: "Rara Lake", region: "Rara, Mugu, Nepal" },
-    { name: "Khaptad National Park", region: "Khaptad, Doti, Nepal" },
-    { name: "Makalu Base Camp", region: "Makalu Barun, Sankhuwasabha, Nepal" },
-    { name: "Taplejung Bazaar", region: "Taplejung, Taplejung, Nepal" },
-    { name: "Ilām Tea Gardens", region: "Ilam, Ilam, Nepal" },
-    { name: "Panchthar Bazaar", region: "Panchthar, Panchthar, Nepal" },
-    { name: "Dhorpatan Hunting Reserve", region: "Dhorpatan, Myagdi, Nepal" },
-    { name: "Tansen Bazaar", region: "Tansen, Palpa, Nepal" },
-    { name: "Palpa Bazaar", region: "Palpa, Palpa, Nepal" },
-    { name: "Dhankuta Bazaar", region: "Dhankuta, Dhankuta, Nepal" },
-    { name: "Tsum Valley", region: "Tsum Valley, Gorkha, Nepal" },
-    { name: "Gorkha Durbar", region: "Gorkha Bazaar, Gorkha, Nepal" },
-    { name: "Besisahar Gate", region: "Besisahar, Lamjung, Nepal" },
-    {
-      name: "Muktinath Temple Trail",
-      region: "Besisahar-Jomsom, Lamjung/Manang, Nepal",
-    },
-    { name: "Kakani View Point", region: "Kakani, Nuwakot, Nepal" },
-    { name: "Nuwakot Durbar", region: "Nuwakot, Nuwakot, Nepal" },
-    { name: "Rasuwa Gadhi Checkpoint", region: "Rasuwa Gadhi, Rasuwa, Nepal" },
-    { name: "Barpak Village", region: "Barpak, Gorkha, Nepal" },
-    { name: "Halesi Mahadev Temple", region: "Halesi, Khotang, Nepal" },
-  ];
+const personalVehicleSamples = [
+  {
+    startingPoint: "Kathmandu",
+    route: "Kathmandu - Dhulikhel",
+    approxTime: "1.5 hrs",
+    roadCondition: "Good",
+  },
+  {
+    startingPoint: "Pokhara",
+    route: "Pokhara - Sarangkot",
+    approxTime: "45 mins",
+    roadCondition: "Paved",
+  },
+  {
+    startingPoint: "Chitwan",
+    route: "Chitwan - Sauraha",
+    approxTime: "30 mins",
+    roadCondition: "Gravel",
+  },
+  {
+    startingPoint: "Butwal",
+    route: "Butwal - Lumbini",
+    approxTime: "1 hr",
+    roadCondition: "Moderate",
+  },
+];
 
+const destinationsList: { name: string; region: string }[] = [
+  { name: "Kathmandu Durbar Square", region: "Kathmandu, Nepal" },
+  { name: "Patan Durbar Square", region: "Lalitpur, Nepal" },
+  { name: "Bhaktapur Durbar Square", region: "Bhaktapur, Nepal" },
+  { name: "Nagarkot Sunrise Point", region: "Nagarkot, Bhaktapur, Nepal" },
+  { name: "Phewa Lake", region: "Pokhara, Kaski, Nepal" },
+  { name: "Annapurna Base Camp", region: "Annapurna Region, Nepal" },
+  { name: "Maya Devi Temple", region: "Lumbini, Rupandehi, Nepal" },
+  { name: "Langtang Valley", region: "Langtang, Rasuwa, Nepal" },
+  { name: "Rara Lake", region: "Rara, Mugu, Nepal" },
+  { name: "Bandipur Bazaar", region: "Bandipur, Tanahun, Nepal" },
+];
+
+export const seedDestinations = async () => {
   const destinations = destinationsList.map((loc, idx) => {
     const categories = getRandomCategories();
 
-    // Add a dummy public transport segment
-    const publicTransport = {
-      segments: [
-        {
-          from: "Kathmandu",
-          to: loc.name,
-          approxTime: "2 hrs",
-          fare: "Rs. 300",
-          lastDeparture: "5:00 PM",
-          note: "Buses leave every hour.",
-        },
-      ],
-    };
+    const publicTransport = [
+      {
+        from: "Kathmandu",
+        to: loc.name,
+        approxTime: "3 hrs",
+        fare: 300,
+        busTypes: ["Deluxe", "Local"],
+        lastDeparture: "6:00 PM",
+        note: "Hourly departures from the main bus park.",
+      },
+      {
+        from: "Pokhara",
+        to: loc.name,
+        approxTime: "4 hrs",
+        fare: 500,
+        busTypes: ["Tourist Bus", "Local"],
+        lastDeparture: "5:30 PM",
+        note: "Limited service on weekends.",
+      },
+    ];
 
-    // Add a dummy trek route if it's a nature or trekking-oriented destination
+    const personalVehicle = [...personalVehicleSamples]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
+
     const trek =
       categories.includes("Mountain") || categories.includes("Adventure")
         ? {
             startingPoint: "Base Camp",
             duration: "3 days",
-            distance: "25 km",
+            distance: 25,
             difficulty: "Moderate",
-            altitudeGain: "1500 m",
-            maxAltitude: "4000 m",
+            altitudeGain: 1500,
+            maxAltitude: 4000,
             trailDescription:
               "The trail passes through dense forests, rivers, and mountain ridges.",
             checkpoints: ["Checkpoint 1", "Checkpoint 2"],
+            permits: ["TIMS", "Annapurna Permit"],
             note: "Best done in spring or autumn.",
           }
         : undefined;
@@ -147,8 +137,8 @@ export const seedDestinations = async () => {
       featured: false,
       destinationRoute: {
         publicTransport,
+        personalVehicle,
         trek,
-        // Leave out personalVehicle for now if not needed
       },
     };
   });
@@ -157,12 +147,13 @@ export const seedDestinations = async () => {
     await dbConnect();
     await Destination.deleteMany({});
     await Destination.insertMany(destinations);
-    console.log("✅ Destinations seeded with public transport and trek!");
+    console.log(
+      "✅ Destinations seeded with public transport, personal vehicle, and trek data!",
+    );
   } catch (err) {
     console.error("❌ Seeding error:", err);
   }
 };
-
 
 const reviewsData = [
   "A bit pricey for food but the quality was good.",

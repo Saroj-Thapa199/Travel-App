@@ -47,17 +47,13 @@ const publicTransportSegmentSchema = z.object({
   to: requiredString(),
   // transportType: transportTypeEnum,
   approxTime: makeUndefinedIfEmpty(),
-  fare: makeUndefinedIfEmpty(),
+  fare: z.number().positive().optional(),
   busTypes: z.array(z.string()).optional(),
   lastDeparture: makeUndefinedIfEmpty(),
   note: makeUndefinedIfEmpty(),
 });
 
-const publicTransportSchema = z.object({
-  // requiresTransfer: z.boolean().default(false),
-  totalTime: makeUndefinedIfEmpty(),
-  segments: z.array(publicTransportSegmentSchema).min(1, "Cannot be empty"),
-});
+const publicTransportSchema = z.array(publicTransportSegmentSchema).min(1, "Cannot be empty")
 
 const individualPersonalVehicleSchema = z.object({
   startingPoint: requiredString(),
@@ -73,10 +69,10 @@ const trekSchema = z
     // required: z.boolean().default(false).optional(),
     startingPoint: requiredString(),
     duration: makeUndefinedIfEmpty(),
-    distance: makeUndefinedIfEmpty(),
+    distance: z.number().positive().optional(),
     difficulty: makeUndefinedIfEmpty(),
-    altitudeGain: makeUndefinedIfEmpty(),
-    maxAltitude: makeUndefinedIfEmpty(),
+    altitudeGain: z.number().positive().optional(),
+    maxAltitude: z.number().positive().optional(),
     trailDescription: requiredString(),
     checkpoints: z.array(z.string()).optional(),
     permits: z.array(z.string()).optional(),
