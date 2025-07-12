@@ -64,7 +64,8 @@ const ReviewSummary = ({
   }, [data]);
 
   return (
-    <div className="bg-muted/50 space-y-4 rounded-lg p-5">
+    <div>
+      <div className="bg-muted/50 space-y-4 rounded-lg p-5">
       <div className="flex items-center gap-4">
         <h2 className="text-4xl font-bold">
           {(data?.averageRating || averageRating).toFixed(1)}
@@ -126,6 +127,7 @@ const ReviewSummary = ({
           </SelectContent>
         </Select>
       </div>
+    </div>
     </div>
   );
 };
