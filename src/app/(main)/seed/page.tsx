@@ -12,7 +12,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
+import { TagsInput } from "@/components/ui/tags-input";
 
 import {
   MultiSelect,
@@ -30,10 +31,10 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-  const formSchema = z.object({
-    favoriteFrameworks: z.array(z.string()).min(1, "Required"),
-  });
-
+const formSchema = z.object({
+  favoriteFrameworks: z.array(z.string()).min(1, "Required"),
+  tags: z.array(z.string()).min(1, "at least 1 required"),
+});
 
 const page = () => {
   const [loading1, setLoading1] = useState(false);
@@ -43,13 +44,13 @@ const page = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       favoriteFrameworks: [],
+      tags: [],
     },
-  })
+  });
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("form submitted with data: ", data)
+    console.log("form submitted with data: ", data);
   }
-
 
   const destinationSeed = async () => {
     setLoading1(true);
@@ -98,38 +99,63 @@ const page = () => {
 
       <div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-          <FormField
-          control={form.control}
-          name="favoriteFrameworks"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Favorite Frameworks</FormLabel>
-              <MultiSelect onValuesChange={field.onChange} values={field.value}>
-                <FormControl>
-                  <MultiSelectTrigger className="w-full">
-                    <MultiSelectValue placeholder="Select frameworks..." />
-                  </MultiSelectTrigger>
-                </FormControl>
-                <MultiSelectContent>
-                  <MultiSelectGroup>
-                    <MultiSelectItem value="next.js">Next.js</MultiSelectItem>
-                    <MultiSelectItem value="sveltekit">
-                      SvelteKit
-                    </MultiSelectItem>
-                    <MultiSelectItem value="nuxt.js">Nuxt.js</MultiSelectItem>
-                    <MultiSelectItem value="remix">Remix</MultiSelectItem>
-                    <MultiSelectItem value="astro">Astro</MultiSelectItem>
-                    <MultiSelectItem value="vue">Vue</MultiSelectItem>
-                  </MultiSelectGroup>
-                </MultiSelectContent>
-              </MultiSelect>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-        </form>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="favoriteFrameworks"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Favorite Frameworks</FormLabel>
+                  <MultiSelect
+                    onValuesChange={field.onChange}
+                    values={field.value}
+                  >
+                    <FormControl>
+                      <MultiSelectTrigger className="w-full">
+                        <MultiSelectValue placeholder="Select frameworks..." />
+                      </MultiSelectTrigger>
+                    </FormControl>
+                    <MultiSelectContent>
+                      <MultiSelectGroup>
+                        <MultiSelectItem value="next.js">
+                          Next.js
+                        </MultiSelectItem>
+                        <MultiSelectItem value="sveltekit">
+                          SvelteKit
+                        </MultiSelectItem>
+                        <MultiSelectItem value="nuxt.js">
+                          Nuxt.js
+                        </MultiSelectItem>
+                        <MultiSelectItem value="remix">Remix</MultiSelectItem>
+                        <MultiSelectItem value="astro">Astro</MultiSelectItem>
+                        <MultiSelectItem value="vue">Vue</MultiSelectItem>
+                      </MultiSelectGroup>
+                    </MultiSelectContent>
+                  </MultiSelect>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Favorite Frameworks</FormLabel>
+                  <TagsInput
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="enter your used tech"
+                  />
+                <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
         </Form>
         {/* <MultiSelect>
           <MultiSelectTrigger className="w-full max-w-[400px]">

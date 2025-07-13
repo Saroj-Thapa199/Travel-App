@@ -1,20 +1,6 @@
-import { boolean, z, ZodNumber } from "zod";
-
-// const requiredString = z.string().trim().min(1, "Required");
-
-const requiredString = (message?: string) => {
-  return z
-    .string()
-    .trim()
-    .min(1, message || "Required");
-};
-
-const makeUndefinedIfEmpty = () => {
-  return z
-    .string()
-    .transform((val) => (val.trim() === "" ? undefined : val))
-    .optional();
-};
+import { z } from "zod";
+import { makeUndefinedIfEmpty, requiredString } from "./zodUtils";
+import { transportTypeEnum } from "./RouteValidation";
 
 export const signUpSchema = z.object({
   email: requiredString().email("Invalid email address"),
@@ -32,15 +18,6 @@ export const loginSchema = z.object({
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;
-
-export const transportTypeEnum = z.enum([
-  "Bus",
-  "Jeep",
-  "Microbus",
-  "Van",
-  "Tempo",
-  "Flight",
-]);
 
 const publicTransportSegmentSchema = z.object({
   from: requiredString(),
@@ -121,17 +98,17 @@ export const destinationSchema = z.object({
       publicTransport: publicTransportSchema.optional(),
       personalVehicle: personalVehicleSchema.optional(),
       trek: trekSchema.optional(),
-    })
-    .refine(
-      (val) =>
-        val.publicTransport !== undefined ||
-        val.personalVehicle !== undefined ||
-        val.trek !== undefined,
-      {
-        message: "At least one route option must be provided",
-        path: ["destinationRoute"],
-      },
-    ),
+    }).optional(),
+    // .refine(
+    //   (val) =>
+    //     val.publicTransport !== undefined ||
+    //     val.personalVehicle !== undefined ||
+    //     val.trek !== undefined,
+    //   {
+    //     message: "At least one route option must be provided",
+    //     path: ["destinationRoute"],
+    //   },
+    // ),
 
   createdAt: z.preprocess(
     (val) => (typeof val === "string" ? new Date(val) : val),
