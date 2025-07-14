@@ -1,0 +1,378 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import type { MotorableRouteType } from "@/lib/RouteValidation";
+import {
+  AlertTriangle,
+  Car,
+  Fuel,
+  Info,
+  Landmark,
+  MapPin,
+  Route,
+  Users,
+  DollarSign,
+  Calendar,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
+import type React from "react";
+import type { Dispatch, SetStateAction } from "react";
+
+type MotorableRouteDialogProps = {
+  motorableData: Omit<MotorableRouteType, "_id">;
+  motorableDialogOpen: boolean;
+  setMotorableDialogOpen: Dispatch<SetStateAction<boolean>>;
+  handleAddMotorableRoute: () => void;
+};
+
+const getRoadConditionColor = (type: string) => {
+  switch (type) {
+    case "Good":
+      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+    case "Fair":
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+    case "Poor":
+      return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200";
+    case "Bad":
+      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+  }
+};
+
+const InfoRow = ({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string | number;
+  icon?: React.ReactNode;
+}) => (
+  <div className="flex items-center justify-between py-1">
+    <div className="flex items-center gap-2">
+      {icon}
+      <span className="text-muted-foreground text-sm">{label}:</span>
+    </div>
+    <span className="text-sm font-medium">{value}</span>
+  </div>
+);
+
+const MotorableRouteDialog = ({
+  motorableData,
+  motorableDialogOpen,
+  setMotorableDialogOpen,
+  handleAddMotorableRoute,
+}: MotorableRouteDialogProps) => {
+  const handleConfirm = () => {
+    handleAddMotorableRoute();
+    setMotorableDialogOpen(false);
+  };
+
+  return (
+    <Dialog open={motorableDialogOpen} onOpenChange={setMotorableDialogOpen}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
+        <DialogHeader className="pb-3">
+          <DialogTitle className="flex items-center gap-2">
+            <Route className="h-5 w-5" />
+            Confirm Route Details
+          </DialogTitle>
+          <DialogDescription>
+            Review the route information before adding it to the system.
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Route Summary */}
+        <div className="bg-muted/50 mb-4 rounded-lg p-3">
+          <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              <span className="font-medium">
+                {motorableData.from} → {motorableData.to}
+              </span>
+            </div>
+            <Badge variant="secondary" className="max-sm:ml-6">Motorable Route</Badge>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm">
+            <div>
+              <div className="font-semibold">{motorableData.distance} km</div>
+              <div className="text-muted-foreground">Distance</div>
+            </div>
+            <div>
+              <div className="font-semibold">{motorableData.duration}</div>
+              <div className="text-muted-foreground">Duration</div>
+            </div>
+            <div>
+              <div className="font-semibold">
+                {motorableData.availableServices.length}
+              </div>
+              <div className="text-muted-foreground">Services</div>
+            </div>
+            <div>
+              <div className="font-semibold">
+                {motorableData.roadCondition.type}
+              </div>
+              <div className="text-muted-foreground">Road Quality</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {/* Transportation */}
+          <Card className="gap-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Car className="h-4 w-4" />
+                Transportation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <div className="mb-2 flex items-center gap-2">
+                  <Users className="h-3 w-3" />
+                  <span className="text-muted-foreground text-sm">
+                    Available Services
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {motorableData.availableServices.map((service, index) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {service}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <InfoRow
+                label="Fare Range"
+                value={motorableData.fareRange}
+                icon={<DollarSign className="h-3 w-3" />}
+              />
+
+              {motorableData.frequency && (
+                <InfoRow
+                  label="Frequency"
+                  value={motorableData.frequency}
+                  icon={<Calendar className="h-3 w-3" />}
+                />
+              )}
+
+              {motorableData.bookingInfo && (
+                <div>
+                  <div className="mb-1 flex items-center gap-2">
+                    <Info className="h-3 w-3" />
+                    <span className="text-muted-foreground text-sm">
+                      Booking Info
+                    </span>
+                  </div>
+                  <p className="bg-muted rounded p-2 text-xs">
+                    {motorableData.bookingInfo}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Road Condition */}
+          <Card className="gap-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Route className="h-4 w-4" />
+                Road Condition
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm">
+                  Condition:
+                </span>
+                <Badge
+                  className={getRoadConditionColor(
+                    motorableData.roadCondition.type,
+                  )}
+                >
+                  {motorableData.roadCondition.type}
+                </Badge>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground text-sm">Route:</span>
+                <p className="bg-muted mt-1 rounded p-2 text-sm">
+                  {motorableData.route}
+                </p>
+              </div>
+
+              {motorableData.roadCondition.description && (
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    Details:
+                  </span>
+                  <p className="bg-muted mt-1 rounded p-2 text-sm">
+                    {motorableData.roadCondition.description}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Fuel Availability */}
+          <Card className="gap-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Fuel className="h-4 w-4" />
+                Fuel Availability
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm">
+                  Fuel Stations:
+                </span>
+                <Badge
+                  variant={
+                    motorableData.fuelAvailability.hasStations
+                      ? "default"
+                      : "destructive"
+                  }
+                >
+                  {motorableData.fuelAvailability.hasStations ? (
+                    <CheckCircle className="mr-1 h-3 w-3" />
+                  ) : (
+                    <XCircle className="mr-1 h-3 w-3" />
+                  )}
+                  {motorableData.fuelAvailability.hasStations
+                    ? "Available"
+                    : "Not Available"}
+                </Badge>
+              </div>
+
+              {motorableData.fuelAvailability.description && (
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    Details:
+                  </span>
+                  <p className="bg-muted mt-1 rounded p-2 text-sm">
+                    {motorableData.fuelAvailability.description}
+                  </p>
+                </div>
+              )}
+
+              {motorableData.fuelAvailability.recommendedStops.length > 0 && (
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    Recommended Stops:
+                  </span>
+                  <div className="mt-1 space-y-1">
+                    {motorableData.fuelAvailability.recommendedStops.map(
+                      (stop, index) => (
+                        <div
+                          key={index}
+                          className="bg-muted flex items-center gap-2 rounded p-2 text-xs"
+                        >
+                          <div className="bg-primary h-1.5 w-1.5 rounded-full"></div>
+                          {stop}
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Landmarks */}
+          {motorableData.landmarks.length > 0 && (
+            <Card className="gap-3">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Landmark className="h-4 w-4" />
+                  Landmarks
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1">
+                  {motorableData.landmarks.map((landmark, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <div className="bg-primary h-1.5 w-1.5 rounded-full"></div>
+                      {landmark}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Warnings */}
+        {motorableData.warnings.length > 0 && (
+          <Card className="gap-3 border-orange-200 dark:border-orange-900/70">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base text-orange-800 dark:text-orange-400/70">
+                <AlertTriangle className="h-4 w-4" />
+                Warnings
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {motorableData.warnings.map((warning, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2 rounded bg-orange-50 p-2 text-sm dark:bg-orange-800/30"
+                  >
+                    <AlertTriangle className="mt-0.5 h-3 w-3 flex-shrink-0 text-orange-600 dark:text-orange-400" />
+                    <span className="text-orange-800 dark:text-orange-100/90">
+                      {warning}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Additional Notes */}
+        {motorableData.note && (
+          <Card className="gap-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Info className="h-4 w-4" />
+                Additional Notes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="bg-muted rounded p-2 text-sm">
+                {motorableData.note}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        <DialogFooter className="mt-4">
+          <Button
+            variant="outline"
+            onClick={() => setMotorableDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleConfirm}>Confirm & Add Route</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default MotorableRouteDialog;

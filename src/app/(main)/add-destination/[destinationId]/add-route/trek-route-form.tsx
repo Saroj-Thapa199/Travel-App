@@ -25,6 +25,7 @@ import { useState } from "react";
 import { TrekRouteType } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import SafetyTipsInput from "./SafetyTipsInput";
+import TrekRouteDialog from "./TrekRouteDialog";
 
 interface TrekRouteFormProps {
   form: UseFormReturn<Omit<TrekRouteType, "_id">>;
@@ -34,12 +35,17 @@ interface TrekRouteFormProps {
 export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
   const [permits, setPermits] = useState<
     Array<{ name: string; cost?: string; where?: string }>
-  >([]);
+  >(form.getValues().permits || []);
   const [newPermit, setNewPermit] = useState({ name: "", cost: "", where: "" });
 
+  const [trekData, setTrekData] = useState<Omit<TrekRouteType, "_id">>(
+    form.getValues(),
+  );
+  const [trekDialogOpen, setTrekDialogOpen] = useState(false);
+
   const onSubmit = (data: Omit<TrekRouteType, "_id">) => {
-    console.log("came here")
-    console.log(data);
+    setTrekData(data)
+    setTrekDialogOpen(true)
   };
 
   const handleSubmit = (data: Omit<TrekRouteType, "_id">) => {
@@ -62,10 +68,7 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
     <Card className="w-full">
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -244,7 +247,7 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
               )}
             />
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="space-y-2">
                 <FormLabel>Permits Required (Optional)</FormLabel>
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -384,6 +387,13 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
             </div>
           </form>
         </Form>
+
+        <TrekRouteDialog
+          trekData={trekData}
+          trekDialogOpen={trekDialogOpen}
+          setTrekDialogOpen={setTrekDialogOpen}
+          handleAddTrekRoute={() => console.log(trekData)}
+        />
       </CardContent>
     </Card>
   );

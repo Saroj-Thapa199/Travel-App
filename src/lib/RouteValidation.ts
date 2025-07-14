@@ -23,7 +23,7 @@ export const motorableRouteSchema = z.object({
   fareRange: z.string(),
   bookingInfo: z.string().optional(),
   frequency: z.string().optional(),
-  landmarks: z.array(requiredString()).optional(),
+  landmarks: z.array(requiredString()),
   // Private Transports
   route: requiredString(),
   roadCondition: z.object({
@@ -33,9 +33,9 @@ export const motorableRouteSchema = z.object({
   fuelAvailability: z.object({
     hasStations: z.boolean(),
     description: z.string().optional(),
-    recommendedStops: z.array(requiredString()).optional(),
+    recommendedStops: z.array(requiredString()),
   }),
-  warnings: z.array(requiredString()).optional(),
+  warnings: z.array(requiredString()),
   note: z.string().optional(),
 });
 
@@ -55,8 +55,7 @@ export const trekRouteSchema = z.object({
     .object({
       roundTrip: requiredString(),
       oneWay: requiredString(),
-    })
-    .optional(),
+    }),
   difficulty: z.enum([
     "Easy",
     "Moderate",
@@ -71,12 +70,12 @@ export const trekRouteSchema = z.object({
       gain: z.number().optional(),
     })
     .optional(),
-  permits: z.array(permitSchema).optional(),
+  permits: z.array(permitSchema),
   teahouses: z.boolean().optional(),
-  bestSeason: z.array(requiredString()).optional(),
-  highlights: z.array(requiredString()).optional(),
-  packingList: z.array(requiredString()).optional(),
-  safetyTips: z.array(requiredString()).optional(),
+  bestSeason: z.array(requiredString()),
+  highlights: z.array(requiredString()),
+  packingList: z.array(requiredString()),
+  safetyTips: z.array(requiredString()),
 });
 
 export type TrekRouteType = z.infer<typeof trekRouteSchema>;

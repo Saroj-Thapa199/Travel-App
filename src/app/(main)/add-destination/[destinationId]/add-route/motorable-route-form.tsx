@@ -21,13 +21,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent,  } from "@/components/ui/card";
-import {
-  MotorableRouteType,
-  transportTypeEnum,
-} from "@/lib/RouteValidation";
+import { Card, CardContent } from "@/components/ui/card";
+import { MotorableRouteType, transportTypeEnum } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import WarningsInput from "./WarningsInput";
+import { useState } from "react";
+import MotorableRouteDialog from "./MotorableRouteDialog";
 
 interface MotorableRouteFormProps {
   form: UseFormReturn<Omit<MotorableRouteType, "_id">>;
@@ -38,38 +37,26 @@ export function MotorableRouteForm({
   form,
   onCancel,
 }: MotorableRouteFormProps) {
+  const [motorableDialogOpen, setMotorableDialogOpen] = useState(false);
+  const [motorableData, setMotorableData] = useState<
+    Omit<MotorableRouteType, "_id">
+  >(form.getValues());
 
   const onSubmit = (data: Omit<MotorableRouteType, "_id">) => {
-    console.log("here also");
-    console.log(data);
+    setMotorableData(data);
+    setMotorableDialogOpen(true);
   };
 
   const handleSubmit = (data: Omit<MotorableRouteType, "_id">) => {
     console.log("came here");
-    onSubmit({
-      ...data,
-      landmarks: data.landmarks && data.landmarks.length > 0 ? data.landmarks : undefined,
-      warnings:
-        data.warnings && data.warnings.length > 0 ? data.warnings : undefined,
-      fuelAvailability: {
-        ...data.fuelAvailability,
-        recommendedStops:
-          data.fuelAvailability.recommendedStops &&
-          data.fuelAvailability.recommendedStops.length > 0
-            ? data.fuelAvailability.recommendedStops
-            : undefined,
-      },
-    });
+    onSubmit(data);
   };
 
   return (
     <Card className="w-full">
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -410,6 +397,13 @@ export function MotorableRouteForm({
             </div>
           </form>
         </Form>
+
+        <MotorableRouteDialog
+          motorableData={motorableData}
+          motorableDialogOpen={motorableDialogOpen}
+          setMotorableDialogOpen={setMotorableDialogOpen}
+          handleAddMotorableRoute={() => console.log(motorableData)}
+        />
       </CardContent>
     </Card>
   );

@@ -31,10 +31,10 @@ const SafetyTipsInput = ({ form }: SafetyTipsInputProps) => {
 
   const handleRemove = async (index: number) => {
     remove(index);
-    const updatedCheckpoints = getValues("safetyTips");
-    if (updatedCheckpoints && updatedCheckpoints.length == 0) {
-      form.setValue("safetyTips", undefined);
-    }
+    // const updatedCheckpoints = getValues("safetyTips");
+    // if (updatedCheckpoints && updatedCheckpoints.length == 0) {
+    //   form.setValue("safetyTips", undefined);
+    // }
   };
 
   return (
@@ -70,8 +70,9 @@ const SafetyTipsInput = ({ form }: SafetyTipsInputProps) => {
                   type="button"
                   variant={"ghost"}
                   onClick={() => handleRemove(index)}
+                  className="group"
                 >
-                  <Trash className="text-destructive size-4" />
+                  <Trash className="group-hover:text-destructive size-4" />
                 </Button>
               </AlertTitle>
             </Alert>

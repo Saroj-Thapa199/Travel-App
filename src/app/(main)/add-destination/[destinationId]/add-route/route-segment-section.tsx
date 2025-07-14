@@ -24,11 +24,39 @@ const RouteSegmentSection = () => {
       }),
     ),
     defaultValues: {
-      from: "",
-      to: "",
-      availableServices: [],
-      roadCondition: { type: "Good" },
-      fuelAvailability: { hasStations: true, recommendedStops: [] },
+      // from: "",
+      // to: "",
+      // duration: "",
+      // availableServices: [],
+      // fareRange: "",
+      // frequency: "",
+      // landmarks: [],
+      // route: "",
+      // roadCondition: { type: "Good" },
+      // fuelAvailability: { hasStations: true, recommendedStops: [] },
+      // warnings: [],
+      from: "Kathmandu",
+  to: "Pokhara",
+  distance: 200,
+  duration: "6-8 hours",
+  availableServices: ["Tourist Bus", "Microbus"],
+  fareRange: "NPR 500 - 1200",
+  bookingInfo: "Tickets can be booked online via travel portals or bus stations.",
+  frequency: "Every 30 minutes during peak hours",
+  route: "Take the Prithvi Highway via Muglin and Damauli. Scenic route with river views.",
+  roadCondition: {
+    type: "Fair",
+    description: "Occasional potholes around Muglin area; otherwise smooth."
+  },
+  fuelAvailability: {
+    hasStations: true,
+    description: "Fuel available in Muglin and Damauli areas.",
+    recommendedStops: ["Muglin", "Damauli"]
+  },
+  landmarks: ["Trishuli River", "Manakamana Cable Car"],
+  warnings: ["Landslides possible during monsoon", "Heavy traffic in the morning"],
+  note: "Ideal to travel early morning to avoid traffic jams."
+
     },
   });
 
@@ -39,10 +67,55 @@ const RouteSegmentSection = () => {
       }),
     ),
     defaultValues: {
-      trekName: "",
-      startingPoint: "",
-      difficulty: "Moderate",
-      teahouses: false,
+      // trekName: "",
+      // startingPoint: "",
+      // duration: { oneWay: "", roundTrip: "" },
+      // difficulty: "Moderate",
+      // permits: [],
+      // teahouses: false,
+      // bestSeason: [],
+      // highlights: [],
+      // packingList: [],
+      // safetyTips: [],
+      trekName: "Everest Base Camp Trek",
+  startingPoint: "Lukla",
+  duration: {
+    roundTrip: "12-14 days",
+    oneWay: "6-7 days",
+  },
+  difficulty: "Challenging",
+  elevation: {
+    start: 2860,      // Lukla
+    max: 5364,        // Everest Base Camp
+    gain: 2504,
+  },
+  permits: [
+    {
+      name: "Sagarmatha National Park Entry Permit",
+      cost: "NPR 3000",
+      where: "Available at Nepal Tourism Board Office or Monjo checkpoint",
+    },
+    {
+      name: "Khumbu Pasang Lhamu Rural Municipality Permit",
+      cost: "NPR 2000",
+      where: "Issued at Lukla",
+    },
+  ],
+  teahouses: true,
+  bestSeason: ["Spring", "Autumn"],
+  highlights: [
+    "Panoramic views of Mount Everest and nearby peaks",
+    "Cultural experience in Sherpa villages",
+  ],
+  packingList: [
+    "Down jacket and thermal layers",
+    "Trekking boots with good grip",
+    "Sunscreen and sunglasses",
+  ],
+  safetyTips: [
+    "Ascend gradually to avoid altitude sickness",
+    "Stay hydrated and carry purification tablets",
+  ],
     },
   });
 
@@ -50,7 +123,7 @@ const RouteSegmentSection = () => {
     <Accordion
       type="single"
       collapsible
-      className="w-full"
+      className="w-full aria-invalid:ring-destructive/20"
       defaultValue="motorable-route-form"
     >
       <AccordionItem value="motorable-route-form">
