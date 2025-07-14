@@ -3,8 +3,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { X as RemoveIcon } from "lucide-react";
+import { Plus, X as RemoveIcon } from "lucide-react";
 import React from "react";
+import { Button } from "./button";
 
 /**
  * used for identifying the split char and use will pasting
@@ -255,9 +256,10 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
           ref={ref}
           dir={dir}
           className={cn(
-            "ring-border flex flex-wrap items-center gap-1 overflow-hidden rounded-lg p-1 ring-1",
+            "border-input dark:bg-input/30 flex flex-wrap items-center gap-1 overflow-hidden rounded-lg border bg-transparent p-1 shadow-xs transition-[color,box-shadow]",
+            "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             {
-              "focus-within:ring-ring": activeIndex === -1,
+              "focus-within:ring-ring/50": activeIndex === -1,
             },
             className,
           )}
@@ -300,10 +302,23 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
             placeholder={placeholder}
             onClick={() => setActiveIndex(-1)}
             className={cn(
-              "placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0",
+              "placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 shadow-none outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0",
               activeIndex !== -1 && "caret-transparent",
             )}
           />
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            disabled={disableInput || !inputValue.trim()}
+            onClick={() => {
+              onValueChangeHandler(inputValue.trim());
+              setInputValue("");
+            }}
+            className="h-7 w-7"
+          >
+            <Plus />
+          </Button>
         </div>
       </TagInputContext.Provider>
     );

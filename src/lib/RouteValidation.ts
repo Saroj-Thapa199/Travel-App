@@ -53,8 +53,8 @@ export const trekRouteSchema = z.object({
   startingPoint: requiredString(),
   duration: z
     .object({
-      roundTrip: z.string().optional(),
-      oneWay: z.string().optional(),
+      roundTrip: requiredString(),
+      oneWay: requiredString(),
     })
     .optional(),
   difficulty: z.enum([
