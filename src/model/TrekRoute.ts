@@ -14,6 +14,14 @@ const PermitSchema = new Schema(
   { _id: false }, // prevents Mongoose from creating _id for subdocuments
 );
 
+const teaHouseSchema = new Schema(
+  {
+    available: Boolean,
+    locations: { type: [String], required: false },
+  },
+  { _id: false },
+);
+
 const TrekRouteSchema: Schema<TrekRouteDocument> = new Schema({
   trekName: {
     type: String,
@@ -23,9 +31,10 @@ const TrekRouteSchema: Schema<TrekRouteDocument> = new Schema({
     type: String,
     required: true,
   },
+  destinationPoint: { type: String },
   duration: {
-    roundTrip: {type: String},
-    oneWay: {type: String},
+    roundTrip: { type: String, required: true },
+    oneWay: { type: String },
   },
   difficulty: {
     type: String,
@@ -33,15 +42,16 @@ const TrekRouteSchema: Schema<TrekRouteDocument> = new Schema({
     required: true,
   },
   elevation: {
-    start: {type: Number},
-    max: {type: Number},
-    gain: {type: Number},
+    start: { type: Number },
+    max: { type: Number },
+    gain: { type: Number },
   },
   permits: [PermitSchema],
-  teahouses: {type: Boolean},
+  teahouses: teaHouseSchema,
+  packingList: [String],
+  recommendedItinerary: [{ type: String }],
   bestSeason: [String],
   highlights: [String],
-  packingList: [String],
   safetyTips: [String],
 });
 

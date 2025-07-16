@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingButton from "@/components/LoadingButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,8 @@ type MotorableRouteDialogProps = {
   motorableData: Omit<MotorableRouteType, "_id">;
   motorableDialogOpen: boolean;
   setMotorableDialogOpen: Dispatch<SetStateAction<boolean>>;
-  handleAddMotorableRoute: () => void;
+  handleSubmit: (data: Omit<MotorableRouteType, "_id">) => Promise<void>;
+  loading: boolean
 };
 
 const getRoadConditionColor = (type: string) => {
@@ -73,10 +75,12 @@ const MotorableRouteDialog = ({
   motorableData,
   motorableDialogOpen,
   setMotorableDialogOpen,
-  handleAddMotorableRoute,
+  handleSubmit,
+  loading
 }: MotorableRouteDialogProps) => {
-  const handleConfirm = () => {
-    handleAddMotorableRoute();
+
+  const handleConfirm = async () => {
+    await handleSubmit(motorableData);
     setMotorableDialogOpen(false);
   };
 
@@ -368,7 +372,7 @@ const MotorableRouteDialog = ({
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirm}>Confirm & Add Route</Button>
+          <LoadingButton onClick={handleConfirm} loading={loading}>Confirm & Add Route</LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

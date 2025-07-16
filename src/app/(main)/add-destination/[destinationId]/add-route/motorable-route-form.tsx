@@ -21,12 +21,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MotorableRouteType, transportTypeEnum } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import WarningsInput from "./WarningsInput";
 import { useState } from "react";
 import MotorableRouteDialog from "./MotorableRouteDialog";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { createMotorableRoute } from "@/lib/actions/route";
 
 interface MotorableRouteFormProps {
   form: UseFormReturn<Omit<MotorableRouteType, "_id">>;
@@ -41,19 +44,28 @@ export function MotorableRouteForm({
   const [motorableData, setMotorableData] = useState<
     Omit<MotorableRouteType, "_id">
   >(form.getValues());
+  const [errorMsg, setErrorMsg] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data: Omit<MotorableRouteType, "_id">) => {
     setMotorableData(data);
     setMotorableDialogOpen(true);
   };
 
-  const handleSubmit = (data: Omit<MotorableRouteType, "_id">) => {
-    console.log("came here");
-    onSubmit(data);
+  const handleCreateMotorableRoute = async (
+    data: Omit<MotorableRouteType, "_id">,
+  ) => {
+    setLoading(true);
+    const { error } = await createMotorableRoute(data);
+    setErrorMsg(error);
+    setLoading(false);
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full gap-3">
+      <CardHeader className="text-center">
+        {errorMsg && <span className="text-destructive">{errorMsg}</span>}
+      </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -280,7 +292,10 @@ export function MotorableRouteForm({
               />
             </div>
 
+            <Separator />
+
             <div className="space-y-4">
+              <Label className="text-lg">Fuel Availability Info</Label>
               <FormField
                 control={form.control}
                 name="fuelAvailability.hasStations"
@@ -341,6 +356,8 @@ export function MotorableRouteForm({
               />
             </div>
 
+            <Separator />
+
             <FormField
               control={form.control}
               name="landmarks"
@@ -359,9 +376,12 @@ export function MotorableRouteForm({
               )}
             />
 
+            <Separator />
+
             <WarningsInput form={form} />
 
-            {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2"> */}
+            <Separator />
+
             <FormField
               control={form.control}
               name="note"
@@ -380,7 +400,6 @@ export function MotorableRouteForm({
                 </FormItem>
               )}
             />
-            {/* </div> */}
 
             <div className="flex flex-col gap-3 pt-4 sm:flex-row">
               <Button type="submit" className="flex-1">
@@ -390,6 +409,7 @@ export function MotorableRouteForm({
                 type="button"
                 variant="outline"
                 onClick={onCancel}
+                disabled={loading}
                 className="flex-1 bg-transparent"
               >
                 Cancel
@@ -402,7 +422,8 @@ export function MotorableRouteForm({
           motorableData={motorableData}
           motorableDialogOpen={motorableDialogOpen}
           setMotorableDialogOpen={setMotorableDialogOpen}
-          handleAddMotorableRoute={() => console.log(motorableData)}
+          handleSubmit={handleCreateMotorableRoute}
+          loading={loading}
         />
       </CardContent>
     </Card>

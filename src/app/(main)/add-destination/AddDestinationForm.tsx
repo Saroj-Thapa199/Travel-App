@@ -4,7 +4,6 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,7 +18,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, Bus, Car, Footprints } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationFormType } from "@/lib/types";
-import CategoriesSelect from "@/components/CategoriesSelect";
 import {
   MultiSelect,
   MultiSelectContent,

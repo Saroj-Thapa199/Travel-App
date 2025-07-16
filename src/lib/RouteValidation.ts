@@ -51,10 +51,11 @@ export const trekRouteSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
   trekName: requiredString(),
   startingPoint: requiredString(),
+  destinationPoint: z.string().optional(),
   duration: z
     .object({
       roundTrip: requiredString(),
-      oneWay: requiredString(),
+      oneWay: requiredString().optional(),
     }),
   difficulty: z.enum([
     "Easy",
@@ -71,10 +72,15 @@ export const trekRouteSchema = z.object({
     })
     .optional(),
   permits: z.array(permitSchema),
-  teahouses: z.boolean().optional(),
+  teahouses: z
+  .object({
+    available: z.boolean(),
+    locations: z.array(requiredString()),
+  }),
+  packingList: z.array(requiredString()),
+  recommendedItinerary: z.array(requiredString()),
   bestSeason: z.array(requiredString()),
   highlights: z.array(requiredString()),
-  packingList: z.array(requiredString()),
   safetyTips: z.array(requiredString()),
 });
 

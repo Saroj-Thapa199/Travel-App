@@ -38,7 +38,7 @@ const MotorableRouteSchema: Schema<MotorableRouteDocument> = new Schema({
       {
         hasStations: { type: Boolean },
         description: { type: String },
-        recommendedStops: { type: [String] },
+        recommendedStops: { type: [String], required: false },
       },
       { _id: false },
     ),

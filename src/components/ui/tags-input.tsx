@@ -290,35 +290,37 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
               </button>
             </Badge>
           ))}
-          <Input
-            tabIndex={0}
-            aria-label="input tag"
-            disabled={disableInput}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            value={inputValue}
-            onSelect={handleSelect}
-            onChange={activeIndex === -1 ? handleChange : undefined}
-            placeholder={placeholder}
-            onClick={() => setActiveIndex(-1)}
-            className={cn(
-              "placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 shadow-none outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0",
-              activeIndex !== -1 && "caret-transparent",
-            )}
-          />
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            disabled={disableInput || !inputValue.trim()}
-            onClick={() => {
-              onValueChangeHandler(inputValue.trim());
-              setInputValue("");
-            }}
-            className="h-7 w-7"
-          >
-            <Plus />
-          </Button>
+          <div className="flex min-w-fit flex-1">
+            <Input
+              tabIndex={0}
+              aria-label="input tag"
+              disabled={disableInput}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              value={inputValue}
+              onSelect={handleSelect}
+              onChange={activeIndex === -1 ? handleChange : undefined}
+              placeholder={placeholder}
+              onClick={() => setActiveIndex(-1)}
+              className={cn(
+                "placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 shadow-none outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0",
+                activeIndex !== -1 && "caret-transparent",
+              )}
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              disabled={disableInput || !inputValue.trim()}
+              onClick={() => {
+                onValueChangeHandler(inputValue.trim());
+                setInputValue("");
+              }}
+              className="h-7 w-7"
+            >
+              <Plus />
+            </Button>
+          </div>
         </div>
       </TagInputContext.Provider>
     );

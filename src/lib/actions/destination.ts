@@ -13,19 +13,19 @@ export const addDestination = async (
 ): Promise<{ error: string }> => {
   try {
     console.log("submitted")
-    const parsedValues = destinationSchema.omit({
-        _id: true,
-        slug: true,
-        createdAt: true,  
-        updatedAt: true,
-        averageRating: true,
-        reviewCount: true,
-        // categories: true
-      }).parse(values)
-    console.log("values:")
-    console.log(JSON.stringify(values, null, 2))
-    console.log("parsedValues:")
-    console.log(JSON.stringify(parsedValues, null, 2))
+    // const parsedValues = destinationSchema.omit({
+    //     _id: true,
+    //     slug: true,
+    //     createdAt: true,  
+    //     updatedAt: true,
+    //     averageRating: true,
+    //     reviewCount: true,
+    //     // categories: true
+    //   }).parse(values)
+    // console.log("values:")
+    // console.log(JSON.stringify(values, null, 2))
+    // console.log("parsedValues:")
+    // console.log(JSON.stringify(parsedValues, null, 2))
 
     const {success, data, error} = destinationSchema.omit({
         _id: true,

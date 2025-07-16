@@ -79,14 +79,15 @@ const RouteSegmentSection = () => {
       // safetyTips: [],
       trekName: "Everest Base Camp Trek",
   startingPoint: "Lukla",
+  destinationPoint: "Everest Base Camp",
   duration: {
     roundTrip: "12-14 days",
     oneWay: "6-7 days",
   },
   difficulty: "Challenging",
   elevation: {
-    start: 2860,      // Lukla
-    max: 5364,        // Everest Base Camp
+    start: 2860,
+    max: 5364,
     gain: 2504,
   },
   permits: [
@@ -101,20 +102,49 @@ const RouteSegmentSection = () => {
       where: "Issued at Lukla",
     },
   ],
-  teahouses: true,
+  teahouses: {
+    available: true,
+    locations: [
+      "Phakding",
+      "Namche Bazaar",
+      "Tengboche",
+      "Dingboche",
+      "Lobuche",
+      "Gorak Shep",
+    ],
+  },
   bestSeason: ["Spring", "Autumn"],
   highlights: [
     "Panoramic views of Mount Everest and nearby peaks",
     "Cultural experience in Sherpa villages",
+    "Visit to Tengboche Monastery",
+    "Scenic flight to Lukla",
   ],
   packingList: [
     "Down jacket and thermal layers",
     "Trekking boots with good grip",
     "Sunscreen and sunglasses",
+    "Water purification tablets",
+    "First-aid kit",
   ],
   safetyTips: [
     "Ascend gradually to avoid altitude sickness",
     "Stay hydrated and carry purification tablets",
+    "Listen to your guide and acclimatize properly",
+  ],
+  recommendedItinerary: [
+    "Fly to Lukla and trek to Phakding",
+    "Trek to Namche Bazaar",
+    "Acclimatization day in Namche Bazaar",
+    "Trek to Tengboche",
+    "Trek to Dingboche",
+    "Acclimatization day in Dingboche",
+    "Trek to Lobuche",
+    "Trek to Gorak Shep and hike to Everest Base Camp",
+    "Hike to Kala Patthar and return to Pheriche",
+    "Trek to Namche Bazaar",
+    "Trek to Lukla",
+    "Fly back to Kathmandu",
   ],
     },
   });

@@ -26,6 +26,10 @@ import { TrekRouteType } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import SafetyTipsInput from "./SafetyTipsInput";
 import TrekRouteDialog from "./TrekRouteDialog";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import ItineraryInput from "./ItineraryInput";
+import { createTrekRoute } from "@/lib/actions/route";
 
 interface TrekRouteFormProps {
   form: UseFormReturn<Omit<TrekRouteType, "_id">>;
@@ -42,15 +46,21 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
     form.getValues(),
   );
   const [trekDialogOpen, setTrekDialogOpen] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data: Omit<TrekRouteType, "_id">) => {
-    setTrekData(data)
-    setTrekDialogOpen(true)
+    setTrekData(data);
+    setTrekDialogOpen(true);
   };
 
-  const handleSubmit = (data: Omit<TrekRouteType, "_id">) => {
-    console.log(data);
-    onSubmit(data);
+  const handleCreateMotorableRoute = async (
+    data: Omit<TrekRouteType, "_id">,
+  ) => {
+    setLoading(true);
+    const { error } = await createTrekRoute(data);
+    setErrorMsg(error);
+    setLoading(false);
   };
 
   const addPermit = () => {
@@ -85,6 +95,36 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
               />
               <FormField
                 control={form.control}
+                name="difficulty"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Difficulty Level</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="min-w-32">
+                          <SelectValue placeholder="Select difficulty" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Easy">Easy</SelectItem>
+                        <SelectItem value="Moderate">Moderate</SelectItem>
+                        <SelectItem value="Challenging">Challenging</SelectItem>
+                        <SelectItem value="Difficult">Difficult</SelectItem>
+                        <SelectItem value="Extreme">Extreme</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormField
+                control={form.control}
                 name="startingPoint"
                 render={({ field }) => (
                   <FormItem>
@@ -96,35 +136,20 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="difficulty"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Difficulty Level</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+              <FormField
+                control={form.control}
+                name="destinationPoint"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Destination Point (Optional)</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="min-w-32">
-                        <SelectValue placeholder="Select difficulty" />
-                      </SelectTrigger>
+                      <Input placeholder="Trek starting location" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Easy">Easy</SelectItem>
-                      <SelectItem value="Moderate">Moderate</SelectItem>
-                      <SelectItem value="Challenging">Challenging</SelectItem>
-                      <SelectItem value="Difficult">Difficult</SelectItem>
-                      <SelectItem value="Extreme">Extreme</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
@@ -224,28 +249,51 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="teahouses"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Teahouses Available
-                    </FormLabel>
-                    <p className="text-muted-foreground text-sm">
-                      Are there teahouses along the trek route?
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <Separator />
+
+            <div className="space-y-4">
+              <Label className="text-lg">Teahouses Info</Label>
+              <FormField
+                control={form.control}
+                name="teahouses.available"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">
+                        Teahouses Available
+                      </FormLabel>
+                      <p className="text-muted-foreground text-sm">
+                        Are there teahouses along the trek route?
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="teahouses.locations"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teahouse Locations(M) (optional)</FormLabel>
+                    <FormControl>
+                      <TagsInput
+                        value={field.value || []}
+                        onValueChange={field.onChange}
+                        placeholder="Add teahouse locations"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <Separator />
 
             <div className="space-y-6">
               <div className="space-y-2">
@@ -315,6 +363,12 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
                 </div>
               </div>
 
+              <Separator />
+
+              <ItineraryInput form={form} />
+
+              <Separator />
+
               <FormField
                 control={form.control}
                 name="bestSeason"
@@ -332,6 +386,8 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
                   </FormItem>
                 )}
               />
+
+              <Separator />
 
               <FormField
                 control={form.control}
@@ -351,6 +407,8 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
                 )}
               />
 
+              <Separator />
+
               <FormField
                 control={form.control}
                 name="packingList"
@@ -368,6 +426,8 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
                   </FormItem>
                 )}
               />
+
+              <Separator />
 
               <SafetyTipsInput form={form} />
             </div>
@@ -392,7 +452,7 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
           trekData={trekData}
           trekDialogOpen={trekDialogOpen}
           setTrekDialogOpen={setTrekDialogOpen}
-          handleAddTrekRoute={() => console.log(trekData)}
+          handleSubmit={handleCreateMotorableRoute}
         />
       </CardContent>
     </Card>
