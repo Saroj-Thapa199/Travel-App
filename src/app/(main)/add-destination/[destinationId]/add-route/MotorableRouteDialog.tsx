@@ -35,7 +35,8 @@ type MotorableRouteDialogProps = {
   motorableDialogOpen: boolean;
   setMotorableDialogOpen: Dispatch<SetStateAction<boolean>>;
   handleSubmit: (data: Omit<MotorableRouteType, "_id">) => Promise<void>;
-  loading: boolean
+  loading: boolean;
+  setTab: Dispatch<SetStateAction<string>>;
 };
 
 const getRoadConditionColor = (type: string) => {
@@ -76,12 +77,13 @@ const MotorableRouteDialog = ({
   motorableDialogOpen,
   setMotorableDialogOpen,
   handleSubmit,
-  loading
+  loading,
+  setTab,
 }: MotorableRouteDialogProps) => {
-
   const handleConfirm = async () => {
     await handleSubmit(motorableData);
     setMotorableDialogOpen(false);
+    setTab("route-form");
   };
 
   return (
@@ -106,9 +108,11 @@ const MotorableRouteDialog = ({
                 {motorableData.from} → {motorableData.to}
               </span>
             </div>
-            <Badge variant="secondary" className="max-sm:ml-6">Motorable Route</Badge>
+            <Badge variant="secondary" className="max-sm:ml-6">
+              Motorable Route
+            </Badge>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm">
+          <div className="grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4">
             <div>
               <div className="font-semibold">{motorableData.distance} km</div>
               <div className="text-muted-foreground">Distance</div>
@@ -367,12 +371,15 @@ const MotorableRouteDialog = ({
 
         <DialogFooter className="mt-4">
           <Button
+            disabled={loading}
             variant="outline"
             onClick={() => setMotorableDialogOpen(false)}
           >
             Cancel
           </Button>
-          <LoadingButton onClick={handleConfirm} loading={loading}>Confirm & Add Route</LoadingButton>
+          <LoadingButton onClick={handleConfirm} loading={loading}>
+            Confirm & Add Route
+          </LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

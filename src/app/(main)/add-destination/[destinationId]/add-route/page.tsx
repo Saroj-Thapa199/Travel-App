@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RouteForm } from "./route-form";
 import RouteSegmentSection from "./route-segment-section";
+import AddRouteTabs from "./AddRouteTabs";
 
 const page = () => {
   return (
@@ -16,7 +17,8 @@ const page = () => {
       </div>
 
       <div className="mx-auto max-w-4xl">
-        <Tabs defaultValue="route-form">
+        <AddRouteTabs />
+        {/* <Tabs defaultValue="route-form">
           <TabsList className="mb-6 w-full">
             <TabsTrigger value="route-form" className="cursor-pointer">
               Add route
@@ -31,7 +33,7 @@ const page = () => {
           <TabsContent value="route-segment-form">
             <RouteSegmentSection />
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
       </div>
     </main>
   );

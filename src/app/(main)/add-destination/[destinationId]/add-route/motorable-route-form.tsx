@@ -25,7 +25,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MotorableRouteType, transportTypeEnum } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import WarningsInput from "./WarningsInput";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import MotorableRouteDialog from "./MotorableRouteDialog";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -33,13 +33,10 @@ import { createMotorableRoute } from "@/lib/actions/route";
 
 interface MotorableRouteFormProps {
   form: UseFormReturn<Omit<MotorableRouteType, "_id">>;
-  onCancel: () => void;
+  setTab: Dispatch<SetStateAction<string>>;
 }
 
-export function MotorableRouteForm({
-  form,
-  onCancel,
-}: MotorableRouteFormProps) {
+export function MotorableRouteForm({ form, setTab }: MotorableRouteFormProps) {
   const [motorableDialogOpen, setMotorableDialogOpen] = useState(false);
   const [motorableData, setMotorableData] = useState<
     Omit<MotorableRouteType, "_id">
@@ -56,8 +53,11 @@ export function MotorableRouteForm({
     data: Omit<MotorableRouteType, "_id">,
   ) => {
     setLoading(true);
-    const { error } = await createMotorableRoute(data);
-    setErrorMsg(error);
+    setErrorMsg(undefined);
+    const response = await createMotorableRoute(data);
+    if (!response.success) {
+      setErrorMsg(response.error);
+    }
     setLoading(false);
   };
 
@@ -401,18 +401,13 @@ export function MotorableRouteForm({
               )}
             />
 
-            <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-              <Button type="submit" className="flex-1">
-                Create Route Segment
-              </Button>
+            <div className="flex sm:justify-end">
               <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
+                type="submit"
                 disabled={loading}
-                className="flex-1 bg-transparent"
+                className="max-sm:flex-1"
               >
-                Cancel
+                Create Route Segment
               </Button>
             </div>
           </form>
@@ -424,6 +419,7 @@ export function MotorableRouteForm({
           setMotorableDialogOpen={setMotorableDialogOpen}
           handleSubmit={handleCreateMotorableRoute}
           loading={loading}
+          setTab={setTab}
         />
       </CardContent>
     </Card>

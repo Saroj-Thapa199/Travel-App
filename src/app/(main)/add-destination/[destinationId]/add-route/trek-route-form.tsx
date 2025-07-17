@@ -19,9 +19,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { X, Plus } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { TrekRouteType } from "@/lib/RouteValidation";
 import { TagsInput } from "@/components/ui/tags-input";
 import SafetyTipsInput from "./SafetyTipsInput";
@@ -33,10 +33,10 @@ import { createTrekRoute } from "@/lib/actions/route";
 
 interface TrekRouteFormProps {
   form: UseFormReturn<Omit<TrekRouteType, "_id">>;
-  onCancel: () => void;
+  setTab: Dispatch<SetStateAction<string>>
 }
 
-export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
+export function TrekRouteForm({ form, setTab }: TrekRouteFormProps) {
   const [permits, setPermits] = useState<
     Array<{ name: string; cost?: string; where?: string }>
   >(form.getValues().permits || []);
@@ -58,8 +58,11 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
     data: Omit<TrekRouteType, "_id">,
   ) => {
     setLoading(true);
-    const { error } = await createTrekRoute(data);
-    setErrorMsg(error);
+    setErrorMsg(undefined)
+    const response = await createTrekRoute(data);
+    if (!response.success) {
+      setErrorMsg(response.error);
+    }
     setLoading(false);
   };
 
@@ -75,7 +78,10 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full gap-3">
+       <CardHeader className="text-center">
+        {errorMsg && <span className="text-destructive">{errorMsg}</span>}
+      </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -432,17 +438,9 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
               <SafetyTipsInput form={form} />
             </div>
 
-            <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-              <Button type="submit" className="flex-1">
+            <div className="flex sm:justify-end">
+              <Button type="submit" disabled={loading} className="max-sm:flex-1">
                 Create Route Segment
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                className="flex-1 bg-transparent"
-              >
-                Cancel
               </Button>
             </div>
           </form>
@@ -453,6 +451,8 @@ export function TrekRouteForm({ form, onCancel }: TrekRouteFormProps) {
           trekDialogOpen={trekDialogOpen}
           setTrekDialogOpen={setTrekDialogOpen}
           handleSubmit={handleCreateMotorableRoute}
+          loading={loading}
+          setTab={setTab}
         />
       </CardContent>
     </Card>

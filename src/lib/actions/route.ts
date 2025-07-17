@@ -12,7 +12,7 @@ import TrekRoute from "@/model/TrekRoute";
 
 export const createMotorableRoute = async (
   values: Omit<MotorableRouteType, "_id">,
-) => {
+): Promise<{ success: true } | { success: false; error: string }> => {
   try {
     const { success, data, error } = motorableRouteSchema
       .omit({ _id: true })
@@ -20,7 +20,10 @@ export const createMotorableRoute = async (
 
     if (!success) {
       console.log(error.message);
-      return { error: "Please fill out the form properly!" };
+      return {
+        success: false,
+        error: "Please fill out the form properly!",
+      };
     }
 
     await dbConnect();
@@ -29,21 +32,34 @@ export const createMotorableRoute = async (
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    return { error: "success" };
-    // const motorableRoute = await MotorableRoute.create(data)
+    const motorableRoute = await MotorableRoute.create(data);
+
+    return {
+      success: true,
+    };
   } catch (error) {
     console.error(error);
-    return { error: "Something went wrong. PLease try again" };
+    return {
+      success: false,
+      error: "Something went wrong. PLease try again",
+    };
   }
 };
 
-export const createTrekRoute = async (values: Omit<TrekRouteType, "_id">) => {
+export const createTrekRoute = async (
+  values: Omit<TrekRouteType, "_id">,
+): Promise<{ success: true } | { success: false; error: string }> => {
   try {
-    const { success, data, error } = await trekRouteSchema.safeParse(values);
+    const { success, data, error } = trekRouteSchema
+      .omit({ _id: true })
+      .safeParse(values);
 
     if (!success) {
       console.log(error.message);
-      return { error: "Please fill out the form properly!" };
+      return {
+        success: false,
+        error: "Please fill out the form properly!",
+      };
     }
 
     await dbConnect();
@@ -52,11 +68,16 @@ export const createTrekRoute = async (values: Omit<TrekRouteType, "_id">) => {
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    return { error: "success" };
-
     const trekRoute = await TrekRoute.create(data);
+
+    return {
+      success: true,
+    };
   } catch (error) {
     console.error(error);
-    return { error: "Something went wrong. PLease try again" };
+    return {
+      success: false,
+      error: "Something went wrong. PLease try again",
+    };
   }
 };

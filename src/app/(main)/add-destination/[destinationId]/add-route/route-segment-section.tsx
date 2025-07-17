@@ -15,8 +15,13 @@ import { Car, Footprints } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { MotorableRouteForm } from "./motorable-route-form";
 import { TrekRouteForm } from "./trek-route-form";
+import { Dispatch, SetStateAction } from "react";
 
-const RouteSegmentSection = () => {
+type RouteSegmentSectionProps = {
+  setTab: Dispatch<SetStateAction<string>>
+}
+
+const RouteSegmentSection = ({setTab}: RouteSegmentSectionProps) => {
   const motorableForm = useForm<Omit<MotorableRouteType, "_id">>({
     resolver: zodResolver(
       motorableRouteSchema.omit({
@@ -36,27 +41,32 @@ const RouteSegmentSection = () => {
       // fuelAvailability: { hasStations: true, recommendedStops: [] },
       // warnings: [],
       from: "Kathmandu",
-  to: "Pokhara",
-  distance: 200,
-  duration: "6-8 hours",
-  availableServices: ["Tourist Bus", "Microbus"],
-  fareRange: "NPR 500 - 1200",
-  bookingInfo: "Tickets can be booked online via travel portals or bus stations.",
-  frequency: "Every 30 minutes during peak hours",
-  route: "Take the Prithvi Highway via Muglin and Damauli. Scenic route with river views.",
-  roadCondition: {
-    type: "Fair",
-    description: "Occasional potholes around Muglin area; otherwise smooth."
-  },
-  fuelAvailability: {
-    hasStations: true,
-    description: "Fuel available in Muglin and Damauli areas.",
-    recommendedStops: ["Muglin", "Damauli"]
-  },
-  landmarks: ["Trishuli River", "Manakamana Cable Car"],
-  warnings: ["Landslides possible during monsoon", "Heavy traffic in the morning"],
-  note: "Ideal to travel early morning to avoid traffic jams."
-
+      to: "Pokhara",
+      distance: 200,
+      duration: "6-8 hours",
+      availableServices: ["Tourist Bus", "Microbus"],
+      fareRange: "NPR 500 - 1200",
+      bookingInfo:
+        "Tickets can be booked online via travel portals or bus stations.",
+      frequency: "Every 30 minutes during peak hours",
+      route:
+        "Take the Prithvi Highway via Muglin and Damauli. Scenic route with river views.",
+      roadCondition: {
+        type: "Fair",
+        description:
+          "Occasional potholes around Muglin area; otherwise smooth.",
+      },
+      fuelAvailability: {
+        hasStations: true,
+        description: "Fuel available in Muglin and Damauli areas.",
+        recommendedStops: ["Muglin", "Damauli"],
+      },
+      landmarks: ["Trishuli River", "Manakamana Cable Car"],
+      warnings: [
+        "Landslides possible during monsoon",
+        "Heavy traffic in the morning",
+      ],
+      note: "Ideal to travel early morning to avoid traffic jams.",
     },
   });
 
@@ -78,74 +88,74 @@ const RouteSegmentSection = () => {
       // packingList: [],
       // safetyTips: [],
       trekName: "Everest Base Camp Trek",
-  startingPoint: "Lukla",
-  destinationPoint: "Everest Base Camp",
-  duration: {
-    roundTrip: "12-14 days",
-    oneWay: "6-7 days",
-  },
-  difficulty: "Challenging",
-  elevation: {
-    start: 2860,
-    max: 5364,
-    gain: 2504,
-  },
-  permits: [
-    {
-      name: "Sagarmatha National Park Entry Permit",
-      cost: "NPR 3000",
-      where: "Available at Nepal Tourism Board Office or Monjo checkpoint",
-    },
-    {
-      name: "Khumbu Pasang Lhamu Rural Municipality Permit",
-      cost: "NPR 2000",
-      where: "Issued at Lukla",
-    },
-  ],
-  teahouses: {
-    available: true,
-    locations: [
-      "Phakding",
-      "Namche Bazaar",
-      "Tengboche",
-      "Dingboche",
-      "Lobuche",
-      "Gorak Shep",
-    ],
-  },
-  bestSeason: ["Spring", "Autumn"],
-  highlights: [
-    "Panoramic views of Mount Everest and nearby peaks",
-    "Cultural experience in Sherpa villages",
-    "Visit to Tengboche Monastery",
-    "Scenic flight to Lukla",
-  ],
-  packingList: [
-    "Down jacket and thermal layers",
-    "Trekking boots with good grip",
-    "Sunscreen and sunglasses",
-    "Water purification tablets",
-    "First-aid kit",
-  ],
-  safetyTips: [
-    "Ascend gradually to avoid altitude sickness",
-    "Stay hydrated and carry purification tablets",
-    "Listen to your guide and acclimatize properly",
-  ],
-  recommendedItinerary: [
-    "Fly to Lukla and trek to Phakding",
-    "Trek to Namche Bazaar",
-    "Acclimatization day in Namche Bazaar",
-    "Trek to Tengboche",
-    "Trek to Dingboche",
-    "Acclimatization day in Dingboche",
-    "Trek to Lobuche",
-    "Trek to Gorak Shep and hike to Everest Base Camp",
-    "Hike to Kala Patthar and return to Pheriche",
-    "Trek to Namche Bazaar",
-    "Trek to Lukla",
-    "Fly back to Kathmandu",
-  ],
+      startingPoint: "Lukla",
+      destinationPoint: "Everest Base Camp",
+      duration: {
+        roundTrip: "12-14 days",
+        oneWay: "6-7 days",
+      },
+      difficulty: "Challenging",
+      elevation: {
+        start: 2860,
+        max: 5364,
+        gain: 2504,
+      },
+      permits: [
+        {
+          name: "Sagarmatha National Park Entry Permit",
+          cost: "NPR 3000",
+          where: "Available at Nepal Tourism Board Office or Monjo checkpoint",
+        },
+        {
+          name: "Khumbu Pasang Lhamu Rural Municipality Permit",
+          cost: "NPR 2000",
+          where: "Issued at Lukla",
+        },
+      ],
+      teahouses: {
+        available: true,
+        locations: [
+          "Phakding",
+          "Namche Bazaar",
+          "Tengboche",
+          "Dingboche",
+          "Lobuche",
+          "Gorak Shep",
+        ],
+      },
+      bestSeason: ["Spring", "Autumn"],
+      highlights: [
+        "Panoramic views of Mount Everest and nearby peaks",
+        "Cultural experience in Sherpa villages",
+        "Visit to Tengboche Monastery",
+        "Scenic flight to Lukla",
+      ],
+      packingList: [
+        "Down jacket and thermal layers",
+        "Trekking boots with good grip",
+        "Sunscreen and sunglasses",
+        "Water purification tablets",
+        "First-aid kit",
+      ],
+      safetyTips: [
+        "Ascend gradually to avoid altitude sickness",
+        "Stay hydrated and carry purification tablets",
+        "Listen to your guide and acclimatize properly",
+      ],
+      recommendedItinerary: [
+        "Fly to Lukla and trek to Phakding",
+        "Trek to Namche Bazaar",
+        "Acclimatization day in Namche Bazaar",
+        "Trek to Tengboche",
+        "Trek to Dingboche",
+        "Acclimatization day in Dingboche",
+        "Trek to Lobuche",
+        "Trek to Gorak Shep and hike to Everest Base Camp",
+        "Hike to Kala Patthar and return to Pheriche",
+        "Trek to Namche Bazaar",
+        "Trek to Lukla",
+        "Fly back to Kathmandu",
+      ],
     },
   });
 
@@ -153,7 +163,7 @@ const RouteSegmentSection = () => {
     <Accordion
       type="single"
       collapsible
-      className="w-full aria-invalid:ring-destructive/20"
+      className="aria-invalid:ring-destructive/20 w-full"
       defaultValue="motorable-route-form"
     >
       <AccordionItem value="motorable-route-form">
@@ -164,7 +174,7 @@ const RouteSegmentSection = () => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <MotorableRouteForm form={motorableForm} onCancel={() => {}} />
+          <MotorableRouteForm form={motorableForm} setTab={setTab} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="trek-route-form">
@@ -175,7 +185,7 @@ const RouteSegmentSection = () => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <TrekRouteForm form={trekForm} onCancel={() => {}} />
+          <TrekRouteForm form={trekForm} setTab={setTab} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">

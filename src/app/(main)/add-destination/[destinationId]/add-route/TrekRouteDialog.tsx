@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingButton from "@/components/LoadingButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,8 @@ type TrekRouteDialogProps = {
   trekDialogOpen: boolean;
   setTrekDialogOpen: Dispatch<SetStateAction<boolean>>;
   handleSubmit: (data: Omit<TrekRouteType, "_id">) => Promise<void>;
+  loading: boolean;
+  setTab: Dispatch<SetStateAction<string>>;
 };
 
 const getDifficultyColor = (difficulty: string) => {
@@ -79,10 +82,13 @@ const TrekRouteDialog = ({
   trekDialogOpen,
   setTrekDialogOpen,
   handleSubmit,
+  loading,
+  setTab,
 }: TrekRouteDialogProps) => {
   const handleConfirm = async () => {
     await handleSubmit(trekData);
     setTrekDialogOpen(false);
+    setTab("route-form");
   };
 
   return (
@@ -424,10 +430,16 @@ const TrekRouteDialog = ({
           )}
 
           <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setTrekDialogOpen(false)}>
+            <Button
+              disabled={loading}
+              variant="outline"
+              onClick={() => setTrekDialogOpen(false)}
+            >
               Cancel
             </Button>
-            <Button onClick={handleConfirm}>Confirm & Add Trek</Button>
+            <LoadingButton loading={loading} onClick={handleConfirm}>
+              Confirm & Add Trek
+            </LoadingButton>
           </DialogFooter>
         </ScrollArea>
       </DialogContent>
