@@ -1,9 +1,16 @@
+"use client"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { RouteForm } from "./route-form";
 import RouteSegmentSection from "./route-segment-section";
 
-const AddRouteTabs = () => {
+type AddRouteTabsProps = {
+  destinationId: string;
+  destinationName: string
+};
+
+const AddRouteTabs = ({ destinationId, destinationName }: AddRouteTabsProps) => {
   const [tab, setTab] = useState("route-form");
   return (
     <Tabs value={tab} onValueChange={setTab}>
@@ -16,7 +23,7 @@ const AddRouteTabs = () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="route-form">
-        <RouteForm />
+        <RouteForm destinationId={destinationId} destinationName={destinationName} />
       </TabsContent>
       <TabsContent value="route-segment-form">
         <RouteSegmentSection setTab={setTab} />

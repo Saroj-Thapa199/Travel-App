@@ -1,3 +1,4 @@
+import { MotorableRouteType, TrekRouteType } from "./RouteValidation";
 import { DestinationType, ReviewType } from "./validation";
 
 export type DestinationFormType = Omit<
@@ -16,7 +17,7 @@ export type DestinationsPage = {
 };
 
 export type ReviewStatApiResponse = {
-  averageRating: number
+  averageRating: number;
   totalCount: number;
   ratings: {
     1: number;
@@ -26,3 +27,12 @@ export type ReviewStatApiResponse = {
     5: number;
   };
 };
+
+type DestinationRoute = {
+  _id: string;
+  destination: string;
+  motorableRoute: MotorableRouteType[];
+  trekRoute: TrekRouteType[];
+}
+
+export type RouteApiResponse = DestinationRoute[]

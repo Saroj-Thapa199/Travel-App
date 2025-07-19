@@ -7,7 +7,7 @@ export const transportTypeEnum = z.enum([
   "Tourist Bus",
   "Jeep",
   "Microbus",
-  "Sumo"
+  "Sumo",
 ]);
 
 export const motorableRouteSchema = z.object({
@@ -52,11 +52,10 @@ export const trekRouteSchema = z.object({
   trekName: requiredString(),
   startingPoint: requiredString(),
   destinationPoint: z.string().optional(),
-  duration: z
-    .object({
-      roundTrip: requiredString(),
-      oneWay: requiredString().optional(),
-    }),
+  duration: z.object({
+    roundTrip: requiredString(),
+    oneWay: requiredString().optional(),
+  }),
   difficulty: z.enum([
     "Easy",
     "Moderate",
@@ -72,8 +71,7 @@ export const trekRouteSchema = z.object({
     })
     .optional(),
   permits: z.array(permitSchema),
-  teahouses: z
-  .object({
+  teahouses: z.object({
     available: z.boolean(),
     locations: z.array(requiredString()),
   }),
@@ -86,10 +84,9 @@ export const trekRouteSchema = z.object({
 
 export type TrekRouteType = z.infer<typeof trekRouteSchema>;
 
-export const routeSchema = z
+export const routeFormSchema = z
   .object({
-    _id: z.preprocess((val) => val?.toString(), z.string()),
-    destination: z.preprocess((val) => val?.toString(), z.string()),
+    destination: requiredString(),
     motorableRoute: z.array(requiredString()).optional(),
     trekRoute: z.array(requiredString()).optional(),
   })
@@ -104,4 +101,4 @@ export const routeSchema = z
     },
   );
 
-export type RouteType = z.infer<typeof routeSchema>;
+export type RouteFormType = z.infer<typeof routeFormSchema>;

@@ -1,11 +1,27 @@
-"use client";
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RouteForm } from "./route-form";
-import RouteSegmentSection from "./route-segment-section";
+import Destination from "@/model/Destination";
 import AddRouteTabs from "./AddRouteTabs";
+import { redirect } from "next/navigation";
+import mongoose from "mongoose";
+import dbConnect from "@/lib/dbConnect";
 
-const page = () => {
+const page = async ({
+  params,
+}: {
+  params: Promise<{ destinationId: string }>;
+}) => {
+  const { destinationId } = await params;
+
+  if (!mongoose.Types.ObjectId.isValid(destinationId)) {
+    return redirect("/");
+  }
+
+  dbConnect();
+
+  const destination = await Destination.findById(destinationId, "name");
+
+  if (!destination) {
+    return redirect("/");
+  }
   return (
     <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       <div className="mx-auto my-6 max-w-3xl text-center">
@@ -17,23 +33,7 @@ const page = () => {
       </div>
 
       <div className="mx-auto max-w-4xl">
-        <AddRouteTabs />
-        {/* <Tabs defaultValue="route-form">
-          <TabsList className="mb-6 w-full">
-            <TabsTrigger value="route-form" className="cursor-pointer">
-              Add route
-            </TabsTrigger>
-            <TabsTrigger value="route-segment-form" className="cursor-pointer">
-              Create route segments
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="route-form">
-            <RouteForm />
-          </TabsContent>
-          <TabsContent value="route-segment-form">
-            <RouteSegmentSection />
-          </TabsContent>
-        </Tabs> */}
+        <AddRouteTabs destinationId={destinationId} destinationName={destination.name} />
       </div>
     </main>
   );

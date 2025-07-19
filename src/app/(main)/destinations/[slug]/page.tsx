@@ -86,7 +86,7 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
               </div>
             </TabsContent>
             <TabsContent value="routes">
-              <RouteSection destinationRoute={destination.destinationRoute} />
+              <RouteSection destinationId={destination._id} />
             </TabsContent>
             <TabsContent value="attractions">
               Change your password here.

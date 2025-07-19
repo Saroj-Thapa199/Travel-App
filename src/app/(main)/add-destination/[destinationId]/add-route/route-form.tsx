@@ -1,238 +1,156 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { X, Car, Mountain, MapPin, ArrowRight } from "lucide-react"
-import { useState } from "react"
-import { RouteSegmentSearch } from "./route-segment-search"
-import { MotorableRouteForm } from "./motorable-route-form"
-import { TrekRouteForm } from "./trek-route-form"
-import { MotorableRouteType, routeSchema, RouteType, TrekRouteType } from "@/lib/RouteValidation"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { X, Car, Mountain, MapPin, ArrowRight } from "lucide-react";
+import { useState, useTransition } from "react";
+import {
+  MotorableRouteType,
+  routeFormSchema,
+  RouteFormType,
+  TrekRouteType,
+} from "@/lib/RouteValidation";
+import MotorableRouteSearch from "./motorable-route-search";
+import TrekRouteSearch from "./trek-route-search";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import TrekRouteInfo from "@/components/TrekRouteInfo";
+import { createDestinationRoute } from "@/lib/actions/route";
+import LoadingButton from "@/components/LoadingButton";
+import MotorableRouteInfo from "@/components/MotorableRouteInfo";
 
-// Mock data for existing routes
-const mockMotorableRoutes: MotorableRouteType[] = [
-  {
-    _id: "1",
-    from: "Kathmandu",
-    to: "Pokhara",
-    distance: 200,
-    duration: "6-7 hours",
-    availableServices: ["Tourist Bus", "Deluxe Bus"],
-    fareRange: "NPR 800-1500",
-    route: "Via Prithvi Highway",
-    roadCondition: { type: "Good" },
-    fuelAvailability: { hasStations: true },
-  },
-  {
-    _id: "2",
-    from: "Pokhara",
-    to: "Jomsom",
-    distance: 150,
-    duration: "8-10 hours",
-    availableServices: ["Jeep", "Local Bus"],
-    fareRange: "NPR 2000-3000",
-    route: "Via Beni and Tatopani",
-    roadCondition: { type: "Fair" },
-    fuelAvailability: { hasStations: false },
-  },
-  {
-    _id: "3",
-    from: "Kathmandu",
-    to: "Chitwan",
-    distance: 180,
-    duration: "5-6 hours",
-    availableServices: ["Tourist Bus", "Local Bus"],
-    fareRange: "NPR 600-1200",
-    route: "Via Mugling",
-    roadCondition: { type: "Good" },
-    fuelAvailability: { hasStations: true },
-  },
-]
+type RouteFormProps = {
+  destinationId: string;
+  destinationName: string;
+};
 
-const mockTrekRoutes: TrekRouteType[] = [
-  {
-    _id: "4",
-    trekName: "Everest Base Camp Trek",
-    startingPoint: "Lukla",
-    difficulty: "Challenging",
-    teahouses: true,
-  },
-  {
-    _id: "5",
-    trekName: "Annapurna Circuit Trek",
-    startingPoint: "Besisahar",
-    difficulty: "Moderate",
-    teahouses: true,
-  },
-  {
-    _id: "6",
-    trekName: "Langtang Valley Trek",
-    startingPoint: "Syabrubesi",
-    difficulty: "Moderate",
-    teahouses: true,
-  },
-]
+export function RouteForm({ destinationId, destinationName }: RouteFormProps) {
+  const [selectedMotorableRoutes, setSelectedMotorableRoutes] = useState<
+    MotorableRouteType[]
+  >([]);
+  const [selectedTrekRoutes, setSelectedTrekRoutes] = useState<TrekRouteType[]>(
+    [],
+  );
+  const [error, setError] = useState<string>();
+  const [isPending, startTransition] = useTransition();
 
-export function RouteForm() {
-  const [selectedMotorableRoutes, setSelectedMotorableRoutes] = useState<MotorableRouteType[]>([])
-  const [selectedTrekRoutes, setSelectedTrekRoutes] = useState<TrekRouteType[]>([])
-  const [motorableRoutes, setMotorableRoutes] = useState<MotorableRouteType[]>(mockMotorableRoutes)
-  const [trekRoutes, setTrekRoutes] = useState<TrekRouteType[]>(mockTrekRoutes)
-
-  const [showMotorableForm, setShowMotorableForm] = useState(false)
-  const [showTrekForm, setShowTrekForm] = useState(false)
-  const [motorableSearchQuery, setMotorableSearchQuery] = useState("")
-  const [trekSearchQuery, setTrekSearchQuery] = useState("")
-
-  const form = useForm<RouteType>({
-    resolver: zodResolver(routeSchema),
-    defaultValues: {
-      _id: crypto.randomUUID(),
-      destination: "",
+  const form = useForm<RouteFormType>({
+    resolver: zodResolver(routeFormSchema),
+    values: {
+      destination: destinationId,
+      motorableRoute: selectedMotorableRoutes.map((route) => route._id),
+      trekRoute: selectedTrekRoutes.map((route) => route._id),
     },
-  })
+  });
 
-  const handleSubmit = (data: RouteType) => {
-    const finalData = {
-      ...data,
-      motorableRoute: selectedMotorableRoutes.length > 0 ? selectedMotorableRoutes.map((r) => r._id) : undefined,
-      trekRoute: selectedTrekRoutes.length > 0 ? selectedTrekRoutes.map((r) => r._id) : undefined,
-    }
+  const values = form.watch();
 
-    console.log("Route submitted:", finalData)
-    console.log("Selected motorable routes:", selectedMotorableRoutes)
-    console.log("Selected trek routes:", selectedTrekRoutes)
-    // Here you would typically send the data to your API
-  }
+  console.log(values);
 
-  const handleMotorableRouteCreated = (newRoute: MotorableRouteType) => {
-    setMotorableRoutes([...motorableRoutes, newRoute])
-    setSelectedMotorableRoutes([...selectedMotorableRoutes, newRoute])
-    setShowMotorableForm(false)
-    setMotorableSearchQuery("")
-  }
+  const handleSubmit = (data: RouteFormType) => {
+    setError(undefined);
 
-  const handleTrekRouteCreated = (newRoute: TrekRouteType) => {
-    setTrekRoutes([...trekRoutes, newRoute])
-    setSelectedTrekRoutes([...selectedTrekRoutes, newRoute])
-    setShowTrekForm(false)
-    setTrekSearchQuery("")
-  }
+    startTransition(async () => {
+      const { error } = await createDestinationRoute(values);
+      if (error) setError(error);
+    });
+  };
 
-  const handleMotorableSegmentSelect = (segment: MotorableRouteType | TrekRouteType) => {
-    const motorableSegment = segment as MotorableRouteType
+  const handleMotorableSegmentSelect = (
+    motorableSegment: MotorableRouteType,
+  ) => {
     if (!selectedMotorableRoutes.find((r) => r._id === motorableSegment._id)) {
-      setSelectedMotorableRoutes([...selectedMotorableRoutes, motorableSegment])
+      setSelectedMotorableRoutes([
+        ...selectedMotorableRoutes,
+        motorableSegment,
+      ]);
     }
-  }
+  };
 
-  const handleTrekSegmentSelect = (segment: MotorableRouteType | TrekRouteType) => {
-    const trekSegment = segment as TrekRouteType
+  const handleTrekSegmentSelect = (trekSegment: TrekRouteType) => {
     if (!selectedTrekRoutes.find((r) => r._id === trekSegment._id)) {
-      setSelectedTrekRoutes([...selectedTrekRoutes, trekSegment])
+      setSelectedTrekRoutes([...selectedTrekRoutes, trekSegment]);
     }
-  }
+  };
 
   const removeMotorableRoute = (routeId: string) => {
-    setSelectedMotorableRoutes((prev) => prev.filter((r) => r._id !== routeId))
-  }
+    setSelectedMotorableRoutes((prev) => prev.filter((r) => r._id !== routeId));
+  };
 
   const removeTrekRoute = (routeId: string) => {
-    setSelectedTrekRoutes((prev) => prev.filter((r) => r._id !== routeId))
-  }
-
-  const handleCreateMotorableRoute = (searchQuery: string) => {
-    setMotorableSearchQuery(searchQuery)
-    setShowMotorableForm(true)
-  }
-
-  const handleCreateTrekRoute = (searchQuery: string) => {
-    setTrekSearchQuery(searchQuery)
-    setShowTrekForm(true)
-  }
-
-  if (showMotorableForm) {
-    return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <MotorableRouteForm
-          onSubmit={handleMotorableRouteCreated}
-          onCancel={() => {
-            setShowMotorableForm(false)
-            setMotorableSearchQuery("")
-          }}
-          initialFromTo={motorableSearchQuery}
-        />
-      </div>
-    )
-  }
-
-  if (showTrekForm) {
-    return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <TrekRouteForm
-          onSubmit={handleTrekRouteCreated}
-          onCancel={() => {
-            setShowTrekForm(false)
-            setTrekSearchQuery("")
-          }}
-          initialQuery={trekSearchQuery}
-        />
-      </div>
-    )
-  }
+    setSelectedTrekRoutes((prev) => prev.filter((r) => r._id !== routeId));
+  };
 
   return (
-    <div className="">
+    <div className="space-y-5">
+      {error && <div className="text-destructive text-center">{error}</div>}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-6 w-6" />
-            Create New Route
+            <MapPin className="size-8" />
+            <div className="flex flex-col pt-1">
+              <span>Create New Route</span>
+              <span className="text-muted-foreground text-sm">
+                {destinationName}
+              </span>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-6"
+            >
               <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Car className="h-5 w-5" />
-                    <h3 className="text-lg font-semibold">Motorable Route Segments</h3>
+                    <h3 className="text-lg font-semibold">
+                      Motorable Route Segments
+                    </h3>
                   </div>
 
-                  <RouteSegmentSearch
-                    type="motorable"
+                  <MotorableRouteSearch
                     onSegmentSelect={handleMotorableSegmentSelect}
-                    onCreateNew={handleCreateMotorableRoute}
                     selectedSegments={selectedMotorableRoutes.map((r) => r._id)}
-                    availableSegments={motorableRoutes}
                   />
 
                   {selectedMotorableRoutes.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="font-medium text-sm text-muted-foreground">Selected Motorable Routes</h4>
+                      <h4 className="text-muted-foreground text-sm font-medium">
+                        Selected Motorable Routes
+                      </h4>
                       <div className="space-y-2">
                         {selectedMotorableRoutes.map((route, index) => (
-                          <div key={route._id} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium">
+                          <div
+                            key={route._id}
+                            className="bg-muted/30 flex items-center gap-3 rounded-lg border p-3"
+                          >
+                            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                              <span className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
                                 {index + 1}
                               </span>
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium">{route.from}</span>
-                                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">
+                                  {route.from}
+                                </span>
+                                <ArrowRight className="text-muted-foreground h-4 w-4" />
                                 <span className="font-medium">{route.to}</span>
                               </div>
-                              <p className="text-sm text-muted-foreground">
-                                {route.distance}km • {route.duration} • {route.fareRange}
+                              <p className="text-muted-foreground text-sm">
+                                {route.distance}km • {route.duration} •{" "}
+                                {route.fareRange}
                               </p>
                             </div>
                             <Button
@@ -255,32 +173,39 @@ export function RouteForm() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Mountain className="h-5 w-5" />
-                    <h3 className="text-lg font-semibold">Trek Route Segments</h3>
+                    <h3 className="text-lg font-semibold">
+                      Trek Route Segments
+                    </h3>
                   </div>
 
-                  <RouteSegmentSearch
-                    type="trek"
+                  <TrekRouteSearch
                     onSegmentSelect={handleTrekSegmentSelect}
-                    onCreateNew={handleCreateTrekRoute}
                     selectedSegments={selectedTrekRoutes.map((r) => r._id)}
-                    availableSegments={trekRoutes}
                   />
 
                   {selectedTrekRoutes.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="font-medium text-sm text-muted-foreground">Selected Trek Routes</h4>
+                      <h4 className="text-muted-foreground text-sm font-medium">
+                        Selected Trek Routes
+                      </h4>
                       <div className="space-y-2">
                         {selectedTrekRoutes.map((route, index) => (
-                          <div key={route._id} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium">
+                          <div
+                            key={route._id}
+                            className="bg-muted/30 flex items-center gap-3 rounded-lg border p-3"
+                          >
+                            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                              <span className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
                                 {index + 1}
                               </span>
                             </div>
                             <div className="flex-1">
-                              <div className="font-medium">{route.trekName}</div>
-                              <p className="text-sm text-muted-foreground">
-                                Starting from: {route.startingPoint} • {route.difficulty}
+                              <div className="font-medium">
+                                {route.trekName}
+                              </div>
+                              <p className="text-muted-foreground text-sm">
+                                Starting from: {route.startingPoint} •{" "}
+                                {route.difficulty}
                               </p>
                             </div>
                             <Button
@@ -302,14 +227,18 @@ export function RouteForm() {
               <Separator />
 
               <div className="pt-4">
-                <Button
+                <LoadingButton
                   type="submit"
+                  loading={isPending}
                   className="w-full"
                   size="lg"
-                  disabled={selectedMotorableRoutes.length === 0 && selectedTrekRoutes.length === 0}
+                  disabled={
+                    selectedMotorableRoutes.length === 0 &&
+                    selectedTrekRoutes.length === 0
+                  }
                 >
                   Create Route
-                </Button>
+                </LoadingButton>
               </div>
             </form>
           </Form>
@@ -317,7 +246,8 @@ export function RouteForm() {
       </Card>
 
       {/* Route Summary */}
-      {(selectedMotorableRoutes.length > 0 || selectedTrekRoutes.length > 0) && (
+      {(selectedMotorableRoutes.length > 0 ||
+        selectedTrekRoutes.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Route Summary</CardTitle>
@@ -326,35 +256,49 @@ export function RouteForm() {
             <div className="space-y-4">
               {selectedMotorableRoutes.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                  <h4 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-medium">
                     <Car className="h-4 w-4" />
                     MOTORABLE ROUTE SEGMENTS ({selectedMotorableRoutes.length})
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <Accordion type="multiple" className="w-full">
                     {selectedMotorableRoutes.map((route, index) => (
-                      <Badge key={route._id} variant="secondary" className="flex items-center gap-1">
-                        <span className="text-xs">{index + 1}.</span>
-                        {route.from} → {route.to}
-                      </Badge>
+                      <AccordionItem key={route._id} value={route._id}>
+                        <AccordionTrigger>
+                          <div>
+                            <span>{index + 1}. </span>
+                            {route.from} to {route.to}
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="w-full">
+                          <MotorableRouteInfo motorableData={route} />
+                        </AccordionContent>
+                      </AccordionItem>
                     ))}
-                  </div>
+                  </Accordion>
                 </div>
               )}
 
               {selectedTrekRoutes.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                  <h4 className="text-muted-foreground mb-3 flex items-center gap-2 text-sm font-medium">
                     <Mountain className="h-4 w-4" />
                     TREK ROUTE SEGMENTS ({selectedTrekRoutes.length})
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <Accordion type="multiple" className="w-full">
                     {selectedTrekRoutes.map((route, index) => (
-                      <Badge key={route._id} variant="secondary" className="flex items-center gap-1">
-                        <span className="text-xs">{index + 1}.</span>
-                        {route.trekName}
-                      </Badge>
+                      <AccordionItem key={route._id} value={route._id}>
+                        <AccordionTrigger>
+                          <div>
+                            <span>{index + 1}. </span>
+                            {route.trekName}
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="w-full">
+                          <TrekRouteInfo trekData={route} />
+                        </AccordionContent>
+                      </AccordionItem>
                     ))}
-                  </div>
+                  </Accordion>
                 </div>
               )}
             </div>
@@ -362,5 +306,5 @@ export function RouteForm() {
         </Card>
       )}
     </div>
-  )
+  );
 }

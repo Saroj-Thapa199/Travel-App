@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Plus, Check } from "lucide-react"
 import type { MotorableRouteType, TrekRouteType } from "@/lib/schemas"
+import {useDebounce} from "use-debounce"
 
 interface RouteSegmentSearchProps {
   type: "motorable" | "trek"
@@ -23,6 +24,11 @@ export function RouteSegmentSearch({
   selectedSegments,
   availableSegments,
 }: RouteSegmentSearchProps) {
+  const [from, setFrom] = useState("")
+  const [to, setTo] = useState("")
+
+  const [debouncedFrom] = useDebounce(from, 1000);
+  const [debouncedTo] = useDebounce(to, 1000);
   const [searchQuery, setSearchQuery] = useState("")
   const [showResults, setShowResults] = useState(false)
 

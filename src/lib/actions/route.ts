@@ -5,10 +5,16 @@ import dbConnect from "../dbConnect";
 import {
   motorableRouteSchema,
   MotorableRouteType,
+  routeFormSchema,
+  RouteFormType,
   trekRouteSchema,
   TrekRouteType,
 } from "../RouteValidation";
 import TrekRoute from "@/model/TrekRoute";
+import Route from "@/model/Route";
+import { redirect } from "next/navigation";
+import Destination from "@/model/Destination";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export const createMotorableRoute = async (
   values: Omit<MotorableRouteType, "_id">,
@@ -79,5 +85,31 @@ export const createTrekRoute = async (
       success: false,
       error: "Something went wrong. PLease try again",
     };
+  }
+};
+
+export const createDestinationRoute = async (values: RouteFormType) => {
+  try {
+    const { success, data, error } = routeFormSchema.safeParse(values);
+
+    if (!success) {
+      return { error: "Form field incorrectly" };
+    }
+
+    await dbConnect();
+
+    const destination = await Destination.findById(data.destination, "slug");
+
+    if (!destination) {
+      return { error: "Destination doesn't exists" };
+    }
+
+    await Route.create(data);
+
+    return redirect(`/destinations/${destination.slug}`);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.log(error);
+    return { error: "Something went wrong. PLease try again" };
   }
 };

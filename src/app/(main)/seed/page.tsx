@@ -23,13 +23,15 @@ import {
   MultiSelectTrigger,
   MultiSelectValue,
 } from "@/components/ui/multi-select";
-import { seedDestinations, seedReviews } from "@/lib/actions/seed";
+import { seedDestinations } from "@/lib/actions/seed/destination";
+import { seedReviews } from "@/lib/actions/seed/review";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { UserRound } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { seedMotorableRoutes } from "@/lib/actions/seed/motorableRoutes";
+import { seedTrekRoutes } from "@/lib/actions/seed/treKRoutes";
 
 const formSchema = z.object({
   favoriteFrameworks: z.array(z.string()).min(1, "Required"),
@@ -39,6 +41,8 @@ const formSchema = z.object({
 const page = () => {
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
+  const [loading4, setLoading4] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,26 +68,50 @@ const page = () => {
     setLoading2(false);
   };
 
+  const motorableRouteSeed = async () => {
+    setLoading3(true)
+    await seedMotorableRoutes()
+    setLoading3(false)
+  }
+
+  const trekRouteSeed = async () => {
+    setLoading4(true)
+    await seedTrekRoutes()
+    setLoading4(false)
+  }
+
   useEffect(() => {
     const fetchReviews = async () => {
-      // const res = await axios.get("/api/reviews/685286ab9840c4a1504186c8")
-      // const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c8/stats")
-      // const res2 = await axios.get("/api/reviews/685286ab9840c4a1504186c9/stats")
-      // console.log(res)
-      // console.log(res2.data)
+      const res = await axios.get("/api/reviews/685286ab9840c4a1504186c9")
+      console.log(res)
     };
 
-    fetchReviews();
+    // fetchReviews();
+
+    const fetchRouteSegments = async () => {
+      const res1 = await axios.get("/api/route-segments/motorable?from=kath")
+      const res2 = await axios.get("/api/route-segments/trek?name=everest")
+      console.log(res1.data)
+      console.log(res2.data)
+    }
+
+    // fetchRouteSegments()
   }, []);
 
   return (
-    <div className="grid h-screen w-full place-items-center">
+    <div className="grid h-screen w-full place-items-center py-15">
       <div className="mx-auto flex flex-col space-y-4">
         <LoadingButton loading={loading1} onClick={destinationSeed}>
           Seed Destinations
         </LoadingButton>
         <LoadingButton loading={loading2} onClick={reviewSeed}>
           Seed Reviews
+        </LoadingButton>
+        <LoadingButton loading={loading3} onClick={motorableRouteSeed}>
+          Seed Motorable Routes
+        </LoadingButton>
+        <LoadingButton loading={loading4} onClick={trekRouteSeed}>
+          Seed Trek Routes
         </LoadingButton>
         <ProtectedActionButton onClick={() => console.log("clicked")}>
           Continue
@@ -157,22 +185,6 @@ const page = () => {
             <Button type="submit">Submit</Button>
           </form>
         </Form>
-        {/* <MultiSelect>
-          <MultiSelectTrigger className="w-full max-w-[400px]">
-            <MultiSelectValue placeholder="Select frameworks..." />
-          </MultiSelectTrigger>
-          <MultiSelectContent>
-            <MultiSelectGroup>
-              <MultiSelectItem value="next.js">Next.js</MultiSelectItem>
-              <MultiSelectItem value="sveltekit">SvelteKit</MultiSelectItem>
-              <MultiSelectItem value="nuxt.js">Nuxt.js</MultiSelectItem>
-              <MultiSelectItem value="remix">Remix</MultiSelectItem>
-              <MultiSelectItem value="astro">Astro</MultiSelectItem>
-              <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
-              <MultiSelectItem value="react">React</MultiSelectItem>
-            </MultiSelectGroup>
-          </MultiSelectContent>
-        </MultiSelect> */}
       </div>
     </div>
   );
