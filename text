@@ -128,7 +128,7 @@ const MotorableRouteInfo = ({
 
             <InfoRow
               label="Fare Range"
-              value={motorableData.fareRange}
+              value={motorableData.fare}
               icon={<DollarSign className="h-3 w-3" />}
             />
 

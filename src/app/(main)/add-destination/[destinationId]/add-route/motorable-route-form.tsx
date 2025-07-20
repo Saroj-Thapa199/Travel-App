@@ -199,7 +199,7 @@ export function MotorableRouteForm({ form, setTab }: MotorableRouteFormProps) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="fareRange"
+                name="fare"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Fare Range</FormLabel>

@@ -14,6 +14,9 @@ import {
   Calendar,
   CheckCircle,
   XCircle,
+  FileText,
+  Map,
+  Construction,
 } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "./ui/button";
@@ -26,8 +29,6 @@ type MotorableRouteInfoProps = {
 const MotorableRouteInfo = ({
   motorableData,
   interactiveMode = false,
-  // showFull,
-  // setShowFull,
 }: MotorableRouteInfoProps) => {
   const [showFull, setShowFull] = useState(interactiveMode ? false : true);
 
@@ -113,7 +114,7 @@ const MotorableRouteInfo = ({
 
             <InfoRow
               label="Fare Range"
-              value={motorableData.fareRange}
+              value={motorableData.fare}
               icon={<DollarSign className="h-3 w-3" />}
             />
 
@@ -308,7 +309,7 @@ const MotorableRouteInfo = ({
       )}
     </div>
   ) : (
-    <div className="bg-muted/50 mb-4 rounded-lg p-3">
+    <div className="bg-muted/50 rounded-lg p-3 mb-4 border dark:border-none">
       {/* Header */}
       <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
@@ -319,18 +320,18 @@ const MotorableRouteInfo = ({
         </div>
         {interactiveMode ? (
           <div className="flex items-center gap-2 max-sm:justify-between">
-          <Badge variant="secondary" className="max-sm:ml-6">
-            Motorable Route
-          </Badge>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-xs"
-            onClick={() => setShowFull((prev) => !prev)}
-          >
-            {showFull ? "Show Summary" : "Show Full Info"}
-          </Button>
-        </div>
+            <Badge variant="secondary" className="max-sm:ml-6">
+              Motorable Route
+            </Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs"
+              onClick={() => setShowFull((prev) => !prev)}
+            >
+              {showFull ? "Show Summary" : "Show Full Info"}
+            </Button>
+          </div>
         ) : (
           <Badge variant="secondary" className="max-sm:ml-6">
             Motorable Route
@@ -349,7 +350,7 @@ const MotorableRouteInfo = ({
           <div className="text-muted-foreground">Duration</div>
         </div>
         <div>
-          <div className="font-semibold">{motorableData.fareRange}</div>
+          <div className="font-semibold">{motorableData.fare}</div>
           <div className="text-muted-foreground">Fare</div>
         </div>
         <div>
@@ -361,47 +362,47 @@ const MotorableRouteInfo = ({
       </div>
 
       {/* Important Details */}
-      <div className="mt-4 space-y-3 rounded-lg border p-3 text-sm">
-        {motorableData.bookingInfo && (
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <Info className="h-3 w-3" />
-              <span className="text-muted-foreground text-sm">
-                Booking Info
-              </span>
+      <Card className="mt-4 gap-3">
+        <CardContent className="space-y-3">
+          {motorableData.bookingInfo && (
+            <div>
+              <div className="flex items-center gap-2">
+                <Calendar className="size-4" />
+                <span className="text-muted-foreground text-sm">
+                  Booking Info:
+                </span>
+              </div>
+              <p className="bg-muted mt-1 rounded p-1 text-sm">
+                {motorableData.bookingInfo}
+              </p>
             </div>
-            <p className="bg-muted rounded p-2 text-xs">
-              {motorableData.bookingInfo}
-            </p>
-          </div>
-        )}
+          )}
 
-        {motorableData.route && (
           <div>
-            <div className="mb-1 flex items-center gap-2">
-              <Route className="h-3 w-3" />
-              <span className="text-muted-foreground text-sm">Route Info</span>
+            <div className="flex items-center gap-2">
+              <Route className="size-4" />
+              <span className="text-muted-foreground text-sm">Route:</span>
             </div>
-            <p className="bg-muted rounded p-2 text-xs">
+            <p className="bg-muted mt-1 rounded p-1 text-sm">
               {motorableData.route}
             </p>
           </div>
-        )}
 
-        {motorableData.roadCondition.description && (
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <Info className="h-3 w-3" />
-              <span className="text-muted-foreground text-sm">
-                Road Details
-              </span>
+          {motorableData.roadCondition.description && (
+            <div>
+              <div className="flex items-center gap-2">
+                <Construction className="size-4" />
+                <span className="text-muted-foreground text-sm">
+                  Road Condition:
+                </span>
+              </div>
+              <p className="bg-muted mt-1 rounded p-1 text-sm">
+                {motorableData.roadCondition.description}
+              </p>
             </div>
-            <p className="bg-muted rounded p-2 text-xs">
-              {motorableData.roadCondition.description}
-            </p>
-          </div>
-        )}
-      </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

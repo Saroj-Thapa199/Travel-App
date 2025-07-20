@@ -33,7 +33,7 @@ const RouteSegmentSection = ({setTab}: RouteSegmentSectionProps) => {
       // to: "",
       // duration: "",
       // availableServices: [],
-      // fareRange: "",
+      // fare: "",
       // frequency: "",
       // landmarks: [],
       // route: "",
@@ -45,7 +45,7 @@ const RouteSegmentSection = ({setTab}: RouteSegmentSectionProps) => {
       distance: 200,
       duration: "6-8 hours",
       availableServices: ["Tourist Bus", "Microbus"],
-      fareRange: "NPR 500 - 1200",
+      fare: "NPR 500 - 1200",
       bookingInfo:
         "Tickets can be booked online via travel portals or bus stations.",
       frequency: "Every 30 minutes during peak hours",

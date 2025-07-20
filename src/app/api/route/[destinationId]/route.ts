@@ -4,7 +4,6 @@ import Route from "@/model/Route";
 import TrekRoute from "@/model/TrekRoute";
 import { NextRequest, NextResponse } from "next/server";
 
-
 type Params = Promise<{ destinationId: string }>;
 
 export const GET = async (
@@ -16,8 +15,10 @@ export const GET = async (
     const { destinationId } = params;
     await dbConnect();
 
-    await MotorableRoute.countDocuments()
-    await TrekRoute.countDocuments()
+    await MotorableRoute.countDocuments();
+    await TrekRoute.countDocuments();
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const route = await Route.find({ destination: destinationId })
       .populate("motorableRoute")

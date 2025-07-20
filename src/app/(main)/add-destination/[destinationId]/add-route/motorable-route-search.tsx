@@ -101,7 +101,7 @@ const MotorableRouteSearch = ({
                           </h5>
                           <p className="text-muted-foreground text-sm">
                             {segment.distance}km • {segment.duration} •{" "}
-                            {segment.fareRange}
+                            {segment.fare}
                           </p>
                           <div className="mt-2 flex flex-wrap gap-1">
                             {segment.availableServices.map((service) => (

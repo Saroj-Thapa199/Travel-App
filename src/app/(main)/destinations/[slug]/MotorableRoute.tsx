@@ -16,8 +16,6 @@ const MotorableRoute = ({ motorableData }: MotorableRouteProps) => {
         <MotorableRouteInfo
           motorableData={motorableData}
           interactiveMode
-          showFull={showFull}
-          setShowFull={setShowFull}
         />
       ) : (
         <div className="bg-muted/50 mb-4 rounded-lg p-3">
@@ -55,7 +53,7 @@ const MotorableRoute = ({ motorableData }: MotorableRouteProps) => {
               <div className="text-muted-foreground">Duration</div>
             </div>
             <div>
-              <div className="font-semibold">{motorableData.fareRange}</div>
+              <div className="font-semibold">{motorableData.fare}</div>
               <div className="text-muted-foreground">Fare</div>
             </div>
             <div>

@@ -20,7 +20,7 @@ export const motorableRouteSchema = z.object({
   availableServices: z
     .array(transportTypeEnum)
     .min(1, "Please add the available services"),
-  fareRange: z.string(),
+  fare: z.string(),
   bookingInfo: z.string().optional(),
   frequency: z.string().optional(),
   landmarks: z.array(requiredString()),

@@ -107,7 +107,7 @@ export function RouteSegmentSearch({
                               </h5>
                               <p className="text-sm text-muted-foreground">
                                 {(segment as MotorableRouteType).distance}km •{" "}
-                                {(segment as MotorableRouteType).duration} • {(segment as MotorableRouteType).fareRange}
+                                {(segment as MotorableRouteType).duration} • {(segment as MotorableRouteType).fare}
                               </p>
                               <div className="flex flex-wrap gap-1 mt-2">
                                 {(segment as MotorableRouteType).availableServices.map((service) => (

@@ -20,7 +20,7 @@ const publicTransportOptionSchema = z.object({
   vehicleType: z.enum(["Local Bus", "Deluxe Bus", "Microbus", "Hiace", "Tourist Bus"]),
   frequency: z.string().optional(),
   duration: z.string().optional(),
-  fareRange: z.string().optional(),
+  fare: z.string().optional(),
   booking: z.string().optional(),
   note: z.string().optional(),
 })
@@ -391,7 +391,7 @@ export default function RouteForm() {
 
                           <FormField
                             control={form.control}
-                            name={`publicTransport.options.${index}.fareRange`}
+                            name={`publicTransport.options.${index}.fare`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Fare Range</FormLabel>

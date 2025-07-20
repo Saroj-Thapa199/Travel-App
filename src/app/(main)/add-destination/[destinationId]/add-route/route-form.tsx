@@ -150,7 +150,7 @@ export function RouteForm({ destinationId, destinationName }: RouteFormProps) {
                               </div>
                               <p className="text-muted-foreground text-sm">
                                 {route.distance}km • {route.duration} •{" "}
-                                {route.fareRange}
+                                {route.fare}
                               </p>
                             </div>
                             <Button

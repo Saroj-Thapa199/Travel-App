@@ -31,7 +31,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { seedMotorableRoutes } from "@/lib/actions/seed/motorableRoutes";
-import { seedTrekRoutes } from "@/lib/actions/seed/treKRoutes";
+import { seedTrekRoutes } from "@/lib/actions/seed/trekRoutes";
 
 const formSchema = z.object({
   favoriteFrameworks: z.array(z.string()).min(1, "Required"),
