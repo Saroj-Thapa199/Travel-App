@@ -362,7 +362,7 @@ const MotorableRouteInfo = ({
       </div>
 
       {/* Important Details */}
-      <Card className="mt-4 gap-3">
+      <Card className="mt-4 gap-3 max-sm:hidden">
         <CardContent className="space-y-3">
           {motorableData.bookingInfo && (
             <div>
@@ -438,6 +438,6 @@ const InfoRow = ({
       {icon}
       <span className="text-muted-foreground text-sm">{label}:</span>
     </div>
-    <span className="text-sm font-medium">{value}</span>
+    <span className="text-sm font-medium text-right">{value}</span>
   </div>
 );

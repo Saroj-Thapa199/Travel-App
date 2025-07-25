@@ -95,7 +95,12 @@ const page = () => {
       console.log(res2.data)
     }
 
-    // fetchRouteSegments()
+    const fetchSuggestedDestinations = async () => {
+      const res1 = await axios.get("/api/destinations/suggested/68810e2959bb2edea0717d1f")
+      console.log(res1.data)
+    }
+
+    fetchSuggestedDestinations()
   }, []);
 
   return (

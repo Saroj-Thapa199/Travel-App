@@ -410,7 +410,7 @@ const TrekRouteInfo = ({
           </div>
         </div>
 
-        <Card className="gap-3 mt-4">
+        <Card className="gap-3 mt-4 max-sm:hidden">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
               <Info className="h-4 w-4" />
@@ -494,6 +494,6 @@ const InfoRow = ({
       {icon}
       <span className="text-muted-foreground text-sm">{label}:</span>
     </div>
-    <span className="text-sm font-medium">{value}</span>
+    <span className="text-sm font-medium w-fit text-right">{value}</span>
   </div>
 );

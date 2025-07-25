@@ -6,6 +6,7 @@ import { cache } from "react";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
 import RouteSection from "./RouteSection";
+import DestinationInfoCard from "./DestinationInfoCard";
 
 // export async function generateStaticParams() {
 //   const res = await fetch("http://localhost:3000/api/destinations/all");
@@ -50,6 +51,8 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
         name={destination.name}
         region={destination.region}
         rating={destination.averageRating}
+        budget={destination.budget}
+        reviewCount={destination.reviewCount}
         className="h-[50vh] rounded-none border-0"
       />
 
@@ -101,7 +104,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
             </TabsContent>
           </Tabs>
         </section>
-        <section className="col-span-1 min-h-52 w-full bg-red-100"></section>
+        <section className="col-span-1 min-h-52  bg-rd-100">
+          <DestinationInfoCard destinationId={destination._id} categories={destination.categories} />
+        </section>
       </div>
     </main>
   );

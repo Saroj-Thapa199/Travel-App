@@ -11,7 +11,7 @@ const DestinationsSection = () => {
       id="destinations"
     >
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold sm:text-2xl">
+        <h1 className="text-2xl font-bold sm:text-2xl">
           Nature Retreats in Nepal
         </h1>
         <Link href={"/destinations"} className="text-sm hover:underline">
@@ -33,7 +33,7 @@ const DestinationsSection = () => {
       </div>
       <div className="mt-10">
         <div className="flex items-center justify-start">
-          <h1 className="my-6 text-2xl font-semibold sm:text-2xl">
+          <h1 className="my-6 text-2xl font-bold sm:text-2xl">
             Discover by Season
           </h1>
         </div>

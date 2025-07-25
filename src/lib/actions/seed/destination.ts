@@ -35,17 +35,57 @@ const getRandomCategories = (): Category[] => {
   return shuffled.slice(0, count);
 };
 
-const destinationsList: { name: string; region: string }[] = [
-  { name: "Kathmandu Durbar Square", region: "Kathmandu, Nepal" },
-  { name: "Patan Durbar Square", region: "Lalitpur, Nepal" },
-  { name: "Bhaktapur Durbar Square", region: "Bhaktapur, Nepal" },
-  { name: "Nagarkot Sunrise Point", region: "Nagarkot, Bhaktapur, Nepal" },
-  { name: "Phewa Lake", region: "Pokhara, Kaski, Nepal" },
-  { name: "Annapurna Base Camp", region: "Annapurna Region, Nepal" },
-  { name: "Maya Devi Temple", region: "Lumbini, Rupandehi, Nepal" },
-  { name: "Langtang Valley", region: "Langtang, Rasuwa, Nepal" },
-  { name: "Rara Lake", region: "Rara, Mugu, Nepal" },
-  { name: "Bandipur Bazaar", region: "Bandipur, Tanahun, Nepal" },
+const destinationsList: { name: string; region: string; budget: string }[] = [
+  {
+    name: "Kathmandu Durbar Square",
+    region: "Kathmandu, Nepal",
+    budget: "NPR 1,000-2,000",
+  },
+  {
+    name: "Patan Durbar Square",
+    region: "Lalitpur, Nepal",
+    budget: "NPR 1,000-2,000",
+  },
+  {
+    name: "Bhaktapur Durbar Square",
+    region: "Bhaktapur, Nepal",
+    budget: "NPR 1,000-2,000",
+  },
+  {
+    name: "Nagarkot Sunrise Point",
+    region: "Nagarkot, Bhaktapur, Nepal",
+    budget: "NPR 2,000-3,500",
+  },
+  {
+    name: "Phewa Lake",
+    region: "Pokhara, Kaski, Nepal",
+    budget: "NPR 3,000-5,000",
+  },
+  {
+    name: "Annapurna Base Camp",
+    region: "Annapurna Region, Nepal",
+    budget: "NPR 10,000-15,000",
+  },
+  {
+    name: "Maya Devi Temple",
+    region: "Lumbini, Rupandehi, Nepal",
+    budget: "NPR 3,000-4,000",
+  },
+  {
+    name: "Langtang Valley",
+    region: "Langtang, Rasuwa, Nepal",
+    budget: "NPR 8,000-12,000",
+  },
+  {
+    name: "Rara Lake",
+    region: "Rara, Mugu, Nepal",
+    budget: "NPR 12,000-20,000",
+  },
+  {
+    name: "Bandipur Bazaar",
+    region: "Bandipur, Tanahun, Nepal",
+    budget: "NPR 2,000-4,000",
+  },
 ];
 
 export const seedDestinations = async () => {
@@ -60,6 +100,7 @@ export const seedDestinations = async () => {
       shortDescription: `Discover the beauty of ${loc.name} in ${loc.region}.`,
       longDescription: `${loc.name} is a remarkable destination in ${loc.region}, offering travelers a unique blend of culture, nature, and unforgettable experiences. From scenic landscapes to deep spiritual roots, this location provides a perfect escape into the heart of Nepal's rich heritage. Whether you're an adventurer or a peace-seeker, ${loc.name} promises something memorable for every visitor.`,
       image: imageUrls[idx % imageUrls.length],
+      budget: loc.budget,
       averageRating: getRandomRating(),
       reviewCount: 0,
       featured: false,

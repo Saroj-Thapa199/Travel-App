@@ -30,7 +30,9 @@ const publicTransportSegmentSchema = z.object({
   note: makeUndefinedIfEmpty(),
 });
 
-const publicTransportSchema = z.array(publicTransportSegmentSchema).min(1, "Cannot be empty")
+const publicTransportSchema = z
+  .array(publicTransportSegmentSchema)
+  .min(1, "Cannot be empty");
 
 const individualPersonalVehicleSchema = z.object({
   startingPoint: requiredString(),
@@ -39,7 +41,9 @@ const individualPersonalVehicleSchema = z.object({
   roadCondition: makeUndefinedIfEmpty(),
 });
 
-const personalVehicleSchema = z.array(individualPersonalVehicleSchema).min(1, "Cannot be empty");
+const personalVehicleSchema = z
+  .array(individualPersonalVehicleSchema)
+  .min(1, "Cannot be empty");
 
 const trekSchema = z
   .object({
@@ -57,14 +61,11 @@ const trekSchema = z
   })
   .transform((obj) => {
     const allEmpty = Object.values(obj).every(
-      (val) =>
-        val === undefined ||
-        (Array.isArray(val) && val.length === 0) 
+      (val) => val === undefined || (Array.isArray(val) && val.length === 0),
     );
 
     return allEmpty ? undefined : obj;
   });
-
 
 export const destinationSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
@@ -91,6 +92,8 @@ export const destinationSchema = z.object({
     )
     .min(1, "Select at least 1 category")
     .max(3, "You can select up to 3 categories"),
+  // bestTime: z.array(requiredString()),
+  budget: requiredString(),
   averageRating: z.number().lte(5),
   reviewCount: z.number(),
   destinationRoute: z
@@ -98,17 +101,18 @@ export const destinationSchema = z.object({
       publicTransport: publicTransportSchema.optional(),
       personalVehicle: personalVehicleSchema.optional(),
       trek: trekSchema.optional(),
-    }).optional(),
-    // .refine(
-    //   (val) =>
-    //     val.publicTransport !== undefined ||
-    //     val.personalVehicle !== undefined ||
-    //     val.trek !== undefined,
-    //   {
-    //     message: "At least one route option must be provided",
-    //     path: ["destinationRoute"],
-    //   },
-    // ),
+    })
+    .optional(),
+  // .refine(
+  //   (val) =>
+  //     val.publicTransport !== undefined ||
+  //     val.personalVehicle !== undefined ||
+  //     val.trek !== undefined,
+  //   {
+  //     message: "At least one route option must be provided",
+  //     path: ["destinationRoute"],
+  //   },
+  // ),
 
   createdAt: z.preprocess(
     (val) => (typeof val === "string" ? new Date(val) : val),

@@ -28,7 +28,7 @@ export type ReviewStatApiResponse = {
   };
 };
 
-type DestinationRoute = {
+export type DestinationRoute = {
   _id: string;
   destination: string;
   motorableRoute: MotorableRouteType[];

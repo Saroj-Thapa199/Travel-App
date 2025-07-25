@@ -116,6 +116,10 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       type: String,
       required: true,
     },
+    budget: {
+      type: String,
+      required: true
+    },
     averageRating: {
       type: Number,
       default: 0,
