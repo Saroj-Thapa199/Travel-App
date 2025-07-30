@@ -2,6 +2,15 @@ import { z } from "zod";
 import { makeUndefinedIfEmpty, requiredString } from "./zodUtils";
 import { transportTypeEnum } from "./RouteValidation";
 
+const bestSeasonEnum = z.enum([
+  "Spring",
+  "Summer",
+  "Monsoon",
+  "Autumn",
+  "Winter",
+  "Year-round",
+]);
+
 export const signUpSchema = z.object({
   email: requiredString().email("Invalid email address"),
   name: requiredString(),
@@ -69,6 +78,8 @@ const trekSchema = z
 
 export const destinationSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
+  user: z.preprocess((val) => val?.toString(), z.string()),
+  favorites: z.array(z.preprocess((val) => val?.toString(), z.string())),
   name: requiredString(),
   slug: z.string(),
   region: requiredString(),
@@ -92,6 +103,7 @@ export const destinationSchema = z.object({
     )
     .min(1, "Select at least 1 category")
     .max(3, "You can select up to 3 categories"),
+  bestSeason: z.array(bestSeasonEnum).min(1, "Select at least 1 season"),
   // bestTime: z.array(requiredString()),
   budget: requiredString(),
   averageRating: z.number().lte(5),

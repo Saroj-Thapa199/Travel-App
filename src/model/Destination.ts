@@ -11,11 +11,16 @@ const transportTypeEnum = [
 ] as const;
 
 interface DestinationInterface
-  extends Omit<DestinationType, "_id" | "createdAt" | "updatedAt">,
+  extends Omit<
+      DestinationType,
+      "_id" | "createdAt" | "updatedAt" | "user" | "favorites"
+    >,
     Document {
   slug: string;
   createdAt?: Date;
   updatedAt?: Date;
+  user: mongoose.Types.ObjectId;
+  favorites: mongoose.Types.ObjectId[];
 }
 
 const PublicTransportSegmentSchema = new Schema(
@@ -28,7 +33,7 @@ const PublicTransportSegmentSchema = new Schema(
     //   required: true,
     // },
     approxTime: { type: String },
-    fare: { type: Number },  // Rs
+    fare: { type: Number }, // Rs
     busTypes: [String],
     lastDeparture: { type: String },
     note: { type: String },
@@ -51,7 +56,7 @@ const TrekSchema = new Schema(
     // required: { type: Boolean, default: false },
     startingPoint: { type: String, required: true },
     duration: { type: String },
-    distance: { type: Number },  // kms
+    distance: { type: Number }, // kms
     difficulty: { type: String },
     altitudeGain: { type: Number }, // meters
     maxAltitude: { type: Number }, // meters
@@ -65,6 +70,20 @@ const TrekSchema = new Schema(
 
 const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    favorites: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "MotorableRoute",
+        },
+      ],
+      default: [],
+    },
     name: {
       type: String,
       required: true,
@@ -112,13 +131,22 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
         "Natural Attraction",
       ],
     },
+    bestSeason: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: (val: string[]) => val.length >= 1,
+        message: "Select at least 1 season",
+      },
+      enum: ["Spring", "Summer", "Monsoon", "Autumn", "Winter", "Year-round"],
+    },
     image: {
       type: String,
       required: true,
     },
     budget: {
       type: String,
-      required: true
+      required: true,
     },
     averageRating: {
       type: Number,
@@ -132,7 +160,7 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       publicTransport: {
         type: [PublicTransportSegmentSchema],
         required: false,
-        default: undefined
+        default: undefined,
       },
       personalVehicle: {
         type: [PersonalVehicleSchema],

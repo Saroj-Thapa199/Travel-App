@@ -7,24 +7,30 @@ import { Heart, ImageIcon, Share, Star } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { FavoritesInfo } from "@/lib/types";
+import AddToFavoritesBtn from "./AddToFavoritesBtn";
 
 type DestinationHeaderImageProps = {
-  name?: string;
-  region?: string;
-  image?: string;
+  destinationId: string;
+  name: string;
+  region: string;
+  image: string;
   rating: number;
   reviewCount: number;
-  budget?: string;
+  budget: string;
+  favoritesData: FavoritesInfo;
   className?: string;
 };
 
 const DestinationHeaderImage = ({
+  destinationId,
   name,
   region,
   image,
   rating,
   reviewCount,
   budget,
+  favoritesData,
   className,
 }: DestinationHeaderImageProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -33,38 +39,30 @@ const DestinationHeaderImage = ({
       <CardContent className="h-full p-0">
         <figure className="bg-muted relative h-full">
           <div className="absolute inset-0 flex items-center justify-center">
-            {image ? (
-              <Image
-                src={image}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 700px"
-                alt="destination-image"
-                className="object-cover"
-              />
-            ) : (
-              <ImageIcon className="text-muted-foreground size-16 opacity-50" />
-            )}
+            <Image
+              src={image}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 700px"
+              alt="destination-image"
+              className="object-cover"
+            />
           </div>
           {/* Gradient */}
           <div className="from-primary/60 dark:from-secondary/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"></div>
           {/* Informations */}
           <figcaption className="absolute inset-0 flex items-end p-6">
             <div>
-              {region && (
-                <Badge className="rounded-full px-2.5 dark:hidden">
-                  {region}
-                </Badge>
-              )}
-              {region && (
-                <Badge
-                  variant={"secondary"}
-                  className="rounded-full px-2.5 not-dark:hidden"
-                >
-                  {region}
-                </Badge>
-              )}
-              <h2 className="text-secondary dark:text-primary text-3xl leading-relaxed font-bold">
+              <Badge className="rounded-full px-2.5 dark:hidden">
+                {region}
+              </Badge>
+              <Badge
+                variant={"secondary"}
+                className="rounded-full px-2.5 not-dark:hidden"
+              >
+                {region}
+              </Badge>
+              <h2 className="text-secondary dark:text-primary text-xl leading-relaxed font-bold sm:text-2xl md:text-3xl">
                 {name}
               </h2>
               <div>
@@ -86,10 +84,10 @@ const DestinationHeaderImage = ({
                       ? "No reviews yet"
                       : `${reviewCount} ${reviewCount > 1 ? "reviews" : "review"}`}
                   </span>
-                  <span className="text-secondary dark:text-primary ml-2 font-medium">
+                  <span className="text-secondary dark:text-primary ml-2 font-medium max-sm:hidden">
                     |
                   </span>
-                  <span className="text-secondary dark:text-primary ml-2 font-medium">
+                  <span className="text-secondary dark:text-primary ml-2 font-medium max-sm:hidden">
                     {budget || "budget"}
                   </span>
                 </div>
@@ -97,7 +95,12 @@ const DestinationHeaderImage = ({
             </div>
           </figcaption>
           <div className="absolute top-4 right-4 flex gap-2">
-            <Button
+            <AddToFavoritesBtn
+              btnStyle="icon"
+              destinationId={destinationId}
+              initialState={favoritesData}
+            />
+            {/* <Button
               variant="outline"
               size="icon"
               className={cn(
@@ -111,7 +114,7 @@ const DestinationHeaderImage = ({
               onClick={() => setIsFavorite(!isFavorite)}
             >
               <Heart className={cn("h-4 w-4", isFavorite && "fill-current")} />
-            </Button>
+            </Button> */}
             <Button
               variant="outline"
               size="icon"

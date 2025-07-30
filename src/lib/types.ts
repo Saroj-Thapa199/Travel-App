@@ -3,7 +3,7 @@ import { DestinationType, ReviewType } from "./validation";
 
 export type DestinationFormType = Omit<
   DestinationType,
-  "_id" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount"
+  "_id" | "user" | "favorites" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount"
 >;
 
 export type ReviewFormType = Omit<
@@ -36,3 +36,8 @@ export type DestinationRoute = {
 }
 
 export type RouteApiResponse = DestinationRoute[]
+
+export type FavoritesInfo = {
+  favorites: number
+  addedToFavoritesByUser: boolean
+}

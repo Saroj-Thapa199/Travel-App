@@ -32,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { seedMotorableRoutes } from "@/lib/actions/seed/motorableRoutes";
 import { seedTrekRoutes } from "@/lib/actions/seed/trekRoutes";
+import AddToFavoritesBtn from "@/components/AddToFavoritesBtn";
 
 const formSchema = z.object({
   favoriteFrameworks: z.array(z.string()).min(1, "Required"),
@@ -69,38 +70,40 @@ const page = () => {
   };
 
   const motorableRouteSeed = async () => {
-    setLoading3(true)
-    await seedMotorableRoutes()
-    setLoading3(false)
-  }
+    setLoading3(true);
+    await seedMotorableRoutes();
+    setLoading3(false);
+  };
 
   const trekRouteSeed = async () => {
-    setLoading4(true)
-    await seedTrekRoutes()
-    setLoading4(false)
-  }
+    setLoading4(true);
+    await seedTrekRoutes();
+    setLoading4(false);
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const res = await axios.get("/api/reviews/685286ab9840c4a1504186c9")
-      console.log(res)
+      const res = await axios.get("/api/reviews/685286ab9840c4a1504186c9");
+      console.log(res);
     };
 
     // fetchReviews();
 
     const fetchRouteSegments = async () => {
-      const res1 = await axios.get("/api/route-segments/motorable?from=kath")
-      const res2 = await axios.get("/api/route-segments/trek?name=everest")
-      console.log(res1.data)
-      console.log(res2.data)
-    }
+      const res1 = await axios.get("/api/route-segments/motorable?from=kath");
+      const res2 = await axios.get("/api/route-segments/trek?name=everest");
+      console.log(res1.data);
+      console.log(res2.data);
+    };
 
     const fetchSuggestedDestinations = async () => {
-      const res1 = await axios.get("/api/destinations/suggested/68810e2959bb2edea0717d1f")
-      console.log(res1.data)
-    }
+      const res1 = await axios.get(
+        "/api/destinations/suggested/68879a260fc53edc0c426dcd",
+      );
+      console.log(res1.data);
+    };
 
-    fetchSuggestedDestinations()
+    fetchSuggestedDestinations();
   }, []);
 
   return (
@@ -121,6 +124,16 @@ const page = () => {
         <ProtectedActionButton onClick={() => console.log("clicked")}>
           Continue
         </ProtectedActionButton>
+        <AddToFavoritesBtn
+          destinationId="68879a260fc53edc0c426dcd"
+          initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
+          type="button"
+        />
+        <AddToFavoritesBtn
+          destinationId="68879a260fc53edc0c426dcd"
+          initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
+          type="icon"
+        />
       </div>
       {/* <Avatar>
         <AvatarImage />
@@ -183,7 +196,7 @@ const page = () => {
                     onValueChange={field.onChange}
                     placeholder="enter your used tech"
                   />
-                <FormMessage />
+                  <FormMessage />
                 </FormItem>
               )}
             />

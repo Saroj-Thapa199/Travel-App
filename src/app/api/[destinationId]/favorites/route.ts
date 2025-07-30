@@ -1,0 +1,202 @@
+import { auth } from "@/auth";
+import dbConnect from "@/lib/dbConnect";
+import { FavoritesInfo } from "@/lib/types";
+import Destination from "@/model/Destination";
+import mongoose from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
+
+type Params = Promise<{ destinationId: string }>;
+
+export const GET = async (
+  request: NextRequest,
+  segmentData: { params: Params },
+) => {
+  try {
+    const params = await segmentData.params;
+    const { destinationId } = params;
+
+    const session = await auth();
+    await dbConnect()
+
+    if (!mongoose.isValidObjectId(destinationId)) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    const destination = await Destination.findById(destinationId, "favorites");
+
+    if (!destination) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (!session || !session.user.id) {
+      const favoritesData: FavoritesInfo = {
+        favorites: destination.favorites.length,
+        addedToFavoritesByUser: false,
+      };
+
+      return NextResponse.json(favoritesData);
+    }
+
+    const userId = new mongoose.Types.ObjectId(session.user.id);
+
+    if (
+      !destination.favorites.some((id: mongoose.Types.ObjectId) =>
+        id.equals(userId),
+      )
+    ) {
+      const favoritesData: FavoritesInfo = {
+        favorites: destination.favorites.length,
+        addedToFavoritesByUser: false,
+      };
+    }
+
+    const favoritesData: FavoritesInfo = {
+      favorites: destination.favorites.length,
+      addedToFavoritesByUser: true,
+    };
+
+    return NextResponse.json(favoritesData);
+  } catch (error) {
+    return Response.json(
+      { error: "Failed to fetch favorites info" },
+      { status: 500 },
+    );
+  }
+};
+
+export const POST = async (
+  request: NextRequest,
+  segmentData: { params: Params },
+) => {
+  try {
+    const params = await segmentData.params;
+    const { destinationId } = params;
+
+    const session = await auth();
+    await dbConnect()
+
+    if (!session || !session.user.id) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
+
+    if (!mongoose.isValidObjectId(destinationId)) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    const destination = await Destination.findById(destinationId, "favorites");
+
+    if (!destination) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    const userId = new mongoose.Types.ObjectId(session.user.id);
+
+    if (
+      !destination.favorites.some((id: mongoose.Types.ObjectId) =>
+        id.equals(userId),
+      )
+    ) {
+      destination.favorites.push(userId);
+      await destination.save();
+    }
+
+    const favoritesData: FavoritesInfo = {
+      favorites: destination.favorites.length,
+      addedToFavoritesByUser: true,
+    };
+
+    return NextResponse.json(favoritesData);
+  } catch (error) {
+    return Response.json(
+      { error: "Failed to add to favorites" },
+      { status: 500 },
+    );
+  }
+};
+
+export const DELETE = async (
+  request: NextRequest,
+  segmentData: { params: Params },
+) => {
+  try {
+    const params = await segmentData.params;
+    const { destinationId } = params;
+
+    const session = await auth();
+    await dbConnect()
+
+    if (!session || !session.user.id) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
+
+    if (!mongoose.isValidObjectId(destinationId)) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    const destination = await Destination.findById(destinationId, "favorites");
+
+    if (!destination) {
+      return NextResponse.json(
+        {
+          error: "Invalid destination id",
+        },
+        { status: 400 },
+      );
+    }
+
+    const userId = new mongoose.Types.ObjectId(session.user.id);
+
+    destination.favorites = destination.favorites.filter(
+      (id: mongoose.Types.ObjectId) => !id.equals(userId),
+    );
+
+    await destination.save();
+
+    const favoritesData: FavoritesInfo = {
+      favorites: destination.favorites.length,
+      addedToFavoritesByUser: false,
+    };
+
+    return NextResponse.json(favoritesData);
+  } catch (error) {
+    return Response.json(
+      { error: "Failed to remove from favorites" },
+      { status: 500 },
+    );
+  }
+};

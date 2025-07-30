@@ -7,6 +7,9 @@ import { redirect } from "next/navigation";
 import slugify from "slugify";
 import { DestinationFormType } from "../types";
 import { destinationSchema } from "../validation";
+import { auth } from "@/auth";
+import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
 
 export const addDestination = async (
   values: DestinationFormType,
@@ -88,3 +91,54 @@ export const getDestinationFromSlug = async (slug: string) => {
     console.log(error);
   }
 };
+
+type addDestinationToFavoritesParameters = {
+  destinationId: string,
+  type: "add" | "remove"
+}
+
+
+// export const addDestinationToFavorites = async ({destinationId, type}: addDestinationToFavoritesParameters) => {
+//   try {
+//     const session = await auth();
+  
+//     if (!session || !session.user.id) {
+//       return redirect("/login")
+//     }
+  
+//     // if (!mongoose.isValidObjectId(destinationId)) {
+//     //   return NextResponse.json(
+//     //     {
+//     //       error: "Invalid destination id",
+//     //     },
+//     //     { status: 400 },
+//     //   );
+//     // }
+
+//     await dbConnect()
+
+//     const destination = await Destination.findById(destinationId, "favorites")
+//     if (!destination) return
+//     // const destinationData = destinationSchema.parse(destination)
+
+//     const userId = new mongoose.Types.ObjectId(session.user.id)
+
+//     if (type === "add" && !destination?.favorites.includes(userId)) {
+//       console.log("added")
+//       destination.favorites = [...destination.favorites, userId]
+//     }
+
+//     if (type === "remove") {
+//       console.log("removed")
+//       destination.favorites = destination.favorites.filter(id => id.toString()!==session.user.id)
+//     }
+
+//     await destination.save()
+
+//     console.log("revalidated")
+
+//     return revalidatePath(`/destinations/${destination.slug}`)
+//   } catch (error) { 
+//     console.log(error)
+//   }
+// }

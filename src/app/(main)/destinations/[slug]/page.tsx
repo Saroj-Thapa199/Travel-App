@@ -7,6 +7,8 @@ import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";
 import RouteSection from "./RouteSection";
 import DestinationInfoCard from "./DestinationInfoCard";
+import { auth } from "@/auth";
+import { FavoritesInfo } from "@/lib/types";
 
 // export async function generateStaticParams() {
 //   const res = await fetch("http://localhost:3000/api/destinations/all");
@@ -42,18 +44,31 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const data = await getCachedDestinationFromSlug(slug);
   if (!data) return notFound();
 
+  const session = await auth();
+
+  console.log(data);
+
   const destination = destinationSchema.parse(data);
+
+  const favoritesData: FavoritesInfo = {
+    favorites: destination.favorites.length,
+    addedToFavoritesByUser: destination.favorites.some(
+      (id) => id === session?.user.id,
+    ),
+  };
 
   return (
     <main className="my-15">
       <DestinationHeaderImage
+        destinationId={destination._id}
         image={destination.image}
         name={destination.name}
         region={destination.region}
         rating={destination.averageRating}
         budget={destination.budget}
         reviewCount={destination.reviewCount}
-        className="h-[50vh] rounded-none border-0"
+        favoritesData={favoritesData}
+        className="h-[50vh] rounded-none border-0 sm:h-[60vh]"
       />
 
       <div className="mx-auto grid grid-cols-1 gap-8 px-4 py-8 sm:px-8 md:px-14 lg:grid-cols-3 lg:px-20 xl:container">
@@ -84,6 +99,16 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
                   </p>
                   <p className="text-muted-foreground">
                     {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
+                    {destination.longDescription}
                   </p>
                 </div>
               </div>
@@ -104,8 +129,19 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
             </TabsContent>
           </Tabs>
         </section>
-        <section className="col-span-1 min-h-52  bg-rd-100">
-          <DestinationInfoCard destinationId={destination._id} categories={destination.categories} />
+        <section className="col-span-1">
+          <DestinationInfoCard
+            destinationId={destination._id}
+            categories={destination.categories}
+            bestSeason={destination.bestSeason}
+            // favorites={destination.favorites}
+            // favoriteByUser={
+            //   session?.user.id
+            //     ? destination.favorites.includes(session.user.id)
+            //     : false
+            // }
+            favoritesData={favoritesData}
+          />
         </section>
       </div>
     </main>

@@ -1,7 +1,11 @@
 import DestinationHeaderImage from "@/components/DestinationHeaderImage";
 import LoadingButton from "@/components/LoadingButton";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { DestinationFormType } from "@/lib/types";
+import { ImageIcon, Star } from "lucide-react";
+import Image from "next/image";
 
 type PreviewProps = {
   destination: DestinationFormType;
@@ -24,15 +28,15 @@ const Preview = ({
 
   return showPreview ? (
     <section className="space-y-6">
-      <div className="">
-        {/* <Card className="overflow-clip rounded-b-none p-0">
-        <CardContent className="p-0">
-          <div className="bg-muted relative h-80">
+      <Card className={"h-80 overflow-clip rounded-b-none p-0"}>
+        <CardContent className="h-full p-0">
+          <figure className="bg-muted relative h-full">
             <div className="absolute inset-0 flex items-center justify-center">
               {destination.image ? (
                 <Image
                   src={destination.image}
                   fill
+                  priority
                   sizes="(max-width: 768px) 100vw, 700px"
                   alt="destination-image"
                   className="object-cover"
@@ -41,15 +45,25 @@ const Preview = ({
                 <ImageIcon className="text-muted-foreground size-16 opacity-50" />
               )}
             </div>
-            <div className="from-primary/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"></div>
-            <div className="absolute inset-0 flex items-end p-6">
+            {/* Gradient */}
+            <div className="from-primary/60 dark:from-secondary/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"></div>
+            {/* Informations */}
+            <figcaption className="absolute inset-0 flex items-end p-6">
               <div>
                 {destination.region && (
-                  <Badge className="rounded-full px-2.5">
+                  <Badge className="rounded-full px-2.5 dark:hidden">
                     {destination.region}
                   </Badge>
                 )}
-                <h2 className="text-secondary text-3xl leading-relaxed font-bold">
+                {destination.region && (
+                  <Badge
+                    variant={"secondary"}
+                    className="rounded-full px-2.5 not-dark:hidden"
+                  >
+                    {destination.region}
+                  </Badge>
+                )}
+                <h2 className="text-secondary dark:text-primary text-xl leading-relaxed font-bold sm:text-2xl md:text-3xl">
                   {destination.name}
                 </h2>
                 <div>
@@ -57,27 +71,31 @@ const Preview = ({
                     {[...Array(5)].map((_, index) => (
                       <Star
                         key={index}
-                        className={`h-4 w-4 ${index < Math.floor(ratings) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                        className={`h-4 w-4 ${index < Math.round(5) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                       />
                     ))}
-                    <span className="tex text-secondary ml-2 font-medium">
-                      3.6
+                    <span className="text-secondary dark:text-primary ml-2 font-medium">
+                      5.0
+                    </span>
+                    <span className="text-secondary dark:text-primary ml-2 font-medium">
+                      •
+                    </span>
+                    <span className="text-secondary dark:text-primary ml-2 font-medium">
+                      No reviews yet
+                    </span>
+                    <span className="text-secondary dark:text-primary ml-2 font-medium max-sm:hidden">
+                      |
+                    </span>
+                    <span className="text-secondary dark:text-primary ml-2 font-medium max-sm:hidden">
+                      {destination.budget || "budget"}
                     </span>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </figcaption>
+          </figure>
         </CardContent>
-      </Card> */}
-        <DestinationHeaderImage
-          name={destination.name}
-          region={destination.region}
-          image={destination.image}
-          rating={3.9}
-          className="rounded-b-none h-80"
-        />
-      </div>
+      </Card>
 
       <div className="">
         <div>

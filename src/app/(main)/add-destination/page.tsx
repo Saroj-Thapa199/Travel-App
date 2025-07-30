@@ -38,6 +38,8 @@ const page = () => {
         updatedAt: true,
         averageRating: true,
         reviewCount: true,
+        user: true,
+        favorites: true
         // categories: true
       }),
     ),
@@ -83,24 +85,26 @@ const page = () => {
   };
 
   useEffect(() => {
-    // const { destinationRoute, featured, ...restValues } = values;
+    const { destinationRoute, featured, ...restValues } = values;
 
+    const hasAnyValue =
+      hasNonEmptyValue(restValues) 
     // const hasAnyValue =
     //   hasNonEmptyValue(restValues) ||
     //   !isDestinationRouteEmpty(destinationRoute);
 
-    // setFormHasValues(hasAnyValue);
-    // setNoRouteErrorMsg(
-    //   isDestinationRouteEmpty(destinationRoute)
-    //     ? "Please add atleast one route"
-    //     : undefined,
-    // );
+    setFormHasValues(hasAnyValue);
+    setNoRouteErrorMsg(
+      isDestinationRouteEmpty(destinationRoute)
+        ? "Please add atleast one route"
+        : undefined,
+    );
 
-    const result = destinationSchema.safeParse(values)
-    const routeSchema = destinationSchema.shape.destinationRoute
-    const routeResult = routeSchema.safeParse(values.destinationRoute)
-    setFormHasValues(result.success)
-    setNoRouteErrorMsg(routeResult.success ? undefined : "Please add at least one route")
+    // const result = destinationSchema.safeParse(values)
+    // const routeSchema = destinationSchema.shape.destinationRoute
+    // const routeResult = routeSchema.safeParse(values.destinationRoute)
+    // setFormHasValues(result.success)
+    // setNoRouteErrorMsg(routeResult.success ? undefined : "Please add at least one route")
   }, [values]);
 
   return (
