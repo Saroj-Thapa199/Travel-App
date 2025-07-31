@@ -51,9 +51,19 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    if (pathname.startsWith("/destinations")) setActive("destinations");
-    if (pathname.startsWith("/add-destination")) setActive("add-destination");
-  }, [pathname]);
+  const matchedLink = links.find((link) =>
+    pathname === link.href || pathname.startsWith(link.href + "/")
+  );
+
+  if (matchedLink) {
+    setActive(matchedLink.id);
+  } else if (pathname === "/") {
+    setActive("home");
+  } else {
+    setActive(""); // No underline
+  }
+}, [pathname]);
+
 
   useEffect(() => {
     const index = links.findIndex((link) => link.id === active);
@@ -108,7 +118,7 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            <span
+           {active &&  <span
               className={cn(
                 "absolute bottom-0 h-0.5 transition-all duration-300",
                 isScrolled || (pathname !== "/" && !pathname.startsWith("/#"))
@@ -119,7 +129,7 @@ const Navbar = () => {
                 left: underlineStyle.left,
                 width: underlineStyle.width,
               }}
-            />
+            />}
           </div>
         </div>
         <div className="flex items-center gap-3">
