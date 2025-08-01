@@ -127,12 +127,12 @@ const page = () => {
         <AddToFavoritesBtn
           destinationId="68879a260fc53edc0c426dcd"
           initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
-          type="button"
+          btnStyle="button-text"
         />
         <AddToFavoritesBtn
           destinationId="68879a260fc53edc0c426dcd"
           initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
-          type="icon"
+          btnStyle="icon"
         />
       </div>
       {/* <Avatar>

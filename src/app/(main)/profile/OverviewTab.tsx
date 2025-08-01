@@ -142,7 +142,7 @@ const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
               savedDestinations.slice(0, 3).map((destination, index) => (
                 <Link
                   key={index}
-                  href={`/destination/${destination._id}`}
+                  href={`/destinations/${destination.slug}`}
                   className="hover:bg-muted flex items-center gap-3 rounded-lg p-2 transition-colors"
                 >
                   <img

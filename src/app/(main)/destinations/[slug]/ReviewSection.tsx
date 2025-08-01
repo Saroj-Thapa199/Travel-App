@@ -48,20 +48,6 @@ const ReviewSection = ({
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("latest");
 
-  // const {
-  //   data: reviews,
-  //   status,
-  //   error,
-  // } = useQuery({
-  //   queryKey: ["reviews", destinationId],
-  //   queryFn: async () => {
-  //     const res = await axios.get<PopulatedReviewType[]>(
-  //       `/api/reviews/${destinationId}`,
-  //     );
-  //     return res.data;
-  //   },
-  // });
-
   const {
     data,
     status,
@@ -72,15 +58,6 @@ const ReviewSection = ({
   } = useGetReviews({ destinationId, filter, sortBy });
 
   const reviews = data?.pages.flatMap((page) => page.reviews);
-
-  // console.log("reviews:", reviews);
-
-  // const ratingCounts = {
-  //   5:
-  // }
-
-  // const {data} = useQuery({ queryKey: ['todos'], queryFn: getDestinationReviews })
-  // const reviews = data.data
 
   return (
     <section className="space-y-6">
