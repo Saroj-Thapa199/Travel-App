@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image1 from "@/assets/hero-image-1.jpg";
 import { Badge } from "./ui/badge";
 import { MapPin, Star } from "lucide-react";
+import { ReactNode } from "react";
 
 type DestinationCardProps = {
   name: string;
@@ -11,8 +12,10 @@ type DestinationCardProps = {
   rating: number;
   image?: string;
   slug: string;
-  reviewCount: number
-  isNew?: boolean
+  reviewCount: number;
+  isNew?: boolean;
+  featured?: boolean;
+  action?: ReactNode
 };
 
 const DestinationCard = ({
@@ -23,11 +26,13 @@ const DestinationCard = ({
   image,
   slug,
   reviewCount,
-  isNew
+  isNew,
+  featured,
+  action
 }: DestinationCardProps) => {
   return (
     <Link href={`/destinations/${slug}`} className="group">
-      <div className="border-border/50 dark:border-border bg-card ese-out h-full overflow-clip rounded-lg border shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg dark:shadow-gray-800">
+      <div className="border-border/50 dark:border-border bg-card h-full overflow-clip rounded-lg border shadow-md transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-lg dark:shadow-gray-800">
         <div className="relative h-56 overflow-hidden">
           <Image
             src={image || Image1}
@@ -37,9 +42,21 @@ const DestinationCard = ({
             sizes="600px"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
-          {isNew && 
-          <Badge className="absolute top-3 right-3 bg-green-500/90 hover:bg-green-500">New</Badge>
-          }
+          {featured && (
+            <Badge className="bg-primary/90 hover:bg-primary absolute top-3 left-3">
+              Featured
+            </Badge>
+          )}
+          <div className="absolute top-3 right-3 flex gap-1">
+            {isNew && (
+              <Badge className="bg-green-500/90 hover:bg-green-500">
+                New
+              </Badge>
+            )}
+            {action && (
+              action
+            )}
+          </div>
         </div>
         <div className="p-5">
           <div className="mb-2">
@@ -65,12 +82,14 @@ const DestinationCard = ({
                   strokeWidth={0}
                 />
               ))}
-              <span className="tex ml-1 font-semibold">{rating.toFixed(1)}</span>
+              <span className="ml-1 font-semibold">{rating.toFixed(1)}</span>
             </div>
             <p className="text-muted-foreground">
               •{" "}
               <span className="underline-offset-4 hover:underline">
-                {reviewCount === 0 ? "No reviews yet" : `${reviewCount} reviews`}
+                {reviewCount === 0
+                  ? "No reviews yet"
+                  : `${reviewCount} reviews`}
               </span>
             </p>
           </div>

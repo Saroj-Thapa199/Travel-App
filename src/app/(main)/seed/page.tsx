@@ -96,6 +96,8 @@ const page = () => {
       console.log(res2.data);
     };
 
+    // fetchRouteSegments()
+
     const fetchSuggestedDestinations = async () => {
       const res1 = await axios.get(
         "/api/destinations/suggested/68879a260fc53edc0c426dcd",
@@ -103,7 +105,16 @@ const page = () => {
       console.log(res1.data);
     };
 
-    fetchSuggestedDestinations();
+    // fetchSuggestedDestinations();
+
+    const fetchCollections = async () => {
+      const res1 = await axios.get(
+        "/api/collections/all",
+      );
+      console.log(res1.data);
+    };
+
+    fetchCollections()
   }, []);
 
   return (

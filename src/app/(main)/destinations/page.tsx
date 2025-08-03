@@ -25,9 +25,9 @@ const page = () => {
 
   const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState<string>();
-  const [selectedValue, setSelectedValue] = useState<
-    "rating-asc" | "rating-desc" | "default"
-  >("default");
+  // const [selectedValue, setSelectedValue] = useState<
+  //   "rating-asc" | "rating-desc" | "default"
+  // >("default");
   const [sortBy, setSortBy] = useState<
     "rating-asc" | "rating-desc" | "default"
   >("default");
@@ -42,6 +42,11 @@ const page = () => {
   } = useDestinations({ searchTerm, sortBy, category });
 
   const destinations = data?.pages.flatMap((page) => page.destinations) || [];
+
+  const triggerSearch = () => {
+    setSearchTerm(searchInputRef.current?.value);
+    setHasSearched(true);
+  };
 
   const handleBottomReached = () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -65,8 +70,12 @@ const page = () => {
           <div className="relative">
             <Input
               ref={searchInputRef}
+              disabled={status === "pending"}
               name="query"
               placeholder="Search destinations..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") triggerSearch();
+              }}
               className="max-w-sm ps-10"
             />
             <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-5 -translate-y-1/2 transform" />
@@ -74,16 +83,12 @@ const page = () => {
           <LoadingButton
             disabled={status === "pending"}
             loading={status === "pending" && hasSearched}
-            onClick={() => {
-              setSearchTerm(searchInputRef.current?.value);
-              setSortBy(selectedValue);
-              setHasSearched(true);
-            }}
+            onClick={triggerSearch}
           >
             Search
           </LoadingButton>
         </div>
-        <Select onValueChange={setSelectedValue as () => void}>
+        <Select value={sortBy} onValueChange={setSortBy as () => void}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -110,23 +115,98 @@ const page = () => {
         onBottomReached={handleBottomReached}
         className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {status === "pending"
-          ? Array.from({ length: 6 }).map((_, index) => (
-              <DestinationCardSkeleton key={index} />
-            ))
-          : destinations?.map((destination) => (
-              <DestinationCard
-                key={destination._id}
-                name={destination.name}
-                region={destination.region}
-                shortDescription={destination.shortDescription}
-                image={destination.image}
-                rating={destination?.averageRating || 0}
-                slug={destination.slug}
-                reviewCount={destination.reviewCount}
-                isNew={isNew({ createdAt: destination.createdAt, type:"day", range: 3 })}
-              />
-            ))}
+        {status === "pending" ? (
+          Array.from({ length: 6 }).map((_, index) => (
+            <DestinationCardSkeleton key={index} />
+          ))
+        ) : destinations.length > 0 ? (
+          destinations.map((destination) => (
+            <DestinationCard
+              key={destination._id}
+              name={destination.name}
+              region={destination.region}
+              shortDescription={destination.shortDescription}
+              image={destination.image}
+              rating={destination?.averageRating || 0}
+              slug={destination.slug}
+              reviewCount={destination.reviewCount}
+              isNew={isNew({
+                createdAt: destination.createdAt,
+                type: "day",
+                range: 3,
+              })}
+            />
+          ))
+        ) : searchTerm || category !== "all" ? (
+          <div className="col-span-full">
+            <div className="flex flex-col items-center justify-center py-8 text-center sm:py-16">
+              <div className="bg-muted mb-6 rounded-full p-6">
+                <SearchIcon className="text-muted-foreground h-12 w-12" />
+              </div>
+              <h3 className="mb-2 text-2xl font-semibold">
+                No destinations found
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                {searchTerm
+                  ? `We couldn't find any destinations matching "${searchTerm}"`
+                  : category !== "all"
+                    ? `No destinations found in the "${category}" category`
+                    : "No destinations match your current filters"}
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm(undefined);
+                  setHasSearched(false);
+                  if (searchInputRef.current) {
+                    searchInputRef.current.value = "";
+                  }
+                }}
+              >
+                Clear Search
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="col-span-full">
+            <div className="flex flex-col items-center justify-center text-center sm:py-16">
+              <div className="bg-muted mb-6 rounded-full p-6">
+                <svg
+                  className="text-muted-foreground h-12 w-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-2xl font-semibold">
+                No destinations available
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                It looks like there are no destinations to explore right now.
+                Check back later for amazing places to discover!
+              </p>
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
+              >
+                Refresh page
+              </Button>
+            </div>
+          </div>
+        )}
       </InfiniteScrollContainer>
       {isFetchingNextPage && (
         <div className="hidden sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">

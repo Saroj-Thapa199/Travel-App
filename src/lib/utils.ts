@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+// lib/cleanDistanceLocale.ts
+import { enUS, Locale } from "date-fns/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,7 +21,7 @@ export const isNew = ({
   const currentDate = new Date();
 
   const difference = currentDate.valueOf() - new Date(createdAt).valueOf();
-  
+
   let differenceInType: number;
   if (type === "day") {
     differenceInType = difference / (1000 * 3600 * 24);
@@ -33,21 +35,34 @@ export const isNew = ({
 };
 
 export const hasNonEmptyValue = (value: any): boolean => {
-    if (typeof value === "string") {
-      return value.trim() !== "";
-    }
-
-    if (typeof value === "number" || typeof value === "boolean") {
-      return true;
-    }
-
-    if (Array.isArray(value)) {
-      return value.some((item) => hasNonEmptyValue(item));
-    }
-
-    if (typeof value === "object" && value !== null) {
-      return Object.values(value).some((val) => hasNonEmptyValue(val));
-    }
-
-    return false;
+  if (typeof value === "string") {
+    return value.trim() !== "";
   }
+
+  if (typeof value === "number" || typeof value === "boolean") {
+    return true;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some((item) => hasNonEmptyValue(item));
+  }
+
+  if (typeof value === "object" && value !== null) {
+    return Object.values(value).some((val) => hasNonEmptyValue(val));
+  }
+
+  return false;
+};
+
+export const cleanDistanceLocale: Locale = {
+  ...enUS,
+  formatDistance: (...args) => {
+    // Call the original formatter
+    const original = enUS.formatDistance(
+      ...(args as Parameters<typeof enUS.formatDistance>),
+    );
+
+    // Remove unwanted prefixes
+    return original.replace(/^(about|less than|over|almost) /, "");
+  },
+};

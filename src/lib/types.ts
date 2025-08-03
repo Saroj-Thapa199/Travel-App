@@ -41,3 +41,18 @@ export type FavoritesInfo = {
   favorites: number
   addedToFavoritesByUser: boolean
 }
+
+export type CollectionType = {
+  _id: string;
+  user: string;
+  name: string;
+  description?: string;
+  visibility: "public" | "private"
+  destinations: DestinationType[]
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CollectionsResponse = Array<Omit<CollectionType, "destinations"> & {
+  destinations: Pick<DestinationType, "_id" | "name" | "region" | "image">[];
+}>;

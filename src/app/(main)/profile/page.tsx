@@ -6,7 +6,7 @@ import { Camera, Edit, MapPin } from "lucide-react";
 import avatarPlaceholder from "@/assets/avatar-placeholder.png";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OverviewTab from "./OverviewTab";
@@ -16,14 +16,30 @@ import SettingsTab from "./SettingsTab";
 import CollectionsTab from "./CollectionsTab";
 
 const page = () => {
+  const searchParams = useSearchParams();
+
+  const tabQuery = searchParams.get("tab");
+
   const { data, status } = useSession();
   if (status === "unauthenticated" || !data?.user) {
     return redirect("/");
   }
 
-  const user = data?.user;
+  const user = data.user;
 
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState<string>(() => {
+    const validTabs = [
+      "overview",
+      "collections",
+      "saved",
+      "reviews",
+      "settings",
+    ];
+    return typeof tabQuery === "string" && validTabs.includes(tabQuery)
+      ? tabQuery
+      : "overview";
+  });
+
   return (
     <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       {/* Profile Header */}
