@@ -22,7 +22,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { X, Plus } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { TrekRouteType } from "@/lib/RouteValidation";
+import { TrekRouteType } from "@/lib/validations/routes";
 import { TagsInput } from "@/components/ui/tags-input";
 import SafetyTipsInput from "./SafetyTipsInput";
 import TrekRouteDialog from "./TrekRouteDialog";

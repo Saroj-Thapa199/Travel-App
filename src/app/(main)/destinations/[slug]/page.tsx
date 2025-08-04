@@ -1,7 +1,7 @@
 import DestinationHeaderImage from "@/components/DestinationHeaderImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDestinationFromSlug } from "@/lib/actions/destination";
-import { destinationSchema } from "@/lib/validation";
+import { destinationSchema } from "@/lib/validations/destination";
 import { cache } from "react";
 import ReviewSection from "./ReviewSection";
 import { notFound } from "next/navigation";

@@ -1,4 +1,4 @@
-import { MotorableRouteType } from "@/lib/RouteValidation";
+import { MotorableRouteType } from "@/lib/validations/routes";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface MotorableRouteDocument

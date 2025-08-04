@@ -6,11 +6,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
 import { DestinationFormType } from "../types";
-import { destinationSchema } from "../validation";
-import { auth } from "@/auth";
-import mongoose from "mongoose";
-import { revalidatePath } from "next/cache";
-
+import { destinationSchema } from "../validations/destination";
 export const addDestination = async (
   values: DestinationFormType,
 ): Promise<{ error: string }> => {

@@ -28,7 +28,8 @@ import { CollectionsResponse } from "@/lib/types";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 import { cleanDistanceLocale } from "@/lib/utils";
-
+import { useQuery } from "@tanstack/react-query";
+import CollectionCardSkeleton from "@/components/skeletons/CollectionCardSkeleton";
 
 interface Collection {
   _id: string;
@@ -46,7 +47,11 @@ interface Collection {
   }[];
 }
 
-const CollectionsTab = () => {
+type CollectionsTabProps = {
+  userId: string;
+};
+
+const CollectionsTab = ({ userId }: CollectionsTabProps) => {
   // Mock data - replace with actual data fetching
   const collections: Collection[] = [
     {
@@ -161,16 +166,26 @@ const CollectionsTab = () => {
     },
   ];
 
-  const [collectionData, setCollectionData] = useState<CollectionsResponse>([]);
+  const { data: collectionData, isLoading } = useQuery({
+    queryKey: ["collections", "user", userId],
+    queryFn: async () => {
+      const { data } = await axios.get<CollectionsResponse>(
+        "/api/collections/all",
+      );
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    const getCollections = async () => {
-      const res = await axios.get<CollectionsResponse>("/api/collections/all");
-      if (res.data) setCollectionData(res.data);
-    };
+  // const [collectionData, setCollectionData] = useState<CollectionsResponse>([]);
 
-    getCollections();
-  }, []);
+  // useEffect(() => {
+  //   const getCollections = async () => {
+  //     const res = await axios.get<CollectionsResponse>("/api/collections/all");
+  //     if (res.data) setCollectionData(res.data);
+  //   };
+
+  //   getCollections();
+  // }, []);
 
   return (
     <div className="space-y-6">
@@ -182,7 +197,7 @@ const CollectionsTab = () => {
             Organize your favorite places into themed collections
           </p>
         </div>
-        <CreateCollectionDialogTrigger onCreateCollection={() => {}}>
+        <CreateCollectionDialogTrigger>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             New Collection
@@ -192,165 +207,34 @@ const CollectionsTab = () => {
 
       {/* Collections Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {collectionData.length > 0 && collectionData.map((collection) => (
-          // <Card
-          //   key={collection._id}
-          //   className="group overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg"
-          // >
-          //   <div className="relative">
-          //     <div className="aspect-v_ideo overflow-hidden">
-          //       <Image
-          //         src={
-          //           imageUrls[Math.floor(Math.random() * 6)] ||
-          //           "/placeholder.svg"
-          //         }
-          //         alt={collection.title}
-          //         width={300}
-          //         height={200}
-          //         className="transition-tansform h-full w-full object-cover duration-500 group-hover:scale-110"
-          //       />
-          //     </div>
-          //     <div className="absolute top-3 right-3 flex gap-2">
-          //       <Badge
-          //         variant={collection.isPublic ? "default" : "secondary"}
-          //         className="gap-1"
-          //       >
-          //         {collection.isPublic ? (
-          //           <>
-          //             <Globe className="h-3 w-3" />
-          //             Public
-          //           </>
-          //         ) : (
-          //           <>
-          //             <Lock className="h-3 w-3" />
-          //             Private
-          //           </>
-          //         )}
-          //       </Badge>
-          //       <DropdownMenu>
-          //         <DropdownMenuTrigger asChild>
-          //           <Button
-          //             size="sm"
-          //             variant="secondary"
-          //             className="h-8 w-8 p-0"
-          //           >
-          //             <MoreHorizontal className="h-4 w-4" />
-          //           </Button>
-          //         </DropdownMenuTrigger>
-          //         <DropdownMenuContent align="end">
-          //           <DropdownMenuItem className="gap-2">
-          //             <Edit className="h-4 w-4" />
-          //             Edit Collection
-          //           </DropdownMenuItem>
-          //           <DropdownMenuItem className="gap-2">
-          //             <Share className="h-4 w-4" />
-          //             Share Collection
-          //           </DropdownMenuItem>
-          //           <DropdownMenuItem className="text-destructive gap-2">
-          //             <Trash2 className="h-4 w-4" />
-          //             Delete Collection
-          //           </DropdownMenuItem>
-          //         </DropdownMenuContent>
-          //       </DropdownMenu>
-          //     </div>
-          //   </div>
-
-          //   <CardHeader>
-          //     <div className="flex items-start justify-between">
-          //       <div className="space-y-1">
-          //         <h3 className="text-lg leading-tight font-semibold">
-          //           {collection.title}
-          //         </h3>
-          //         <p className="text-muted-foreground line-clamp-2 text-sm">
-          //           {collection.description}
-          //         </p>
-          //       </div>
-          //     </div>
-          //   </CardHeader>
-
-          //   <CardContent className="-mt-3 pt-0">
-          //     {/* Place Previews */}
-          //     <div className="mb-4">
-          //       <div className="mb-3 flex -space-x-2">
-          //         {collection.places.slice(0, 4).map((place, index) => (
-          //           <div
-          //             key={place._id}
-          //             className="border-background relative h-8 w-8 overflow-hidden rounded-full border-2"
-          //             style={{ zIndex: 4 - index }}
-          //           >
-          //             <Image
-          //               src={
-          //                 imageUrls[Math.floor(Math.random() * 6)] ||
-          //                 "/placeholder.svg"
-          //               }
-          //               alt={place.name}
-          //               width={32}
-          //               height={32}
-          //               className="h-full w-full object-cover"
-          //             />
-          //           </div>
-          //         ))}
-          //         {collection.placesCount > 4 && (
-          //           <div className="border-background bg-muted flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-medium">
-          //             +{collection.placesCount - 4}
-          //           </div>
-          //         )}
-          //       </div>
-
-          //       {/* Sample place names */}
-          //       <div className="space-y-1">
-          //         {collection.places.slice(0, 2).map((place) => (
-          //           <div
-          //             key={place._id}
-          //             className="text-muted-foreground flex items-center gap-1 text-xs"
-          //           >
-          //             <MapPin className="h-3 w-3" />
-          //             <span>
-          //               {place.name}, {place.region}
-          //             </span>
-          //           </div>
-          //         ))}
-          //         {collection.placesCount > 2 && (
-          //           <p className="text-muted-foreground text-xs">
-          //             and {collection.placesCount - 2} more places
-          //           </p>
-          //         )}
-          //       </div>
-          //     </div>
-
-          //     {/* Stats */}
-          //     <div className="text-muted-foreground flex items-center justify-between text-sm">
-          //       <div className="flex items-center gap-1">
-          //         <MapPin className="h-4 w-4" />
-          //         <span>{collection.placesCount} places</span>
-          //       </div>
-          //       <div className="flex items-center gap-1">
-          //         <Calendar className="h-4 w-4" />
-          //         <span>Updated {collection.lastUpdated}</span>
-          //       </div>
-          //     </div>
-          //   </CardContent>
-          // </Card>
-          <CollectionCard
-            key={collection._id}
-            _id={collection._id}
-            title={collection.name}
-            description={collection.description}
-            isPublic={collection.visibility === "public"}
-            // destinations={collection.places.map((place) => ({
-            //   ...place,
-            //   image: imageUrls[Math.floor(Math.random() * 6)],
-            // }))}
-            destinations={collection.destinations}
-            // lastUpdated={collection.updatedAt}
-            lastUpdated={formatDistanceToNow(collection.updatedAt, {addSuffix: true, locale: cleanDistanceLocale})}
-            // coverImage={imageUrls[Math.floor(Math.random() * 6)]}
-            coverImage={collection.destinations?.[0]?.image || undefined}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, index) => (
+              <CollectionCardSkeleton key={index} />
+            ))
+          : collectionData &&
+            collectionData.length > 0 &&
+            collectionData.map((collection) => (
+              <CollectionCard
+                key={collection._id}
+                _id={collection._id}
+                title={collection.name}
+                description={collection.description}
+                isPublic={collection.visibility === "public"}
+                destinations={collection.destinations}
+                lastUpdated={formatDistanceToNow(collection.updatedAt, {
+                  addSuffix: true,
+                  locale: cleanDistanceLocale,
+                })}
+                coverImage={
+                  collection.coverImage ||
+                  collection.destinations?.[0]?.image ||
+                  undefined
+                }
+              />
+            ))}
 
         {/* Create New Collection Card */}
-        <CreateCollectionDialogTrigger onCreateCollection={() => {}}>
+        <CreateCollectionDialogTrigger>
           <Card className="hover:border-primary/50 group cursor-pointer border-2 border-dashed transition-colors">
             <CardContent className="flex h-full min-h-[300px] flex-col items-center justify-center p-6 text-center">
               <div className="bg-muted group-hover:bg-primary/10 mb-4 rounded-full p-4 transition-colors">
@@ -380,7 +264,7 @@ const CollectionsTab = () => {
             Create your first collection to start organizing your favorite
             travel destinations and places.
           </p>
-          <CreateCollectionDialogTrigger onCreateCollection={() => {}}>
+          <CreateCollectionDialogTrigger>
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
               Create Your First Collection

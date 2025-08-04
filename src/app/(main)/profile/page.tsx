@@ -158,7 +158,7 @@ const page = () => {
         </TabsContent>
 
         <TabsContent value="collections" className="space-y-6">
-          <CollectionsTab />
+          {user.id && <CollectionsTab userId={user.id} />}
         </TabsContent>
       </Tabs>
     </main>

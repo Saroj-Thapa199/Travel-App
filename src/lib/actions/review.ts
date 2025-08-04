@@ -5,7 +5,7 @@ import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
 import mongoose from "mongoose";
 import { ReviewFormType } from "../types";
-import { populatedReviewSchema } from "../validation";
+import { populatedReviewSchema } from "../validations/review";
 import { z } from "zod";
 import { IUserDocument } from "@/model/User";
 import Destination from "@/model/Destination";

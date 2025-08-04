@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ReviewType } from "@/lib/validation";
+import { ReviewType } from "@/lib/validations/review";
 import axios from "axios";
 import { MessageSquare, Star } from "lucide-react";
 import Link from "next/link";

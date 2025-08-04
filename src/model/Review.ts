@@ -1,4 +1,4 @@
-import { ReviewType } from "@/lib/validation";
+import { ReviewType } from "@/lib/validations/review";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface ReviewInterface extends Omit<ReviewType, "_id" | "destination" | "user">, Document {

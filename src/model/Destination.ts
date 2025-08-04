@@ -1,4 +1,4 @@
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 import mongoose, { Document, Schema } from "mongoose";
 
 const transportTypeEnum = [

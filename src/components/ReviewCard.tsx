@@ -1,6 +1,5 @@
-import { PopulatedReviewType, ReviewType } from "@/lib/validation";
+import { PopulatedReviewType } from "@/lib/validations/review";
 import React from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import avatarPlaceholder from "@/assets/avatar-placeholder.png";
 import Image from "next/image";

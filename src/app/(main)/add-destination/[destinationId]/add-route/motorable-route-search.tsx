@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MotorableRouteType } from "@/lib/RouteValidation";
+import { MotorableRouteType } from "@/lib/validations/routes";
 import axios from "axios";
 import { ArrowBigRight, ArrowRight, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";

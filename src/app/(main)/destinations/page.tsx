@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, SearchIcon } from "lucide-react";
 import React, { useRef, useState } from "react";
-import DestinationCardSkeleton from "@/components/DestinationCardSkeleton";
+import DestinationCardSkeleton from "@/components/skeletons/DestinationCardSkeleton";
 import useDestinations from "@/app/hooks/useDestinations";
 import LoadingButton from "@/components/LoadingButton";
 import {

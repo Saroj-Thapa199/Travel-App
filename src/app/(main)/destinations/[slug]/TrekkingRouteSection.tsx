@@ -2,7 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { DestinationRouteType } from "@/lib/validation";
+import { DestinationRouteType } from "@/lib/validations/destination";
 import {
   AlertCircle,
   CheckCircle2,

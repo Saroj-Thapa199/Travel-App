@@ -26,7 +26,7 @@ import {
   MultiSelectTrigger,
   MultiSelectValue,
 } from "@/components/ui/multi-select";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 import { Switch } from "@/components/ui/switch";
 import PrivateVehicleRoutes from "./PrivateVehicleRoutes";
 import {

@@ -13,3 +13,12 @@ export const makeUndefinedIfEmpty = () => {
     .transform((val) => (val.trim() === "" ? undefined : val))
     .optional();
 };
+
+export const isImageUrl = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    return /\.(jpg|jpeg|png|webp|gif|svg)$/.test(parsed.pathname);
+  } catch {
+    return false;
+  }
+};

@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import AddDestinationForm from "./AddDestinationForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { destinationSchema } from "@/lib/validation";
+import { destinationSchema } from "@/lib/validations/destination";
 import Preview from "./Preview";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,7 @@ const page = () => {
         averageRating: true,
         reviewCount: true,
         user: true,
-        favorites: true
+        favorites: true,
         // categories: true
       }),
     ),

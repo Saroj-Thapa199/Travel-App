@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 
 const categoriesOptions: {
   label: string;

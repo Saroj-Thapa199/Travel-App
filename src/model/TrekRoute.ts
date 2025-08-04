@@ -1,4 +1,4 @@
-import { TrekRouteType } from "@/lib/RouteValidation";
+import { TrekRouteType } from "@/lib/validations/routes";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface TrekRouteDocument

@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { TrekRouteType } from "@/lib/RouteValidation";
+import type { TrekRouteType } from "@/lib/validations/routes";
 import { Mountain } from "lucide-react";
 import type React from "react";
 import type { Dispatch, SetStateAction } from "react";

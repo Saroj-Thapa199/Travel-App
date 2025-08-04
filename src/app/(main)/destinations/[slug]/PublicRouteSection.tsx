@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DestinationRouteType } from "@/lib/validation";
+import { DestinationRouteType } from "@/lib/validations/destination";
 import {
   AlertCircle,
   ArrowRight,

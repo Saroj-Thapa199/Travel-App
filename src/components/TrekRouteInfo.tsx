@@ -1,4 +1,4 @@
-import { TrekRouteType } from "@/lib/RouteValidation";
+import { TrekRouteType } from "@/lib/validations/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {

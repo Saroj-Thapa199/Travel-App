@@ -4,6 +4,7 @@ interface CollectionInterface extends Document {
   user: mongoose.Types.ObjectId;
   name: string;
   description: string;
+  coverImage: string;
   destinations: [mongoose.Types.ObjectId];
   visibility: "public" | "private";
 }
@@ -20,6 +21,9 @@ const CollectionSchema: Schema<CollectionInterface> = new Schema(
       required: true,
     },
     description: {
+      type: String,
+    },
+    coverImage: {
       type: String,
     },
     destinations: [

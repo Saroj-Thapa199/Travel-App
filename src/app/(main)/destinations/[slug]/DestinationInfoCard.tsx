@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoritesInfo } from "@/lib/types";
 // import { addDestinationToFavorites } from "@/lib/actions/destination";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {

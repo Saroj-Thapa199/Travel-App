@@ -1,5 +1,6 @@
-import { MotorableRouteType, TrekRouteType } from "./RouteValidation";
-import { DestinationType, ReviewType } from "./validation";
+import { MotorableRouteType, TrekRouteType } from "./validations/routes";
+import { ReviewType } from "./validations/review";
+import { DestinationType } from "./validations/destination";
 
 export type DestinationFormType = Omit<
   DestinationType,
@@ -47,6 +48,7 @@ export type CollectionType = {
   user: string;
   name: string;
   description?: string;
+  coverImage?: string;
   visibility: "public" | "private"
   destinations: DestinationType[]
   createdAt: string;

@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DestinationsPage } from "@/lib/types";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 import axios from "axios";
 import {
   Calendar,

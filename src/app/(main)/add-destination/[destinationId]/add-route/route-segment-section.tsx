@@ -9,7 +9,7 @@ import {
   MotorableRouteType,
   trekRouteSchema,
   TrekRouteType,
-} from "@/lib/RouteValidation";
+} from "@/lib/validations/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Car, Footprints } from "lucide-react";
 import { useForm } from "react-hook-form";

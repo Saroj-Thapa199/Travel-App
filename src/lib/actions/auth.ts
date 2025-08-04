@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "@/auth"; // assuming this is your exported `signIn`
-import { LoginValues, signUpSchema, SignUpValues } from "@/lib/validation";
+import { LoginValues, signUpSchema, SignUpValues } from "@/lib/validations/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import dbConnect from "../dbConnect";

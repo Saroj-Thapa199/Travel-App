@@ -1,6 +1,6 @@
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 
 interface DestinationsApiResponse {
   destinations: DestinationType[];

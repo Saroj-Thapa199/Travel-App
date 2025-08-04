@@ -1,7 +1,7 @@
 import DestinationCard from "@/components/DestinationCard";
 import { Button } from "@/components/ui/button";
 import { DestinationsPage } from "@/lib/types";
-import { DestinationType } from "@/lib/validation";
+import { DestinationType } from "@/lib/validations/destination";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";

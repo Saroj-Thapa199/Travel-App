@@ -1,4 +1,4 @@
-import { PopulatedReviewType, ReviewType } from "@/lib/validation";
+import { PopulatedReviewType } from "@/lib/validations/review";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 

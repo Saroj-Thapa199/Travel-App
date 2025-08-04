@@ -4,7 +4,7 @@ import { AlertCircleIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { useFormContext, useFieldArray, UseFormReturn } from "react-hook-form";
 import { FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { MotorableRouteType } from "@/lib/RouteValidation";
+import { MotorableRouteType } from "@/lib/validations/routes";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 type WarningsInputProps = {

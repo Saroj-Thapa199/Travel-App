@@ -9,7 +9,7 @@ import {
   RouteFormType,
   trekRouteSchema,
   TrekRouteType,
-} from "../RouteValidation";
+} from "../validations/routes";
 import TrekRoute from "@/model/TrekRoute";
 import Route from "@/model/Route";
 import { redirect } from "next/navigation";

@@ -1,4 +1,4 @@
-import { DestinationType } from "./validation";
+import { DestinationType } from "./validations/destination";
 
 export const categoriesList: readonly [
   "all",

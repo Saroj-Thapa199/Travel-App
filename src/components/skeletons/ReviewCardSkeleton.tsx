@@ -1,5 +1,4 @@
-import React from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 const ReviewCardSkeleton = () => {
   return (
@@ -12,7 +11,7 @@ const ReviewCardSkeleton = () => {
         <div className="flex-1">
           <div className="flex h-10 items-center justify-between">
             <div className="flex h-full flex-col justify-between py-0.5">
-              <Skeleton className="h-6 w-36 my-auto" />
+              <Skeleton className="my-auto h-6 w-36" />
             </div>
             <Skeleton className="h-4 w-20 rounded-full max-sm:hidden" />
           </div>

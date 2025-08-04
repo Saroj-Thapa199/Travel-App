@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Plus, Check } from "lucide-react"
-import type { MotorableRouteType, TrekRouteType } from "@/lib/schemas"
+import type { MotorableRouteType, TrekRouteType } from "@/lib/validations/routes"
 import {useDebounce} from "use-debounce"
 
 interface RouteSegmentSearchProps {

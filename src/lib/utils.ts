@@ -66,3 +66,12 @@ export const cleanDistanceLocale: Locale = {
     return original.replace(/^(about|less than|over|almost) /, "");
   },
 };
+
+export const cleanUrl = (url: string) => {
+  try {
+    const parsed = new URL(url.trim())
+    return parsed.origin + parsed.pathname // removes search params and hashes
+  } catch {
+    return url // fallback
+  }
+}

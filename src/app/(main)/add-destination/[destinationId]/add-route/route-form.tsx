@@ -13,7 +13,7 @@ import {
   routeFormSchema,
   RouteFormType,
   TrekRouteType,
-} from "@/lib/RouteValidation";
+} from "@/lib/validations/routes";
 import MotorableRouteSearch from "./motorable-route-search";
 import TrekRouteSearch from "./trek-route-search";
 import {

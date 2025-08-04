@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { MotorableRouteType } from "@/lib/RouteValidation";
+import type { MotorableRouteType } from "@/lib/validations/routes";
 import { Route } from "lucide-react";
 import type React from "react";
 import type { Dispatch, SetStateAction } from "react";

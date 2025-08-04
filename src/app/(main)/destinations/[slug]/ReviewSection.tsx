@@ -10,14 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Filter, Loader2, MessageSquare, Star } from "lucide-react";
+import { Filter, Loader2, MessageSquare } from "lucide-react";
 import ReviewForm from "./ReviewForm";
-import { getDestinationReviews } from "@/lib/actions/review";
 import ReviewCard from "@/components/ReviewCard";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { populatedReviewSchema, PopulatedReviewType } from "@/lib/validation";
-import { useEffect, useState } from "react";
+import { populatedReviewSchema } from "@/lib/validations/review";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import ReviewSummary from "@/components/ReviewSummary";
 import useGetReviews from "@/app/hooks/useGetReviews";
-import ReviewCardSkeleton from "@/components/ReviewCardSkeleton";
+import ReviewCardSkeleton from "@/components/skeletons/ReviewCardSkeleton";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import ProtectedActionButton from "@/components/ProtectedActionButton";
 

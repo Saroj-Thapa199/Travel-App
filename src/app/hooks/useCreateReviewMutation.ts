@@ -1,10 +1,10 @@
+import { createReview } from "@/lib/actions/review";
+import { populatedReviewSchema } from "@/lib/validations/review";
 import {
   QueryFilters,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { createReview } from "../actions/review";
-import { populatedReviewSchema } from "../validation";
 
 export const useCreateReviewMutation = () => {
   const queryClient = useQueryClient();
@@ -13,14 +13,14 @@ export const useCreateReviewMutation = () => {
     mutationFn: createReview,
     onSuccess: async ({ success, data, error }) => {
       if (!success) {
-        throw new Error(error)
-      };
-      
+        throw new Error(error);
+      }
+
       const newReview = populatedReviewSchema.parse(data);
       if (!newReview) {
-        throw new Error("Something went wrong")
+        throw new Error("Something went wrong");
       }
-      
+
       const queryFilter = {
         queryKey: ["reviews"],
         predicate: (query) =>
