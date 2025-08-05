@@ -18,10 +18,10 @@ import { TrekRouteForm } from "./trek-route-form";
 import { Dispatch, SetStateAction } from "react";
 
 type RouteSegmentSectionProps = {
-  setTab: Dispatch<SetStateAction<string>>
-}
+  setTab: Dispatch<SetStateAction<string>>;
+};
 
-const RouteSegmentSection = ({setTab}: RouteSegmentSectionProps) => {
+const RouteSegmentSection = ({ setTab }: RouteSegmentSectionProps) => {
   const motorableForm = useForm<Omit<MotorableRouteType, "_id">>({
     resolver: zodResolver(
       motorableRouteSchema.omit({

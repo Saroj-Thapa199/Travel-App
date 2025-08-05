@@ -11,7 +11,7 @@ const InfiniteScrollContainer = ({
   onBottomReached,
   className,
 }: InfiniteScrollContainerProps) => {
-  const [key, setKey] = useState(0); 
+  const [key, setKey] = useState(0);
   const { ref, inView } = useInView({
     rootMargin: "200px",
     // onChange: (inView) => {

@@ -12,7 +12,7 @@ export const GET = async () => {
 
     // TODO: Remove this delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+
     return NextResponse.json(destinations);
   } catch (error) {
     console.error(error);

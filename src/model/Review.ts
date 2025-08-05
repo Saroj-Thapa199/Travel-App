@@ -1,7 +1,9 @@
 import { ReviewType } from "@/lib/validations/review";
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface ReviewInterface extends Omit<ReviewType, "_id" | "destination" | "user">, Document {
+export interface ReviewInterface
+  extends Omit<ReviewType, "_id" | "destination" | "user">,
+    Document {
   user: mongoose.Types.ObjectId;
   destination: mongoose.Types.ObjectId;
 }

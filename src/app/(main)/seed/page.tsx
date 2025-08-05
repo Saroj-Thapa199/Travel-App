@@ -108,13 +108,11 @@ const page = () => {
     // fetchSuggestedDestinations();
 
     const fetchCollections = async () => {
-      const res1 = await axios.get(
-        "/api/collections/all",
-      );
+      const res1 = await axios.get("/api/collections/all");
       console.log(res1.data);
     };
 
-    fetchCollections()
+    fetchCollections();
   }, []);
 
   return (

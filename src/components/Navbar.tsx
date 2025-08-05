@@ -16,13 +16,25 @@ const Navbar = () => {
 
   const links = [
     { id: "home", label: "Home", homeHref: "/", href: "/" },
-    { id: "destinations", label: "Destinations", homeHref: "/#destinations", href: "/destinations" },
-    { id: "reviews", label: "Reviews", homeHref: "#", href: "/", LogoIcon: MessageSquare },
+    {
+      id: "destinations",
+      label: "Destinations",
+      homeHref: "/#destinations",
+      href: "/destinations",
+    },
+    {
+      id: "reviews",
+      label: "Reviews",
+      homeHref: "#",
+      href: "/",
+      LogoIcon: MessageSquare,
+    },
     { id: "travel-tips", label: "Travel Tips", homeHref: "#", href: "/" },
     {
       id: "add-destination",
       label: "Add Destinations",
-      homeHref: "/#add-destination", href: "/add-destination",
+      homeHref: "/#add-destination",
+      href: "/add-destination",
       LogoIcon: PlusCircle,
     },
   ];
@@ -51,19 +63,18 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-  const matchedLink = links.find((link) =>
-    pathname === link.href || pathname.startsWith(link.href + "/")
-  );
+    const matchedLink = links.find(
+      (link) => pathname === link.href || pathname.startsWith(link.href + "/"),
+    );
 
-  if (matchedLink) {
-    setActive(matchedLink.id);
-  } else if (pathname === "/") {
-    setActive("home");
-  } else {
-    setActive(""); // No underline
-  }
-}, [pathname]);
-
+    if (matchedLink) {
+      setActive(matchedLink.id);
+    } else if (pathname === "/") {
+      setActive("home");
+    } else {
+      setActive(""); // No underline
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const index = links.findIndex((link) => link.id === active);
@@ -118,18 +129,20 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-           {active &&  <span
-              className={cn(
-                "absolute bottom-0 h-0.5 transition-all duration-300",
-                isScrolled || (pathname !== "/" && !pathname.startsWith("/#"))
-                  ? "bg-primary"
-                  : "bg-secondary dark:bg-primary",
-              )}
-              style={{
-                left: underlineStyle.left,
-                width: underlineStyle.width,
-              }}
-            />}
+            {active && (
+              <span
+                className={cn(
+                  "absolute bottom-0 h-0.5 transition-all duration-300",
+                  isScrolled || (pathname !== "/" && !pathname.startsWith("/#"))
+                    ? "bg-primary"
+                    : "bg-secondary dark:bg-primary",
+                )}
+                style={{
+                  left: underlineStyle.left,
+                  width: underlineStyle.width,
+                }}
+              />
+            )}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -146,7 +159,7 @@ const Navbar = () => {
             </Button>
           )}
           <Button
-            variant={(!isScrolled && pathname === "/") ? "secondary" : "default"}
+            variant={!isScrolled && pathname === "/" ? "secondary" : "default"}
             className="cursor-pointer rounded-sm"
           >
             <Plus />

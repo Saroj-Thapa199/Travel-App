@@ -33,7 +33,7 @@ import { createTrekRoute } from "@/lib/actions/route";
 
 interface TrekRouteFormProps {
   form: UseFormReturn<Omit<TrekRouteType, "_id">>;
-  setTab: Dispatch<SetStateAction<string>>
+  setTab: Dispatch<SetStateAction<string>>;
 }
 
 export function TrekRouteForm({ form, setTab }: TrekRouteFormProps) {
@@ -58,7 +58,7 @@ export function TrekRouteForm({ form, setTab }: TrekRouteFormProps) {
     data: Omit<TrekRouteType, "_id">,
   ) => {
     setLoading(true);
-    setErrorMsg(undefined)
+    setErrorMsg(undefined);
     const response = await createTrekRoute(data);
     if (!response.success) {
       setErrorMsg(response.error);
@@ -79,7 +79,7 @@ export function TrekRouteForm({ form, setTab }: TrekRouteFormProps) {
 
   return (
     <Card className="w-full gap-3">
-       <CardHeader className="text-center">
+      <CardHeader className="text-center">
         {errorMsg && <span className="text-destructive">{errorMsg}</span>}
       </CardHeader>
       <CardContent>
@@ -439,7 +439,11 @@ export function TrekRouteForm({ form, setTab }: TrekRouteFormProps) {
             </div>
 
             <div className="flex sm:justify-end">
-              <Button type="submit" disabled={loading} className="max-sm:flex-1">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="max-sm:flex-1"
+              >
                 Create Route Segment
               </Button>
             </div>

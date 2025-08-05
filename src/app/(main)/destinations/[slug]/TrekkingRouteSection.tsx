@@ -35,7 +35,7 @@ const TrekkingRouteSection = ({ trek }: TrekkingRouteSectionProps) => {
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 px-4 sm:px-5 mt-2">
+      <CardContent className="mt-2 space-y-4 px-4 sm:px-5">
         {/* Starting Point */}
         <div className="flex items-center gap-2 text-base font-semibold">
           <MapPin className="h-4 w-4 text-orange-600" />

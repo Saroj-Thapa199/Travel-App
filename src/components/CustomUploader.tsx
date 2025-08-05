@@ -83,7 +83,7 @@ const CustomUploader = ({
           <div {...getRootProps()}>
             <Input {...getInputProps()} />
             <ImageIcon className="text-muted-foreground mx-auto mb-2 h-8 w-8" />
-            <p className="text-muted-foreground mb-2 text-sm hover:underline cursor-pointer">
+            <p className="text-muted-foreground mb-2 cursor-pointer text-sm hover:underline">
               Drag and drop an image or click to browse
             </p>
           </div>

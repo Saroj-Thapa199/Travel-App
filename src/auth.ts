@@ -6,7 +6,6 @@ import User from "./model/User";
 import bcrypt from "bcryptjs";
 // import clientPromise from "./lib/db";
 
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // adapter: MongoDBAdapter(clientPromise),
   // session: {
@@ -38,12 +37,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.log("Invalid credentials");
             return null;
           }
-          
+
           return {
             id: String(user._id),
             name: user.name,
             email: user.email,
-          }
+          };
         } catch (error) {
           console.log({ error });
           return null;
@@ -52,20 +51,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({token, user}) {
+    async jwt({ token, user }) {
       if (user) {
-        token._id = user.id
-        token.name = user.name
-        token.email = user.email
+        token._id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
-      return token
+      return token;
     },
-    async session({session, token, user}) {
+    async session({ session, token, user }) {
       if (token) {
-        session.user.id = token._id as string
-        session.user.name = token.name as string
+        session.user.id = token._id as string;
+        session.user.name = token.name as string;
       }
-      return session
+      return session;
     },
   },
   pages: {

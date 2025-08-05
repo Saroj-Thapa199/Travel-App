@@ -9,7 +9,9 @@ const useFavoritesInfo = (
   return useQuery({
     queryKey: ["favorites-info", destinationId],
     queryFn: async () => {
-      const { data } = await axios.get<FavoritesInfo>(`/api/${destinationId}/favorites`);
+      const { data } = await axios.get<FavoritesInfo>(
+        `/api/${destinationId}/favorites`,
+      );
       return data;
     },
     initialData: initialState,
@@ -17,4 +19,4 @@ const useFavoritesInfo = (
   });
 };
 
-export default useFavoritesInfo
+export default useFavoritesInfo;

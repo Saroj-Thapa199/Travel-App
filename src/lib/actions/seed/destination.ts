@@ -36,7 +36,12 @@ const getRandomCategories = (): Category[] => {
   return shuffled.slice(0, count);
 };
 
-const destinationsList: { name: string; region: string; budget: string, bestSeason: string[] }[] = [
+const destinationsList: {
+  name: string;
+  region: string;
+  budget: string;
+  bestSeason: string[];
+}[] = [
   {
     name: "Nagarkot Sunrise Point",
     region: "Nagarkot, Bhaktapur, Nepal",
@@ -188,15 +193,12 @@ const destinationsList: { name: string; region: string; budget: string, bestSeas
     bestSeason: ["Winter", "Spring"],
   },
 ];
-;
-
 export const seedDestinations = async () => {
   const session = await auth();
-      if (!session) return;
+  if (!session) return;
 
   const destinations = destinationsList.map((loc, idx) => {
     const categories = getRandomCategories();
-
 
     return {
       name: loc.name,

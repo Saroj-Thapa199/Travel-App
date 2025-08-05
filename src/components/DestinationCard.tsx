@@ -15,7 +15,7 @@ type DestinationCardProps = {
   reviewCount: number;
   isNew?: boolean;
   featured?: boolean;
-  action?: ReactNode
+  action?: ReactNode;
 };
 
 const DestinationCard = ({
@@ -28,7 +28,7 @@ const DestinationCard = ({
   reviewCount,
   isNew,
   featured,
-  action
+  action,
 }: DestinationCardProps) => {
   return (
     <Link href={`/destinations/${slug}`} className="group">
@@ -49,13 +49,9 @@ const DestinationCard = ({
           )}
           <div className="absolute top-3 right-3 flex gap-1">
             {isNew && (
-              <Badge className="bg-green-500/90 hover:bg-green-500">
-                New
-              </Badge>
+              <Badge className="bg-green-500/90 hover:bg-green-500">New</Badge>
             )}
-            {action && (
-              action
-            )}
+            {action && action}
           </div>
         </div>
         <div className="p-5">

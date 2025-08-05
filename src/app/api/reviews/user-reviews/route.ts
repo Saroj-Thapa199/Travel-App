@@ -17,7 +17,7 @@ export const GET = async () => {
       );
     }
 
-    await dbConnect()
+    await dbConnect();
 
     const userId = session.user.id;
 

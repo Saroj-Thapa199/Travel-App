@@ -12,7 +12,14 @@ const MotorableRouteSchema: Schema<MotorableRouteDocument> = new Schema({
   duration: { type: String, required: true },
   availableServices: {
     type: [String],
-    enum: ["Local Bus", "Deluxe Bus", "Tourist Bus", "Jeep", "Microbus", "Sumo"],
+    enum: [
+      "Local Bus",
+      "Deluxe Bus",
+      "Tourist Bus",
+      "Jeep",
+      "Microbus",
+      "Sumo",
+    ],
     required: true,
   },
   fare: { type: String, required: true },

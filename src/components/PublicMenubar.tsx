@@ -15,7 +15,7 @@ import {
 import { Check, MenuIcon, Monitor, Moon, Sun } from "lucide-react";
 
 const PublicMenubar = () => {
-    const { setTheme, themes, theme: currentTheme } = useTheme();
+  const { setTheme, themes, theme: currentTheme } = useTheme();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

@@ -32,8 +32,8 @@ export const useCreateReviewMutation = () => {
             )),
       } satisfies QueryFilters;
 
-      //   await queryClient.invalidateQueries(queryFilter);
-      await queryClient.refetchQueries(queryFilter);
+      await queryClient.invalidateQueries(queryFilter);
+      // await queryClient.refetchQueries(queryFilter);
     },
     onError: (error) => {
       console.log(error);

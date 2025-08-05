@@ -16,7 +16,7 @@ export const GET = async (
     const { destinationId } = params;
 
     const session = await auth();
-    await dbConnect()
+    await dbConnect();
 
     if (!mongoose.isValidObjectId(destinationId)) {
       return NextResponse.json(
@@ -83,7 +83,7 @@ export const POST = async (
     const { destinationId } = params;
 
     const session = await auth();
-    await dbConnect()
+    await dbConnect();
 
     if (!session || !session.user.id) {
       return NextResponse.json(
@@ -148,7 +148,7 @@ export const DELETE = async (
     const { destinationId } = params;
 
     const session = await auth();
-    await dbConnect()
+    await dbConnect();
 
     if (!session || !session.user.id) {
       return NextResponse.json(

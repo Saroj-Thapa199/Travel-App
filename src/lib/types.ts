@@ -4,7 +4,14 @@ import { DestinationType } from "./validations/destination";
 
 export type DestinationFormType = Omit<
   DestinationType,
-  "_id" | "user" | "favorites" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount"
+  | "_id"
+  | "user"
+  | "favorites"
+  | "slug"
+  | "createdAt"
+  | "updatedAt"
+  | "averageRating"
+  | "reviewCount"
 >;
 
 export type ReviewFormType = Omit<
@@ -34,14 +41,14 @@ export type DestinationRoute = {
   destination: string;
   motorableRoute: MotorableRouteType[];
   trekRoute: TrekRouteType[];
-}
+};
 
-export type RouteApiResponse = DestinationRoute[]
+export type RouteApiResponse = DestinationRoute[];
 
 export type FavoritesInfo = {
-  favorites: number
-  addedToFavoritesByUser: boolean
-}
+  favorites: number;
+  addedToFavoritesByUser: boolean;
+};
 
 export type CollectionType = {
   _id: string;
@@ -49,12 +56,14 @@ export type CollectionType = {
   name: string;
   description?: string;
   coverImage?: string;
-  visibility: "public" | "private"
-  destinations: DestinationType[]
+  visibility: "public" | "private";
+  destinations: DestinationType[];
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export type CollectionsResponse = Array<Omit<CollectionType, "destinations"> & {
-  destinations: Pick<DestinationType, "_id" | "name" | "region" | "image">[];
-}>;
+export type CollectionsResponse = Array<
+  Omit<CollectionType, "destinations"> & {
+    destinations: Pick<DestinationType, "_id" | "name" | "region" | "image">[];
+  }
+>;

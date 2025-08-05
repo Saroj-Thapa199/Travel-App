@@ -67,7 +67,7 @@ const page = () => {
       if (error) setError(error);
     });
   };
-  
+
   const isDestinationRouteEmpty = (
     destinationRoute: DestinationFormType["destinationRoute"],
   ) => {
@@ -87,8 +87,7 @@ const page = () => {
   useEffect(() => {
     const { destinationRoute, featured, ...restValues } = values;
 
-    const hasAnyValue =
-      hasNonEmptyValue(restValues) 
+    const hasAnyValue = hasNonEmptyValue(restValues);
     // const hasAnyValue =
     //   hasNonEmptyValue(restValues) ||
     //   !isDestinationRouteEmpty(destinationRoute);

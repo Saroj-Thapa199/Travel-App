@@ -309,7 +309,7 @@ const MotorableRouteInfo = ({
       )}
     </div>
   ) : (
-    <div className="bg-muted/50 rounded-lg p-3 mb-4 border dark:border-none">
+    <div className="bg-muted/50 mb-4 rounded-lg border p-3 dark:border-none">
       {/* Header */}
       <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
@@ -438,6 +438,6 @@ const InfoRow = ({
       {icon}
       <span className="text-muted-foreground text-sm">{label}:</span>
     </div>
-    <span className="text-sm font-medium text-right">{value}</span>
+    <span className="text-right text-sm font-medium">{value}</span>
   </div>
 );

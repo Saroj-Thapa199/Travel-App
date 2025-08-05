@@ -10,18 +10,8 @@ import DestinationInfoCard from "./DestinationInfoCard";
 import { auth } from "@/auth";
 import { FavoritesInfo } from "@/lib/types";
 
-// export async function generateStaticParams() {
-//   const res = await fetch("http://localhost:3000/api/destinations/all");
-//   const data = await res.json();
-//   const destinations = z.array(destinationSchema).parse(data.destinations);
-
-//   return destinations?.map((destination) => ({
-//     slug: destination.slug,
-//   }))
-// }
-
 export const getCachedDestinationFromSlug = cache(async (slug: string) => {
-  return getDestinationFromSlug(slug); // your actual DB call
+  return getDestinationFromSlug(slug);
 });
 
 export const generateMetadata = async ({

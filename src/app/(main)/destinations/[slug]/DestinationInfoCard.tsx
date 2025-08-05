@@ -55,7 +55,7 @@ const DestinationInfoCard = ({
   if (error) {
     return "Error...";
   }
-  
+
   return (
     // <div className="lg:col-span-1 h-full">
     <div className="bg-muted sticky top-24 rounded-xl p-6">

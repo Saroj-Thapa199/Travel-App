@@ -1,4 +1,4 @@
-import { createCollection } from "@/lib/actions/collection";
+import { createCollection, editCollection } from "@/lib/actions/collection";
 import {
   QueryFilters,
   useMutation,
@@ -6,11 +6,11 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useCreateCollectionMutation = () => {
+export const useUpdateCollectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createCollection,
+    mutationFn: editCollection,
     onSuccess: async (data) => {
       if (!data.success) {
         throw new Error(data.error);
@@ -22,11 +22,11 @@ export const useCreateCollectionMutation = () => {
 
       await queryClient.invalidateQueries(queryFilter);
 
-      toast.success("Collection created");
+      toast.success("Collection updated");
     },
     onError: (error) => {
       console.log(error);
-      toast.error("Failed to create collection");
+      toast.error("Failed to update collection");
       return error;
     },
   });

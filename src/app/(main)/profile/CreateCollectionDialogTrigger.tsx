@@ -18,23 +18,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Globe,
-  Lock,
-  MapPin,
-  Plus,
-  ImageIcon,
-  ExternalLink,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Globe, Lock, MapPin, Plus } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import {
   createCollectionSchema,
   type CreateCollectionType,
 } from "@/lib/validations/collection";
-import { isImageUrl } from "@/lib/zodUtils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -46,25 +36,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { createCollection } from "@/lib/actions/collection";
 import { Skeleton } from "@/components/ui/skeleton";
-import ImageWithProxyFallback from "@/components/ImageWithProxyFallback";
 import { DestinationType } from "@/lib/validations/destination";
+import { useCreateCollectionMutation } from "@/app/hooks/useCreateCollectionMutation";
+import LoadingButton from "@/components/LoadingButton";
 
-interface CreateCollectionModalProps {
+interface CreateCollectionDialogTriggerProps {
   children: React.ReactNode;
 }
 
 const CreateCollectionDialogTrigger = ({
   children,
-}: CreateCollectionModalProps) => {
+}: CreateCollectionDialogTriggerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [randomDestinations, setRandomDestinations] = useState<
     DestinationType[]
   >([]);
   const [loading, setLoading] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [isValidatingUrl, setIsValidatingUrl] = useState(false);
   const fetchInProgress = useRef(false);
 
   const form = useForm<CreateCollectionType>({
@@ -74,11 +62,10 @@ const CreateCollectionDialogTrigger = ({
       description: "",
       visibility: "public",
       destinations: [],
-      coverImage: "",
     },
   });
 
-  const coverImageValue = form.watch("coverImage");
+  const mutation = useCreateCollectionMutation();
 
   const togglePlace = (placeId: string) => {
     const current = form.getValues("destinations");
@@ -93,11 +80,12 @@ const CreateCollectionDialogTrigger = ({
   };
 
   const onSubmit = async (values: CreateCollectionType) => {
-    await createCollection(values);
-    console.log(values);
-    setIsOpen(false);
-    form.reset();
-    setImageError(false);
+    mutation.mutate(values, {
+      onSettled: () => {
+        setIsOpen(false);
+        form.reset();
+      },
+    });
   };
 
   useEffect(() => {
@@ -121,90 +109,12 @@ const CreateCollectionDialogTrigger = ({
     if (isOpen) getRandomDestinations();
   }, [isOpen]);
 
-  // Reset image error when URL changes
-  useEffect(() => {
-    setImageError(false);
-  }, [coverImageValue]);
-
-  // Validate URL in real-time
-  const validateImageUrl = async (url: string) => {
-    if (!url || url.trim() === "") return { isValid: false, isUrl: false };
-
-    const trimmedUrl = url.trim();
-
-    // Check if it's a valid URL format
-    try {
-      new URL(trimmedUrl);
-    } catch {
-      return { isValid: false, isUrl: false };
-    }
-
-    // Check if it's an image URL
-    const isImage = isImageUrl(trimmedUrl);
-    if (!isImage) {
-      return { isValid: false, isUrl: true };
-    }
-
-    // Test if image actually loads
-    setIsValidatingUrl(true);
-    try {
-      await new Promise((resolve, reject) => {
-        const img = new window.Image();
-        img.crossOrigin = "anonymous";
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = trimmedUrl;
-      });
-      setIsValidatingUrl(false);
-      return { isValid: true, isUrl: true };
-    } catch {
-      setIsValidatingUrl(false);
-      return { isValid: false, isUrl: true };
-    }
-  };
-
-  const [urlValidation, setUrlValidation] = useState<{
-    isValid: boolean;
-    isUrl: boolean;
-  }>({ isValid: false, isUrl: false });
-
-  useEffect(() => {
-    const validateUrl = async () => {
-      if (coverImageValue) {
-        const validation = await validateImageUrl(coverImageValue);
-        setUrlValidation(validation);
-      } else {
-        setUrlValidation({ isValid: false, isUrl: false });
-      }
-    };
-
-    const timeoutId = setTimeout(validateUrl, 500); // Debounce validation
-    return () => clearTimeout(timeoutId);
-  }, [coverImageValue]);
-
-  const selectedDestinations = form.watch("destinations");
-
-  const getValidationIcon = () => {
-    if (!coverImageValue || coverImageValue.trim() === "") return null;
-    if (isValidatingUrl)
-      return (
-        <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-      );
-    if (urlValidation.isValid)
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
-    if (urlValidation.isUrl)
-      return <XCircle className="h-4 w-4 text-destructive" />;
-    return <XCircle className="h-4 w-4 text-destructive" />;
-  };
-
   return (
     <Dialog
       open={isOpen}
       onOpenChange={() => {
         setIsOpen((prev) => !prev);
         form.reset();
-        setImageError(false);
-        setUrlValidation({ isValid: false, isUrl: false });
       }}
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -251,102 +161,6 @@ const CreateCollectionDialogTrigger = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Cover Image URL */}
-            <FormField
-              control={form.control}
-              name="coverImage"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <FormLabel>Cover Image URL (Optional)</FormLabel>
-                      <p className="text-muted-foreground text-sm">
-                        Provide a URL for your cover image. If not provided, the
-                        first destination's image will be used as cover, or a
-                        default image if no destinations are added.
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="relative">
-                        <FormControl>
-                          <Input
-                            type="url"
-                            placeholder="https://example.com/image.jpg"
-                            className="pr-20"
-                            {...field}
-                            value={field.value || ""}
-                          />
-                        </FormControl>
-                        <div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-2">
-                          {getValidationIcon()}
-                          <ExternalLink className="text-muted-foreground h-4 w-4" />
-                        </div>
-                      </div>
-
-                      {/* Cover Image Preview */}
-                      <div className="bg-muted relative h-44 w-full overflow-hidden rounded-lg border">
-                        {coverImageValue && urlValidation.isValid ? (
-                          !imageError ? (
-                            <>
-                              <ImageWithProxyFallback
-                                src={coverImageValue}
-                                alt="Cover preview"
-                                fill
-                                className="object-cover"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                              <div className="absolute bottom-2 left-2 text-sm text-white">
-                                <p className="font-medium">Preview</p>
-                                <p className="text-xs opacity-90">
-                                  Custom cover image
-                                </p>
-                              </div>
-                            </>
-                          ) : (
-                            <div className="text-muted-foreground flex h-full flex-col items-center justify-center text-center">
-                              <ImageIcon className="mb-2 h-8 w-8" />
-                              <p className="text-sm font-medium">
-                                Failed to load image
-                              </p>
-                              <p className="text-xs">Check the URL above</p>
-                            </div>
-                          )
-                        ) : (
-                          <div className="text-muted-foreground flex h-full flex-col items-center justify-center text-center">
-                            <ImageIcon className="mb-2 h-8 w-8" />
-                            <p className="text-sm font-medium">
-                              {coverImageValue && !urlValidation.isValid
-                                ? "Invalid image URL"
-                                : "No image selected"}
-                            </p>
-                            <p className="text-xs">
-                              {coverImageValue && !urlValidation.isValid
-                                ? "Please enter a valid image URL"
-                                : "Paste a cover image URL above"}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {coverImageValue && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => form.setValue("coverImage", undefined)}
-                          className="w-fit"
-                        >
-                          Clear cover image URL
-                        </Button>
-                      )}
-                    </div>
-                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -474,7 +288,9 @@ const CreateCollectionDialogTrigger = ({
               >
                 Cancel
               </Button>
-              <Button type="submit">Create Collection</Button>
+              <LoadingButton type="submit" loading={mutation.isPending}>
+                Create Collection
+              </LoadingButton>
             </DialogFooter>
           </form>
         </Form>

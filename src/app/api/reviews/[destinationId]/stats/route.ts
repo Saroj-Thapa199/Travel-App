@@ -42,7 +42,7 @@ export const GET = async (
     const rawStats = reviews[0]; // or we can do like const [rawStats] = await Review.aggregrate[...]
 
     const reviewStats: {
-      averageRating: number
+      averageRating: number;
       totalCount: number;
       ratings: Record<string, number | string>;
     } = {

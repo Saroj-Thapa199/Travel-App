@@ -11,11 +11,11 @@ export const addDestination = async (
   values: DestinationFormType,
 ): Promise<{ error: string }> => {
   try {
-    console.log("submitted")
+    console.log("submitted");
     // const parsedValues = destinationSchema.omit({
     //     _id: true,
     //     slug: true,
-    //     createdAt: true,  
+    //     createdAt: true,
     //     updatedAt: true,
     //     averageRating: true,
     //     reviewCount: true,
@@ -26,25 +26,27 @@ export const addDestination = async (
     // console.log("parsedValues:")
     // console.log(JSON.stringify(parsedValues, null, 2))
 
-    const {success, data, error} = destinationSchema.omit({
+    const { success, data, error } = destinationSchema
+      .omit({
         _id: true,
         slug: true,
-        createdAt: true,  
+        createdAt: true,
         updatedAt: true,
         averageRating: true,
         reviewCount: true,
-      }).safeParse(values)
-      
-      if (!success) {
-        return {error: "Please fill out the form properly!"}
-      }
+      })
+      .safeParse(values);
+
+    if (!success) {
+      return { error: "Please fill out the form properly!" };
+    }
 
     await dbConnect();
     await Destination.syncIndexes();
-    
+
     const createdDestination = await Destination.create({
       ...data,
-      slug: slugify(data.name, {lower: true}),
+      slug: slugify(data.name, { lower: true }),
     });
 
     return redirect(`/destinations/${createdDestination.slug}`);
@@ -89,19 +91,18 @@ export const getDestinationFromSlug = async (slug: string) => {
 };
 
 type addDestinationToFavoritesParameters = {
-  destinationId: string,
-  type: "add" | "remove"
-}
-
+  destinationId: string;
+  type: "add" | "remove";
+};
 
 // export const addDestinationToFavorites = async ({destinationId, type}: addDestinationToFavoritesParameters) => {
 //   try {
 //     const session = await auth();
-  
+
 //     if (!session || !session.user.id) {
 //       return redirect("/login")
 //     }
-  
+
 //     // if (!mongoose.isValidObjectId(destinationId)) {
 //     //   return NextResponse.json(
 //     //     {
@@ -134,7 +135,7 @@ type addDestinationToFavoritesParameters = {
 //     console.log("revalidated")
 
 //     return revalidatePath(`/destinations/${destination.slug}`)
-//   } catch (error) { 
+//   } catch (error) {
 //     console.log(error)
 //   }
 // }

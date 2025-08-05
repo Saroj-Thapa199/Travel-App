@@ -33,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
 import Link from "next/link";
 import DestinationCard from "@/components/DestinationCard";
 
@@ -244,76 +243,48 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
 
   return (
     <div className="bg-background min-h-screen">
-      {/* Header */}
-      <div className="relative">
-        {/* Cover Image */}
-        <div className="h-[55vh] overflow-hidden md:h-80">
-          <Image
-            src={
-              imageUrls[Math.floor(Math.random() * 6)] ||
-              collection.coverImage ||
-              "/placeholder.svg"
-            }
-            alt={collection.title}
-            // width={1200}
-            // height={400}
-            fill
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        </div>
-
-        {/* Back Button */}
-        <div className="absolute top-4 left-4">
-          <Link href="/profile?tab=collections">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="bg-background/80 gap-2 backdrop-blur-sm"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Collections
-            </Button>
-          </Link>
-        </div>
-
-        {/* Collection Actions */}
-        <div className="absolute top-4 right-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          {/* Navigation and Actions */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link href="/profile?tab=collections">
               <Button
-                variant="secondary"
+                variant="outline"
                 size="sm"
-                className="bg-background/80 backdrop-blur-sm"
+                className="gap-2 bg-transparent"
               >
-                <MoreHorizontal className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
+                Back to Collections
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="gap-2">
-                <Edit className="h-4 w-4" />
-                Edit Collection
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Destinations
-              </DropdownMenuItem> */}
-              <DropdownMenuItem className="gap-2">
-                <Share className="h-4 w-4" />
-                Share Collection
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive hover:!text-destructive hover:!bg-destructive/5 gap-2">
-                <Trash2 className="text-destructive h-4 w-4" />
-                Delete Collection
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+            </Link>
 
-        {/* Collection Info */}
-        <div className="absolute right-0 bottom-0 left-0 p-6 md:p-8">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-4 flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem className="gap-2">
+                  <Edit className="h-4 w-4" />
+                  Edit Collection
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2">
+                  <Share className="h-4 w-4" />
+                  Share Collection
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive hover:!bg-destructive/5 hover:!text-destructive gap-2">
+                  <Trash2 className="text-destructive h-4 w-4" />
+                  Delete Collection
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Collection Info */}
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
               <Badge
                 variant={collection.isPublic ? "default" : "secondary"}
                 className="gap-1"
@@ -330,20 +301,21 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
                   </>
                 )}
               </Badge>
-              <Badge
-                variant="outline"
-                className="bg-background/20 border-white/20 text-white"
-              >
+              <Badge variant="outline">
                 {collection.destinationCount} destinations
               </Badge>
             </div>
-            <h1 className="mb-3 text-3xl font-bold text-white md:text-4xl">
-              {collection.title}
-            </h1>
-            <p className="mb-4 max-w-2xl text-lg text-white/90">
-              {collection.description}
-            </p>
-            <div className="flex items-center gap-4 text-sm text-white/80">
+
+            <div className="space-y-3">
+              <h1 className="text-3xl font-bold md:text-4xl">
+                {collection.title}
+              </h1>
+              <p className="text-muted-foreground max-w-3xl text-lg">
+                {collection.description}
+              </p>
+            </div>
+
+            <div className="text-muted-foreground flex flex-wrap items-center gap-6 text-sm">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
                 Created {new Date(collection.createdAt).toLocaleDateString()}
@@ -355,14 +327,10 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      {/* <div className="max-w-7xl mx-auto px-4 py-8 md:px-8"> */}
-      <div className="pt-8">
         {/* Search and Filters */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row max-w-3xl mx-auto">
-          <div className="relative flex-1">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row">
+          <div className="relative max-w-md flex-1">
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
             <Input
               placeholder="Search destinations..."
@@ -408,7 +376,7 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
 
         {/* Destinations Grid */}
         {filteredDestinations.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredDestinations.map((destination) => (
               <DestinationCard
                 key={destination._id}
@@ -419,7 +387,6 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
                 rating={destination.averageRating || 0}
                 slug={destination.slug}
                 reviewCount={destination.reviewCount}
-                // isNew={isNew({ createdAt: destination.createdAt, type: "day", range: 7 })}
                 isNew={true}
                 featured
                 action={
@@ -428,7 +395,7 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
                       <MoreVertical className="text-secondary hover:text-primary h-5 w-5 cursor-pointer" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem className="text-destructive hover:!text-destructive hover:!bg-destructive/5 gap-2">
+                      <DropdownMenuItem className="text-destructive hover:!bg-destructive/5 hover:!text-destructive gap-2">
                         <Trash2 className="text-destructive h-4 w-4" />
                         Remove From Collection
                       </DropdownMenuItem>
@@ -439,7 +406,7 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
             ))}
           </div>
         ) : (
-          <div className="py-12 text-center">
+          <div className="py-16 text-center">
             <MapPin className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
             <h3 className="mb-2 text-xl font-semibold">
               No destinations found
@@ -459,7 +426,7 @@ const CollectionDetailPage = ({ collectionId }: CollectionDetailPageProps) => {
         {/* Add More Destinations */}
         {filteredDestinations.length > 0 && (
           <div className="mt-12 text-center">
-            <Card className="hover:border-primary/50 group cursor-pointer border-2 border-dashed transition-colors">
+            <Card className="group hover:border-primary/50 cursor-pointer border-2 border-dashed transition-colors">
               <CardContent className="flex flex-col items-center justify-center p-8">
                 <div className="bg-muted group-hover:bg-primary/10 mb-4 rounded-full p-4 transition-colors">
                   <Plus className="text-muted-foreground group-hover:text-primary h-8 w-8 transition-colors" />

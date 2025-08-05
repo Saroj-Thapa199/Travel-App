@@ -24,6 +24,6 @@ async function dbConnect(): Promise<void> {
   }
 }
 
-export default dbConnect
+export default dbConnect;
 
 // mongodb+srv://sarojthapa199:sarojthapa199@cluster0.7l2u89z.mongodb.net/travelapp?retryWrites=true&w=majority&appName=Cluster0

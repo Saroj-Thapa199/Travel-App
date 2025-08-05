@@ -30,9 +30,8 @@ const TrekRouteInfo = ({
   interactiveMode = false,
 }: TrekRouteInfoProps) => {
   const [showFull, setShowFull] = useState(interactiveMode ? false : true);
-  return (
-    showFull ? (
-      <div className="space-y-4">
+  return showFull ? (
+    <div className="space-y-4">
       {/* Trek Summary */}
       <div className="bg-muted/50 rounded-lg p-3">
         <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -359,79 +358,79 @@ const TrekRouteInfo = ({
         </Card>
       )}
     </div>
-    ) : (
-      <div className="bg-muted/50 rounded-lg p-3 mb-4 border dark:border-none">
-        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <Mountain className="h-4 w-4" />
-            <span className="font-medium">{trekData.trekName}</span>
-          </div>
-          {interactiveMode ? (
-            <div className="flex items-center gap-2 max-sm:justify-between">
-              <Badge variant="secondary" className="max-sm:ml-6">
-                Trek Route
-              </Badge>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs"
-                onClick={() => setShowFull((prev) => !prev)}
-              >
-                {showFull ? "Show Summary" : "Show Full Info"}
-              </Button>
-            </div>
-          ) : (
+  ) : (
+    <div className="bg-muted/50 mb-4 rounded-lg border p-3 dark:border-none">
+      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <Mountain className="h-4 w-4" />
+          <span className="font-medium">{trekData.trekName}</span>
+        </div>
+        {interactiveMode ? (
+          <div className="flex items-center gap-2 max-sm:justify-between">
             <Badge variant="secondary" className="max-sm:ml-6">
               Trek Route
             </Badge>
-          )}
-        </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs"
+              onClick={() => setShowFull((prev) => !prev)}
+            >
+              {showFull ? "Show Summary" : "Show Full Info"}
+            </Button>
+          </div>
+        ) : (
+          <Badge variant="secondary" className="max-sm:ml-6">
+            Trek Route
+          </Badge>
+        )}
+      </div>
 
-        <div className="grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4">
-          <div>
-            <div className="font-semibold">{trekData.difficulty}</div>
-            <div className="text-muted-foreground">Difficulty</div>
-          </div>
-          <div>
-            <div className="font-semibold">{trekData.duration.roundTrip}</div>
-            <div className="text-muted-foreground">Round Trip</div>
-          </div>
-          {trekData.duration.oneWay && (
-            <div>
-              <div className="font-semibold">{trekData.duration.oneWay}</div>
-              <div className="text-muted-foreground">One Way</div>
-            </div>
-          )}
-          <div>
-            <div className="font-semibold">
-              {trekData.teahouses.available ? "Yes" : "No"}
-            </div>
-            <div className="text-muted-foreground">Teahouses</div>
-          </div>
+      <div className="grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4">
+        <div>
+          <div className="font-semibold">{trekData.difficulty}</div>
+          <div className="text-muted-foreground">Difficulty</div>
         </div>
+        <div>
+          <div className="font-semibold">{trekData.duration.roundTrip}</div>
+          <div className="text-muted-foreground">Round Trip</div>
+        </div>
+        {trekData.duration.oneWay && (
+          <div>
+            <div className="font-semibold">{trekData.duration.oneWay}</div>
+            <div className="text-muted-foreground">One Way</div>
+          </div>
+        )}
+        <div>
+          <div className="font-semibold">
+            {trekData.teahouses.available ? "Yes" : "No"}
+          </div>
+          <div className="text-muted-foreground">Teahouses</div>
+        </div>
+      </div>
 
-        <Card className="gap-3 mt-4 max-sm:hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Info className="h-4 w-4" />
-              Basic Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+      <Card className="mt-4 gap-3 max-sm:hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Info className="h-4 w-4" />
+            Basic Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <InfoRow
+            label="Starting Point"
+            value={trekData.startingPoint}
+            icon={<MapPin className="h-3 w-3" />}
+          />
+          {trekData.destinationPoint && (
             <InfoRow
-              label="Starting Point"
-              value={trekData.startingPoint}
-              icon={<MapPin className="h-3 w-3" />}
+              label="Destination Point"
+              value={trekData.destinationPoint}
+              icon={<Route className="h-3 w-3" />}
             />
-            {trekData.destinationPoint && (
-              <InfoRow
-                label="Destination Point"
-                value={trekData.destinationPoint}
-                icon={<Route className="h-3 w-3" />}
-              />
-            )}
-            {trekData?.elevation?.max && (
-              <div className="flex items-center justify-between py-1">
+          )}
+          {trekData?.elevation?.max && (
+            <div className="flex items-center justify-between py-1">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-3 w-3" />
                 <span className="text-muted-foreground text-sm">
@@ -442,22 +441,21 @@ const TrekRouteInfo = ({
                 {trekData.elevation.max} m
               </Badge>
             </div>
-            )}
-              <div className="flex items-center justify-between py-1">
-              <div className="flex items-center gap-2">
-                <FileText className="h-3 w-3" />
-                <span className="text-muted-foreground text-sm">
-                  Permits:
-                </span>
-              </div>
-              <Badge variant={"secondary"}>
-                {trekData.permits.length > 0 ? `${trekData.permits.length} required` : "Not required"}
-              </Badge>
+          )}
+          <div className="flex items-center justify-between py-1">
+            <div className="flex items-center gap-2">
+              <FileText className="h-3 w-3" />
+              <span className="text-muted-foreground text-sm">Permits:</span>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+            <Badge variant={"secondary"}>
+              {trekData.permits.length > 0
+                ? `${trekData.permits.length} required`
+                : "Not required"}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
@@ -494,6 +492,6 @@ const InfoRow = ({
       {icon}
       <span className="text-muted-foreground text-sm">{label}:</span>
     </div>
-    <span className="text-sm font-medium w-fit text-right">{value}</span>
+    <span className="w-fit text-right text-sm font-medium">{value}</span>
   </div>
 );

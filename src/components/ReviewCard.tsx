@@ -41,7 +41,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                   {review.createdAt.toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
-                    year: "numeric"
+                    year: "numeric",
                   })}
                 </span>
               </div>

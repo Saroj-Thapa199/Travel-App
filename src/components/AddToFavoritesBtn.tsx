@@ -17,7 +17,6 @@ const AddToFavoritesBtn = ({
   initialState,
   btnStyle,
 }: AddToFavoritesBtnProps) => {
-
   const queryClient = useQueryClient();
 
   const { data } = useFavoritesInfo(destinationId, initialState);
@@ -81,7 +80,12 @@ const AddToFavoritesBtn = ({
       className="w-full"
       onClick={() => mutate()}
     >
-      <Heart className={cn("sie-4", data.addedToFavoritesByUser ? "fill-current" : "")} />
+      <Heart
+        className={cn(
+          "sie-4",
+          data.addedToFavoritesByUser ? "fill-current" : "",
+        )}
+      />
       {data.addedToFavoritesByUser
         ? "Remove from Favorites"
         : "Add to Favorites"}

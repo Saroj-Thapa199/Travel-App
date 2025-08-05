@@ -24,9 +24,9 @@ const CollectionCardSkeleton = () => {
   return (
     <Card className="overflow-hidden pt-0">
       {/* Cover Image Skeleton */}
-        <div className="aspect-video overflow-hidden">
-          <Skeleton className="h-full w-full" />
-        </div>
+      <div className="aspect-video overflow-hidden">
+        <Skeleton className="h-full w-full" />
+      </div>
 
       <CardHeader>
         <div className="flex items-start justify-between">

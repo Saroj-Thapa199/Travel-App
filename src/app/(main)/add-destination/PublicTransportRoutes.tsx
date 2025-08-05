@@ -79,9 +79,7 @@ const PublicTransportRoutes = ({ form }: PublicTransportRoutesProps) => {
                   {form.getValues(
                     `destinationRoute.publicTransport.${index}.from`,
                   ) &&
-                  form.getValues(
-                    `destinationRoute.publicTransport.${index}.to`,
-                  )
+                  form.getValues(`destinationRoute.publicTransport.${index}.to`)
                     ? `${form.getValues(`destinationRoute.publicTransport.${index}.from`)} - ${form.getValues(`destinationRoute.publicTransport.${index}.to`)}`
                     : `Segment ${index + 1}`}
                 </li>

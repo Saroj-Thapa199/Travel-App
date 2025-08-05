@@ -22,7 +22,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MotorableRouteType, transportTypeEnum } from "@/lib/validations/routes";
+import {
+  MotorableRouteType,
+  transportTypeEnum,
+} from "@/lib/validations/routes";
 import { TagsInput } from "@/components/ui/tags-input";
 import WarningsInput from "./WarningsInput";
 import { Dispatch, SetStateAction, useState } from "react";

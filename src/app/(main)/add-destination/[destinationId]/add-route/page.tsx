@@ -33,7 +33,10 @@ const page = async ({
       </div>
 
       <div className="mx-auto max-w-4xl">
-        <AddRouteTabs destinationId={destinationId} destinationName={destination.name} />
+        <AddRouteTabs
+          destinationId={destinationId}
+          destinationName={destination.name}
+        />
       </div>
     </main>
   );

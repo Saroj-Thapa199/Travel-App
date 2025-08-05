@@ -43,7 +43,7 @@ const TrekRouteDialog = ({
   return (
     <Dialog open={trekDialogOpen} onOpenChange={setTrekDialogOpen}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
-        <ScrollArea >
+        <ScrollArea>
           <DialogHeader className="pb-3">
             <DialogTitle className="flex items-center gap-2">
               <Mountain className="h-5 w-5" />

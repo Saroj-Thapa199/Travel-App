@@ -7,9 +7,6 @@ import {
   CreateCollectionType,
 } from "../validations/collection";
 import { auth } from "@/auth";
-import { cleanUrl } from "../utils";
-import { CollectionType } from "../types";
-import { InferSchemaType } from "mongoose";
 
 type CreateCollectionReturnType =
   | {
@@ -18,7 +15,7 @@ type CreateCollectionReturnType =
     }
   | {
       success: true;
-      userId: string
+      userId: string;
     };
 
 export const createCollection = async (
@@ -32,34 +29,65 @@ export const createCollection = async (
         error: "Unauthorized",
       };
     }
-    const { success, data, error } = createCollectionSchema.safeParse(values);
+    const data = await createCollectionSchema.parseAsync(values);
 
-    if (!success) {
-      console.log(error.message);
+    await dbConnect();
+
+    await Collection.create({
+      ...data,
+      user: session.user.id,
+    });
+
+    return {
+      success: true,
+      userId: session.user.id,
+    };
+  } catch (error) {
+    console.error("Collection creation failed:", error);
+    return { success: false, error: "Something went wrong. Please try again" };
+  }
+};
+
+type editCollectionParameters = {
+  editData: Omit<CreateCollectionType, "destinations">;
+  collectionId: string;
+};
+
+export const editCollection = async ({
+  editData,
+  collectionId,
+}: editCollectionParameters): Promise<CreateCollectionReturnType> => {
+  try {
+    const session = await auth();
+    if (!session || !session.user.id) {
       return {
         success: false,
-        error: "Please fill the form properly",
+        error: "Unauthorized",
       };
     }
 
     await dbConnect();
 
-    if (data.coverImage) {
-      data.coverImage = cleanUrl(data.coverImage);
+    const collection = await Collection.findById(collectionId);
+
+    if (collection?.user.toString() !== session.user.id) {
+      return {
+        success: false,
+        error: "Unauthorized",
+      };
     }
 
-    const collectionDoc = await Collection.create({
-      ...data,
-      user: session.user.id,
-    });
-    const collection = (
-      await collectionDoc.populate("destinations")
-    ).toObject();
+    collection.name = editData.name;
+    collection.description = editData.description;
+    collection.visibility = editData.visibility;
+
+    await collection.save();
 
     console.log(collection);
+
     return {
       success: true,
-      userId: session.user.id
+      userId: session.user.id,
     };
   } catch (error) {
     console.error("Collection creation failed:", error);

@@ -69,9 +69,9 @@ export const cleanDistanceLocale: Locale = {
 
 export const cleanUrl = (url: string) => {
   try {
-    const parsed = new URL(url.trim())
-    return parsed.origin + parsed.pathname // removes search params and hashes
+    const parsed = new URL(url.trim());
+    return parsed.origin + parsed.pathname; // removes search params and hashes
   } catch {
-    return url // fallback
+    return url; // fallback
   }
-}
+};

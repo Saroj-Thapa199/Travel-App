@@ -16,7 +16,7 @@ interface UseDestinationsParams {
   searchTerm?: string;
   sortBy?: "rating-asc" | "rating-desc" | "default";
   limit?: number;
-  category?: string
+  category?: string;
 }
 
 const useDestinations = ({
@@ -46,7 +46,10 @@ const useDestinations = ({
         params.cursorId = pageParam.cursorId;
       }
 
-      const { data } = await axios.get<DestinationsApiResponse>("/api/destinations/all", { params });
+      const { data } = await axios.get<DestinationsApiResponse>(
+        "/api/destinations/all",
+        { params },
+      );
       return data;
     },
     initialPageParam: null,

@@ -14,11 +14,11 @@ interface RouteSectionProps {
 }
 
 const getBasicRoute = (data: DestinationRoute) => {
-  const {motorableRoute, trekRoute} = data
-  let arr: string[] = []
-  for (let i=0; i<motorableRoute.length; i++) {
-    arr.push(motorableRoute[i].from)
-    i + 1 === motorableRoute.length && arr.push(motorableRoute[i].to)
+  const { motorableRoute, trekRoute } = data;
+  let arr: string[] = [];
+  for (let i = 0; i < motorableRoute.length; i++) {
+    arr.push(motorableRoute[i].from);
+    i + 1 === motorableRoute.length && arr.push(motorableRoute[i].to);
   }
   // if (motorableRoute.length > 0) {
   //     motorableRoute.forEach((route, index) => {
@@ -26,7 +26,7 @@ const getBasicRoute = (data: DestinationRoute) => {
   //       index +1 === motorableRoute.length && arr.push(route.to)
   //     })
   // }
-  return arr
+  return arr;
 };
 
 // const DestinationRoute = ({ data }: { data: RouteApiResponse }) => {};

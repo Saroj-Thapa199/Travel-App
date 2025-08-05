@@ -34,10 +34,10 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    if (category && (category !== "all")) {
+    if (category && category !== "all") {
       andConditions.push({
-        categories: category
-      })
+        categories: category,
+      });
     }
 
     if (

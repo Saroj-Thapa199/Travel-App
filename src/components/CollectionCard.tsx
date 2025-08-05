@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useActionsDialog } from "@/providers/CollectionActionsDialogProvider";
 
 type CollectionCardProps = {
   _id: string;
@@ -45,6 +46,7 @@ const CollectionCard = ({
   destinations,
   lastUpdated,
 }: CollectionCardProps) => {
+  const { openEditDialog } = useActionsDialog();
   return (
     <Link href={`/collections/${_id}`} className="grid">
       <Card className="group overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg">
@@ -82,7 +84,13 @@ const CollectionCard = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="gap-2">
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditDialog(_id, "userId");
+                  }}
+                  className="gap-2"
+                >
                   <Edit className="h-4 w-4" />
                   Edit Collection
                 </DropdownMenuItem>

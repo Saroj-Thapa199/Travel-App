@@ -41,7 +41,7 @@ const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
         return;
       }
       setSavedDestinations(data.destinations);
-      setLoading(false)
+      setLoading(false);
     };
 
     fetchDestination();
@@ -165,7 +165,7 @@ const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
               onClick={() => setTab("saved")}
               className="w-full text-xs"
             >
-                View All Saved Places
+              View All Saved Places
             </Button>
           </CardContent>
         </Card>

@@ -49,7 +49,11 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input autoComplete="email" placeholder="example@xyz.com" {...field} />
+                <Input
+                  autoComplete="email"
+                  placeholder="example@xyz.com"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,7 +66,11 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput autoComplete="current-password" placeholder="********" {...field} />
+                <PasswordInput
+                  autoComplete="current-password"
+                  placeholder="********"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,11 +78,16 @@ const LoginForm = () => {
         />
         <div className="space-y-1.5">
           <LoadingButton type="submit" loading={isPending} className="w-full">
-          Submit
-        </LoadingButton>
-        <Button type="button" variant={"secondary"} className="w-full border-border border" asChild>
-          <Link href={"/"}>Continue without login</Link>
-        </Button>
+            Submit
+          </LoadingButton>
+          <Button
+            type="button"
+            variant={"secondary"}
+            className="border-border w-full border"
+            asChild
+          >
+            <Link href={"/"}>Continue without login</Link>
+          </Button>
         </div>
       </form>
     </Form>

@@ -3,12 +3,16 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 
-const InteractiveStarRating = ({ onRate }: { onRate: (rating: number) => void }) => {
+const InteractiveStarRating = ({
+  onRate,
+}: {
+  onRate: (rating: number) => void;
+}) => {
   const [hovered, setHovered] = useState(0);
   const [selected, setSelected] = useState(0);
 
   return (
-    <div className="flex ">
+    <div className="flex">
       {[1, 2, 3, 4, 5].map((star, index) => {
         const isActive = star <= (hovered || selected);
 
