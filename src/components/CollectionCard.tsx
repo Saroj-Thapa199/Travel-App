@@ -46,7 +46,7 @@ const CollectionCard = ({
   destinations,
   lastUpdated,
 }: CollectionCardProps) => {
-  const { openEditDialog } = useActionsDialog();
+  const { openEditDialog, openDeleteDialog } = useActionsDialog();
   return (
     <Link href={`/collections/${_id}`} className="grid">
       <Card className="group overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg">
@@ -87,19 +87,25 @@ const CollectionCard = ({
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    openEditDialog(_id, "userId");
+                    openEditDialog(_id);
                   }}
                   className="gap-2"
                 >
                   <Edit className="h-4 w-4" />
                   Edit Collection
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2">
+                {/* <DropdownMenuItem className="gap-2">
                   <Share className="h-4 w-4" />
                   Share Collection
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive gap-2">
-                  <Trash2 className="h-4 w-4" />
+                </DropdownMenuItem> */}
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDeleteDialog(_id, title);
+                  }}
+                  className="text-destructive hover:!bg-destructive/5 hover:!text-destructive gap-2"
+                >
+                  <Trash2 className="text-destructive h-4 w-4" />
                   Delete Collection
                 </DropdownMenuItem>
               </DropdownMenuContent>

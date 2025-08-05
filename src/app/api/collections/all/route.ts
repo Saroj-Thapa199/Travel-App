@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
+import "@/lib/loadModels";
 import Collection from "@/model/Collection";
 import { NextResponse } from "next/server";
 
@@ -28,6 +29,7 @@ export const GET = async () => {
 
     return NextResponse.json(collections);
   } catch (error) {
+    console.error(error);
     return Response.json(
       { error: "Failed to add to favorites" },
       { status: 500 },

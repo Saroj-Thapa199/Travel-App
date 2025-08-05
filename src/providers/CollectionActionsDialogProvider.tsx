@@ -1,19 +1,19 @@
 "use client";
 
 import EditCollectionDialog from "@/components/EditCollectionDialog";
+import DeleteCollectionDialog from "@/components/DeleteCollectionDialog";
 import { createContext, useContext, useState } from "react";
 
 type ActionsDialogContextType = {
-  openEditDialog: (collectionId: string, userId: string) => void;
+  openEditDialog: (collectionId: string) => void;
+  openDeleteDialog: (collectionId: string, collectionName: string) => void;
 };
 
-const ActionsDialogContext = createContext<ActionsDialogContextType | null>(
-  null,
-);
+const ActionsDialogContext = createContext<ActionsDialogContextType | null>(null);
 
 export const useActionsDialog = () => {
   const ctx = useContext(ActionsDialogContext);
-  if (!ctx) throw new Error("EditDialogProvider missing");
+  if (!ctx) throw new Error("CollectionActionsDialogProvider missing");
   return ctx;
 };
 
@@ -24,27 +24,48 @@ export const CollectionActionsDialogProvider = ({
   children: React.ReactNode;
   userId: string;
 }) => {
-  const [open, setOpen] = useState(false);
-  const [collectionId, setCollectionId] = useState<string | null>(null);
+  // EDIT state
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editCollectionId, setEditCollectionId] = useState<string | null>(null);
+
+  // DELETE state
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteCollectionId, setDeleteCollectionId] = useState<string | null>(null);
+  const [collectionName, setCollectionName] = useState<string | null>(null)
 
   const openEditDialog = (id: string) => {
-    setCollectionId(id);
-    setOpen(true);
+    setEditCollectionId(id);
+    setOpenEdit(true);
   };
 
-  const closeDialog = () => setOpen(false);
+  const openDeleteDialog = (id: string, name: string) => {
+    setDeleteCollectionId(id);
+    setCollectionName(name)
+    setOpenDelete(true);
+  };
 
   return (
-    <ActionsDialogContext.Provider value={{ openEditDialog }}>
+    <ActionsDialogContext.Provider value={{ openEditDialog, openDeleteDialog }}>
       {children}
 
-      {/* Render single shared instance */}
-      {collectionId && (
+      {/* Edit Dialog (shared instance) */}
+      {editCollectionId && (
         <EditCollectionDialog
-          collectionId={collectionId}
+          collectionId={editCollectionId}
           userId={userId}
-          open={open}
-          setOpen={setOpen}
+          open={openEdit}
+          setOpen={setOpenEdit}
+        />
+      )}
+
+      {/* Delete Dialog (shared instance) */}
+      {deleteCollectionId && collectionName && (
+        <DeleteCollectionDialog
+          collectionId={deleteCollectionId}
+          collectionName={collectionName}
+          userId={userId}
+          open={openDelete}
+          setOpen={setOpenDelete}
         />
       )}
     </ActionsDialogContext.Provider>
