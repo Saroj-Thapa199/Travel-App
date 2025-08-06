@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils";
 import ProtectedActionButton from "./ProtectedActionButton";
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import useFavoritesInfo from "@/app/hooks/useFavoritesInfo";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface AddToFavoritesBtnProps {
   destinationId: string;
@@ -17,6 +20,9 @@ const AddToFavoritesBtn = ({
   initialState,
   btnStyle,
 }: AddToFavoritesBtnProps) => {
+  const {data: sessionData, status } = useSession()
+
+
   const queryClient = useQueryClient();
 
   const { data } = useFavoritesInfo(destinationId, initialState);
@@ -49,10 +55,10 @@ const AddToFavoritesBtn = ({
     onError(error, variables, context) {
       queryClient.setQueryData(queryKey, context?.previousState);
       console.error(error);
-      //   toast({
-      //     variant: "destructive",
-      //     description: "Something went wrong. Please try again",
-      //   });
+      if (error instanceof AxiosError && error.response?.data.error) {
+          toast.warning(error.response?.data.error)
+      }
+        toast.error("Something went wrong. Please try again");
     },
   });
 
@@ -75,8 +81,9 @@ const AddToFavoritesBtn = ({
       />
     </ProtectedActionButton>
   ) : (
-    <ProtectedActionButton
+    <Button
       variant={data.addedToFavoritesByUser ? "outline" : "outline"}
+      disabled={status==="unauthenticated" || !sessionData?.user.id}
       className="w-full"
       onClick={() => mutate()}
     >
@@ -87,9 +94,9 @@ const AddToFavoritesBtn = ({
         )}
       />
       {data.addedToFavoritesByUser
-        ? "Remove from Favorites"
-        : "Add to Favorites"}
-    </ProtectedActionButton>
+        ? `Remove from Favorites: ${data.favorites}`
+        : `Add to Favorites: ${data.favorites}`}
+    </Button>
   );
 };
 

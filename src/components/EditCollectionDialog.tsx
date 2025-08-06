@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +10,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Card, CardContent } from "@/components/ui/card";
-import { Globe, Lock, MapPin, Plus } from "lucide-react";
-import axios from "axios";
+import { Globe, Lock } from "lucide-react";
 import {
   createCollectionSchema,
   type CreateCollectionType,
@@ -33,9 +30,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CollectionType } from "@/lib/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { CollectionsResponse } from "@/lib/types";
 import { useUpdateCollectionMutation } from "@/app/hooks/useUpdateCollectionMutation";
 import LoadingButton from "./LoadingButton";
 
@@ -55,7 +51,7 @@ const EditCollectionDialog = ({
   const queryClient = useQueryClient();
 
   const collection = queryClient
-    .getQueryData<CollectionType[]>(["collections", "user", userId])
+    .getQueryData<CollectionsResponse>(["user", userId, "collections"])
     ?.find((c) => c._id === collectionId);
 
   const form = useForm<Omit<CreateCollectionType, "destinations">>({

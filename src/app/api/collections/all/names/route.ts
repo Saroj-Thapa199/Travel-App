@@ -20,18 +20,16 @@ export const GET = async () => {
 
     const collections = await Collection.find({
       user: session.user.id,
-    })
-      .populate("destinations", "name region image")
-      .sort({ createdAt: -1 });
+    }).select("name destinations visibility").sort({createdAt: -1})
 
     // TODO: remove this delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    
     return NextResponse.json(collections);
   } catch (error) {
     console.error(error);
     return Response.json(
-      { error: "Failed to fetch collections" },
+      { error: "Failed to add to favorites" },
       { status: 500 },
     );
   }

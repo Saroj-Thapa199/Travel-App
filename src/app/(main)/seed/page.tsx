@@ -33,6 +33,7 @@ import { z } from "zod";
 import { seedMotorableRoutes } from "@/lib/actions/seed/motorableRoutes";
 import { seedTrekRoutes } from "@/lib/actions/seed/trekRoutes";
 import AddToFavoritesBtn from "@/components/AddToFavoritesBtn";
+import AddToCollectionsBtn from "@/components/AddToCollectionsBtn";
 
 const formSchema = z.object({
   favoriteFrameworks: z.array(z.string()).min(1, "Required"),
@@ -107,12 +108,19 @@ const page = () => {
 
     // fetchSuggestedDestinations();
 
-    const fetchCollections = async () => {
-      const res1 = await axios.get("/api/collections/all");
+    // const fetchCollections = async () => {
+    //   const res1 = await axios.get("/api/collections/all");
+    //   console.log(res1.data);
+    // };
+    
+    // fetchCollections();
+
+    const fetchCollectionsNames = async () => {
+      const res1 = await axios.get("/api/collections/all/names");
       console.log(res1.data);
     };
 
-    fetchCollections();
+    fetchCollectionsNames()
   }, []);
 
   return (
@@ -138,19 +146,13 @@ const page = () => {
           initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
           btnStyle="button-text"
         />
-        <AddToFavoritesBtn
+        {/* <AddToFavoritesBtn
           destinationId="68879a260fc53edc0c426dcd"
           initialState={{ addedToFavoritesByUser: false, favorites: 10 }}
           btnStyle="icon"
-        />
+        /> */}
+        <AddToCollectionsBtn destinationId="68879a260fc53edc0c426dcd"/>
       </div>
-      {/* <Avatar>
-        <AvatarImage />
-        <AvatarFallback>
-          <UserRound />
-        </AvatarFallback>
-      </Avatar> */}
-      {/* <CategoriesSelect /> */}
 
       <div>
         <Form {...form}>

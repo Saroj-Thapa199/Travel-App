@@ -1,6 +1,7 @@
 "use client";
 
 import useFavoritesInfo from "@/app/hooks/useFavoritesInfo";
+import AddToCollectionsBtn from "@/components/AddToCollectionsBtn";
 import AddToFavoritesBtn from "@/components/AddToFavoritesBtn";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,8 +51,6 @@ const DestinationInfoCard = ({
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data } = useFavoritesInfo(destinationId, favoritesData);
-
   if (error) {
     return "Error...";
   }
@@ -99,9 +98,10 @@ const DestinationInfoCard = ({
       </div>
 
       <div className="mt-6 space-y-3">
-        <Button className="w-full" disabled>
+        {/* <Button className="w-full" disabled>
           Favorites: {data.favorites || favoritesData.favorites}
-        </Button>
+        </Button> */}
+        <AddToCollectionsBtn destinationId={destinationId} />
         <AddToFavoritesBtn
           destinationId={destinationId}
           initialState={favoritesData}

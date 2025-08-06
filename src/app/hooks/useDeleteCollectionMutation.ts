@@ -18,10 +18,10 @@ export const useDeleteCollectionMutation = () => {
       }
 
       const queryFilter: QueryFilters = {
-        queryKey: ["collections", "user", data.userId],
+        queryKey: ["user", data.userId, "collections"],
       };
 
-      queryClient.setQueryData<CollectionsResponse>(["collections", "user", data.userId], (oldData) => {
+      queryClient.setQueryData<CollectionsResponse>(["user", data.userId, "collections"], (oldData) => {
         return oldData?.filter(prevData => prevData._id !== data.collectionId)
       })
 

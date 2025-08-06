@@ -58,6 +58,8 @@ export const GET = async (
         favorites: destination.favorites.length,
         addedToFavoritesByUser: false,
       };
+
+      return NextResponse.json(favoritesData);
     }
 
     const favoritesData: FavoritesInfo = {

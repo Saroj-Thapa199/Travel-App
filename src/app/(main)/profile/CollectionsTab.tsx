@@ -19,7 +19,7 @@ type CollectionsTabProps = {
 
 const CollectionsTab = ({ userId }: CollectionsTabProps) => {
   const { data: collectionData, isLoading } = useQuery({
-    queryKey: ["collections", "user", userId],
+    queryKey: ["user", userId, "collections"],
     queryFn: async () => {
       const { data } = await axios.get<CollectionsResponse>(
         "/api/collections/all",

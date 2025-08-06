@@ -17,7 +17,7 @@ export const useCreateCollectionMutation = () => {
       }
 
       const queryFilter: QueryFilters = {
-        queryKey: ["collections", "user", data.userId],
+        queryKey: ["user", data.userId, "collections"],
       };
 
       await queryClient.invalidateQueries(queryFilter);

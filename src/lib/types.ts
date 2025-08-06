@@ -67,3 +67,14 @@ export type CollectionsResponse = Array<
     destinations: Pick<DestinationType, "_id" | "name" | "region" | "image">[];
   }
 >;
+
+export type UnPopulatedCollectionsResponse = {
+  _id: string;
+  name: string;
+  visibility: "public" | "private";
+  destinations: string[];
+  // user: string;
+  // description?: string;
+  // createdAt: string;
+  // updatedAt: string;
+}[];

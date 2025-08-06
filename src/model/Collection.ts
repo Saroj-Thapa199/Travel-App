@@ -5,7 +5,7 @@ interface CollectionInterface extends Document {
   name: string;
   description: string;
   coverImage: string;
-  destinations: [mongoose.Types.ObjectId];
+  destinations: mongoose.Types.ObjectId[];
   visibility: "public" | "private";
 }
 
