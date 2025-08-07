@@ -20,8 +20,7 @@ const AddToFavoritesBtn = ({
   initialState,
   btnStyle,
 }: AddToFavoritesBtnProps) => {
-  const {data: sessionData, status } = useSession()
-
+  const { data: sessionData, status } = useSession();
 
   const queryClient = useQueryClient();
 
@@ -44,10 +43,6 @@ const AddToFavoritesBtn = ({
           (previousState?.favorites || 0) +
           (previousState?.addedToFavoritesByUser ? -1 : 1),
         addedToFavoritesByUser: !previousState?.addedToFavoritesByUser,
-        // followers:
-        //   (previousState?.followers || 0) +
-        //   (previousState?.isFollowedByUser ? -1 : 1),
-        // isFollowedByUser: !previousState?.isFollowedByUser,
       }));
 
       return { previousState };
@@ -56,9 +51,9 @@ const AddToFavoritesBtn = ({
       queryClient.setQueryData(queryKey, context?.previousState);
       console.error(error);
       if (error instanceof AxiosError && error.response?.data.error) {
-          toast.warning(error.response?.data.error)
+        toast.warning(error.response?.data.error);
       }
-        toast.error("Something went wrong. Please try again");
+      toast.error("Something went wrong. Please try again");
     },
   });
 
@@ -83,7 +78,7 @@ const AddToFavoritesBtn = ({
   ) : (
     <Button
       variant={data.addedToFavoritesByUser ? "outline" : "outline"}
-      disabled={status==="unauthenticated" || !sessionData?.user.id}
+      disabled={status === "unauthenticated" || !sessionData?.user.id}
       className="w-full"
       onClick={() => mutate()}
     >

@@ -26,12 +26,15 @@ const CollectionSchema: Schema<CollectionInterface> = new Schema(
     coverImage: {
       type: String,
     },
-    destinations: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Destination",
-      },
-    ],
+    destinations: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Destination",
+        },
+      ],
+      default: [],
+    },
     visibility: {
       type: String,
       enum: ["public", "private"],

@@ -1,10 +1,15 @@
-"use client"
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { useSession } from "next-auth/react"
-import { useState } from "react"
-import { Button } from "./ui/button"
+import {
+  QueryKey,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +17,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
+} from "./ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -20,119 +25,179 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import { Textarea } from "./ui/textarea"
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
-import { Plus, BookmarkPlus, Check, Loader2, Search, Globe, Lock, FolderPlus, X } from 'lucide-react'
-import { ScrollArea } from "./ui/scroll-area"
-import { Skeleton } from "./ui/skeleton"
-import { UnPopulatedCollectionsResponse } from "@/lib/types"
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import {
+  Plus,
+  BookmarkPlus,
+  Check,
+  Loader2,
+  Search,
+  Globe,
+  Lock,
+  FolderPlus,
+  X,
+} from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
+import { Skeleton } from "./ui/skeleton";
+import { UnPopulatedCollectionsResponse } from "@/lib/types";
+import { Checkbox } from "./ui/checkbox";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import {
+  createCollectionSchema,
+  CreateCollectionType,
+} from "@/lib/validations/collection";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { useCreateCollectionMutation } from "@/app/hooks/useCreateCollectionMutation";
+import LoadingButton from "./LoadingButton";
 
 type AddToCollectionsBtnProps = {
-  destinationId: string
-}
+  destinationId: string;
+};
 
 const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
-  const { status, data: sessionData } = useSession()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [processingCollections, setProcessingCollections] = useState<string[]>([])
+  const { status, data: sessionData } = useSession();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // New collection form state
-  const [newCollectionName, setNewCollectionName] = useState("")
-  const [newCollectionDescription, setNewCollectionDescription] = useState("")
-  const [newCollectionVisibility, setNewCollectionVisibility] = useState<"public" | "private">("public")
-  const [isCreatingCollection, setIsCreatingCollection] = useState(false)
+  const queryClient = useQueryClient();
+
+  const queryKey: QueryKey = [
+    "user",
+    sessionData?.user.id,
+    "collections",
+    "names",
+  ];
 
   const { data, isLoading } = useQuery({
-    queryKey: ["user", sessionData?.user.id, "collections", "names"],
+    queryKey: queryKey,
     queryFn: async () => {
-      console.log("queryFn called")
-      const { data } = await axios.get<UnPopulatedCollectionsResponse>("/api/collections/all/names")
-      return data
+      console.log("queryFn called");
+      const { data } = await axios.get<UnPopulatedCollectionsResponse>(
+        "/api/collections/all/names",
+      );
+      return data;
     },
     enabled: status === "authenticated" && !!sessionData?.user.id,
-  })
+  });
+
+  const form = useForm<CreateCollectionType>({
+    resolver: zodResolver(createCollectionSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      visibility: "public",
+      destinations: [destinationId],
+    },
+  });
+
+  const createCollectionMutation = useCreateCollectionMutation();
+
+  const { mutate } = useMutation({
+    mutationFn: ({
+      collectionId,
+      collectionIncludesDestination,
+    }: {
+      collectionId: string;
+      collectionIncludesDestination: boolean;
+    }) => {
+      return collectionIncludesDestination
+        ? axios.delete(
+            `/api/collections/${collectionId}/add-remove-destination/${destinationId}`,
+          )
+        : axios.post(
+            `/api/collections/${collectionId}/add-remove-destination/${destinationId}`,
+          );
+    },
+    onMutate: async ({ collectionId, collectionIncludesDestination }) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousState =
+        queryClient.getQueryData<UnPopulatedCollectionsResponse>(queryKey);
+
+      queryClient.setQueryData<UnPopulatedCollectionsResponse>(queryKey, () =>
+        previousState?.map((collection) =>
+          collection._id === collectionId
+            ? {
+                ...collection,
+                destinations: collectionIncludesDestination
+                  ? collection.destinations.filter((id) => id !== destinationId)
+                  : [...collection.destinations, destinationId],
+              }
+            : collection,
+        ),
+      );
+
+      return { previousState };
+    },
+    onSuccess: (_data, variables) => {
+      const { collectionId, collectionIncludesDestination } = variables;
+      const collection = queryClient
+        .getQueryData<UnPopulatedCollectionsResponse>(queryKey)
+        ?.find((c) => c._id === collectionId);
+      const name = collection?.name || "collection";
+      const verb = collectionIncludesDestination ? "removed from" : "added to";
+      toast.success(`Destination ${verb} "${name}"`);
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousState) {
+        queryClient.setQueryData(queryKey, context.previousState);
+        console.error(error);
+        if (error instanceof AxiosError && error.response?.data.error) {
+          toast.warning(error.response?.data.error);
+        }
+        toast.error("Something went wrong. Please try again");
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
 
   // Filter collections based on search
   const filteredCollections = data?.filter((collection) =>
-    collection.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+    collection.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
-  // Check if destination is already in collection
-  const isDestinationInCollection = (collectionId: string) => {
-    const collection = data?.find(c => c._id === collectionId)
-    return collection?.destinations.includes(destinationId) || false
-  }
-
-  const handleCollectionToggle = async (collectionId: string, event: React.MouseEvent) => {
+  const handleCollectionToggle = async (
+    collectionId: string,
+    event: React.MouseEvent,
+  ) => {
     // Prevent dropdown from closing
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
 
-    if (processingCollections.includes(collectionId)) return
+    console.log(collectionId);
 
-    setProcessingCollections(prev => [...prev, collectionId])
+    mutate({
+      collectionId,
+      collectionIncludesDestination: !!data
+        ?.find((collection) => collection._id === collectionId)
+        ?.destinations.includes(destinationId),
+    });
+  };
 
-    try {
-      const isCurrentlyInCollection = isDestinationInCollection(collectionId)
-      
-      if (isCurrentlyInCollection) {
-        // Remove from collection
-        console.log("Removing destination", destinationId, "from collection:", collectionId)
-        // Add your remove logic here
-        // await removeFromCollection(collectionId, destinationId)
-      } else {
-        // Add to collection
-        console.log("Adding destination", destinationId, "to collection:", collectionId)
-        // Add your add logic here
-        // await addToCollection(collectionId, destinationId)
-      }
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      // You would typically refetch the query here or update it optimistically
-      // queryClient.invalidateQueries(["user", sessionData?.user.id, "collections", "names"])
-
-    } catch (error) {
-      console.error("Failed to toggle collection:", error)
-    } finally {
-      setProcessingCollections(prev => prev.filter(id => id !== collectionId))
-    }
-  }
-
-  const handleCreateCollection = async () => {
-    if (!newCollectionName.trim()) return
-
-    setIsCreatingCollection(true)
-    try {
-      // Add your logic here to create new collection and add destination
-      console.log("Creating collection:", {
-        name: newCollectionName,
-        description: newCollectionDescription,
-        visibility: newCollectionVisibility,
-        destinationId,
-      })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Reset form and close modal
-      setNewCollectionName("")
-      setNewCollectionDescription("")
-      setNewCollectionVisibility("public")
-      setIsCreateModalOpen(false)
-      setIsDropdownOpen(false)
-    } catch (error) {
-      console.error("Failed to create collection:", error)
-    } finally {
-      setIsCreatingCollection(false)
-    }
-  }
+const onSubmit = async (values: CreateCollectionType) => {
+    createCollectionMutation.mutate(values, {
+      onSettled: () => {
+        setIsCreateModalOpen(false);
+        form.reset();
+      },
+    });
+  };
 
   if (status !== "authenticated") {
     return (
@@ -140,7 +205,7 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
         <BookmarkPlus className="h-4 w-4" />
         Add To Collection
       </Button>
-    )
+    );
   }
 
   return (
@@ -152,9 +217,9 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
             Add To Collection
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent 
-          className="w-80 max-w-full" 
-          align="start" 
+        <DropdownMenuContent
+          className="w-80 max-w-full"
+          align="start"
           side="top"
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
@@ -175,7 +240,7 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
           {/* Search */}
           <div className="p-2">
             <div className="relative">
-              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="text-muted-foreground absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
               <Input
                 placeholder="Search collections..."
                 value={searchQuery}
@@ -199,51 +264,44 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
                   ))}
                 </div>
               ) : filteredCollections && filteredCollections.length > 0 ? (
-                filteredCollections.map((collection) => {
-                  const isInCollection = isDestinationInCollection(collection._id)
-                  const isProcessing = processingCollections.includes(collection._id)
-                  
-                  return (
-                    <DropdownMenuItem
-                      key={collection._id}
-                      className="flex cursor-pointer items-center justify-between p-2 focus:bg-accent"
-                      onClick={(e) => handleCollectionToggle(collection._id, e)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <div
-                          className={`flex h-4 w-4 items-center justify-center rounded border-2 transition-colors ${
-                            isInCollection
-                              ? "border-primary bg-primary"
-                              : "border-muted-foreground hover:border-primary"
-                          }`}
-                        >
-                          {isProcessing ? (
-                            <Loader2 className="h-3 w-3 animate-spin text-primary-foreground" />
-                          ) : isInCollection ? (
-                            <Check className="h-3 w-3 text-primary-foreground" />
-                          ) : null}
-                        </div>
-                        <span className="truncate text-sm">{collection.name}</span>
-                      </div>
-                      <div className="flex items-center">
-                        {collection.visibility === "public" ? (
-                          <Globe className="h-3 w-3 text-muted-foreground" />
-                        ) : (
-                          <Lock className="h-3 w-3 text-muted-foreground" />
+                filteredCollections.map((collection) => (
+                  <DropdownMenuItem
+                    key={collection._id}
+                    className="focus:bg-accent flex cursor-pointer items-center justify-between p-2"
+                    onClick={(e) => handleCollectionToggle(collection._id, e)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Checkbox
+                        id={collection._id}
+                        checked={collection.destinations.includes(
+                          destinationId,
                         )}
-                      </div>
-                    </DropdownMenuItem>
-                  )
-                })
+                        className="pointer-events-none"
+                      />
+                      <Label
+                        htmlFor={collection._id}
+                        className="pointer-events-none block leading-normal font-normal"
+                      >
+                        {collection.name}
+                      </Label>
+                    </div>
+                    <div className="flex items-center">
+                      {collection.visibility === "public" ? (
+                        <Globe className="text-muted-foreground h-3 w-3" />
+                      ) : (
+                        <Lock className="text-muted-foreground h-3 w-3" />
+                      )}
+                    </div>
+                  </DropdownMenuItem>
+                ))
               ) : (
-                <div className="p-4 text-center text-sm text-muted-foreground">
+                <div className="text-muted-foreground p-4 text-center text-sm">
                   {searchQuery ? "No collections found" : "No collections yet"}
                 </div>
               )}
             </div>
           </ScrollArea>
-          
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -251,8 +309,8 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <FolderPlus className="h-5 w-5" />
+            <DialogTitle className="flex items-center gap-3">
+              {/* <FolderPlus className="h-5 w-5" /> */}
               Create New Collection
             </DialogTitle>
             <DialogDescription>
@@ -260,83 +318,111 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
-            {/* Collection Name */}
-            <div className="space-y-2">
-              <Label htmlFor="collection-name">Collection Name *</Label>
-              <Input
-                id="collection-name"
-                placeholder="e.g., Beach Paradise, Mountain Adventures"
-                value={newCollectionName}
-                onChange={(e) => setNewCollectionName(e.target.value)}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
+              {/* Collection Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Collection Title *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Beach Paradise, Mountain Adventures"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="collection-description">Description (Optional)</Label>
-              <Textarea
-                id="collection-description"
-                placeholder="Describe what makes this collection special..."
-                rows={3}
-                value={newCollectionDescription}
-                onChange={(e) => setNewCollectionDescription(e.target.value)}
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe what makes this collection special..."
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Privacy Settings */}
-            <div className="space-y-3">
-              <Label>Privacy Settings</Label>
-              <RadioGroup
-                value={newCollectionVisibility}
-                onValueChange={(value: "public" | "private") => setNewCollectionVisibility(value)}
-                className="grid grid-cols-2 gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="public" id="public" />
-                  <Label htmlFor="public" className="flex cursor-pointer items-center gap-2">
-                    <Globe className="h-4 w-4" />
-                    <div>
-                      <p className="font-medium">Public</p>
-                      <p className="text-xs text-muted-foreground">Anyone can view</p>
-                    </div>
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="private" id="private" />
-                  <Label htmlFor="private" className="flex cursor-pointer items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    <div>
-                      <p className="font-medium">Private</p>
-                      <p className="text-xs text-muted-foreground">Only you can view</p>
-                    </div>
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
+              {/* Privacy Settings */}
+              <FormField
+                control={form.control}
+                name="visibility"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Privacy Settings</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        className="flex flex-col gap-3 md:grid md:grid-cols-2"
+                      >
+                        <FormItem className="flex items-center gap-3">
+                          <FormControl>
+                            <RadioGroupItem value="public" />
+                          </FormControl>
+                          <FormLabel className="flex cursor-pointer items-center gap-2">
+                            <Globe className="h-4 w-4" />
+                            <div>
+                              <p className="font-medium">Public</p>
+                              <p className="text-muted-foreground text-xs">
+                                Anyone can view this collection
+                              </p>
+                            </div>
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center gap-3">
+                          <FormControl>
+                            <RadioGroupItem value="private" />
+                          </FormControl>
+                          <FormLabel className="flex cursor-pointer items-center gap-2">
+                            <Lock className="h-4 w-4" />
+                            <div>
+                              <p className="font-medium">Private</p>
+                              <p className="text-muted-foreground text-xs">
+                                Only you can view this collection
+                              </p>
+                            </div>
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleCreateCollection}
-              disabled={!newCollectionName.trim() || isCreatingCollection}
-              className="gap-2"
-            >
-              {isCreatingCollection ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Plus className="h-4 w-4" />
-              )}
-              Create & Add
-            </Button>
-          </DialogFooter>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCreateModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <LoadingButton type="submit" loading={createCollectionMutation.isPending} className="gap-2">
+                  Create & Add
+                </LoadingButton>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </>
-  )
-}
+  );
+};
 
-export default AddToCollectionsBtn
+export default AddToCollectionsBtn;
