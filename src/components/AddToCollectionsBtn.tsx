@@ -190,7 +190,7 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
     });
   };
 
-const onSubmit = async (values: CreateCollectionType) => {
+  const onSubmit = async (values: CreateCollectionType) => {
     createCollectionMutation.mutate(values, {
       onSettled: () => {
         setIsCreateModalOpen(false);
@@ -307,7 +307,7 @@ const onSubmit = async (values: CreateCollectionType) => {
 
       {/* Create New Collection Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               {/* <FolderPlus className="h-5 w-5" /> */}
@@ -413,7 +413,11 @@ const onSubmit = async (values: CreateCollectionType) => {
                 >
                   Cancel
                 </Button>
-                <LoadingButton type="submit" loading={createCollectionMutation.isPending} className="gap-2">
+                <LoadingButton
+                  type="submit"
+                  loading={createCollectionMutation.isPending}
+                  className="gap-2"
+                >
                   Create & Add
                 </LoadingButton>
               </DialogFooter>
