@@ -12,6 +12,7 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingButton from "./LoadingButton";
 import { useDeleteCollectionMutation } from "@/app/hooks/useDeleteCollectionMutation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface DeleteCollectionDialogProps {
   collectionId: string;
@@ -27,12 +28,17 @@ const DeleteCollectionDialog = ({
   open,
   setOpen,
 }: DeleteCollectionDialogProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const mutation = useDeleteCollectionMutation();
 
   const onDelete = async () => {
     mutation.mutate(collectionId, {
       onSettled: () => {
         setOpen(false);
+        // if (pathname === `/collections/${collectionId}`) {
+        //   router.replace("/profile?tab=collections")
+        // }
       },
     });
   };

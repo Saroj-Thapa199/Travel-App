@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/dbConnect";
 import Collection from "@/model/Collection";
 import Destination from "@/model/Destination";
 import mongoose, { isValidObjectId } from "mongoose";
@@ -11,6 +12,8 @@ export const POST = async (
 ) => {
   try {
     const { collectionId, destinationId } = await segmentData.params;
+
+    await dbConnect();
 
     if (!isValidObjectId(destinationId) || !isValidObjectId(collectionId)) {
       return NextResponse.json(
@@ -60,6 +63,8 @@ export const DELETE = async (
   try {
     const params = await segmentData.params;
     const { collectionId, destinationId } = params;
+
+    await dbConnect();
 
     if (!isValidObjectId(destinationId) || !isValidObjectId(collectionId)) {
       return NextResponse.json(

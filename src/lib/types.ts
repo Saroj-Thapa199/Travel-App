@@ -55,7 +55,6 @@ export type CollectionType = {
   user: string;
   name: string;
   description?: string;
-  coverImage?: string;
   visibility: "public" | "private";
   destinations: DestinationType[];
   createdAt: string;

@@ -43,7 +43,12 @@ const DestinationCard = ({
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           {featured && (
-            <Badge className="bg-primary/90 hover:bg-primary absolute top-3 left-3">
+            <Badge className="bg-primary/90 hover:bg-primary absolute top-3 left-3 dark:hidden">
+              Featured
+            </Badge>
+          )}
+          {featured && (
+            <Badge variant={"secondary"} className="absolute top-3 left-3 not-dark:hidden">
               Featured
             </Badge>
           )}

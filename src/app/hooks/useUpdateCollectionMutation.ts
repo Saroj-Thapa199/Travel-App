@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useUpdateCollectionMutation = () => {
+export const useUpdateCollectionMutation = (collectionId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -21,6 +21,7 @@ export const useUpdateCollectionMutation = () => {
       };
 
       await queryClient.invalidateQueries(queryFilter);
+      await queryClient.invalidateQueries({queryKey: ["collection", collectionId]});
 
       toast.success("Collection updated");
     },

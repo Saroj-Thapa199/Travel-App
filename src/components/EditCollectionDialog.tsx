@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import { CollectionsResponse } from "@/lib/types";
+import { CollectionsResponse, CollectionType } from "@/lib/types";
 import { useUpdateCollectionMutation } from "@/app/hooks/useUpdateCollectionMutation";
 import LoadingButton from "./LoadingButton";
 
@@ -52,7 +52,7 @@ const EditCollectionDialog = ({
 
   const collection = queryClient
     .getQueryData<CollectionsResponse>(["user", userId, "collections"])
-    ?.find((c) => c._id === collectionId);
+    ?.find((c) => c._id === collectionId) || queryClient.getQueryData<CollectionType>(["collection", collectionId])
 
   const form = useForm<Omit<CreateCollectionType, "destinations">>({
     resolver: zodResolver(createCollectionSchema.omit({ destinations: true })),
@@ -63,7 +63,7 @@ const EditCollectionDialog = ({
     },
   });
 
-  const mutation = useUpdateCollectionMutation();
+  const mutation = useUpdateCollectionMutation(collectionId);
 
   const onSubmit = async (
     values: Omit<CreateCollectionType, "destinations">,

@@ -87,10 +87,30 @@ const Navbar = () => {
     }
   }, [active]);
 
+  useEffect(() => {
+  const nav = document.querySelector("nav");
+  if (!nav) return;
+
+  const updatePadding = () => {
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    nav.style.paddingRight = `${scrollbarWidth}px`;
+  };
+
+  updatePadding();
+
+  window.addEventListener("resize", updatePadding);
+
+  return () => {
+    window.removeEventListener("resize", updatePadding);
+  };
+}, []);
+
   return (
     <nav
       className={cn(
-        "text-secondary dark:text-primary fixed top-0 right-0 left-0 z-50 text-sm transition-all duration-300",
+        "text-secondary dark:text-primary fixed top-0 left-0 z-50 w-[100vw] text-sm transition-all duration-300",
+        // "text-secondary dark:text-primary fixed top-0 left-0 z-50 right-0 text-sm transition-all duration-300",
         isScrolled || pathname !== "/"
           ? "text-slightly-muted bg-background/95 border-b py-3 shadow-sm backdrop-blur-md"
           : "bg-transparent py-5",
