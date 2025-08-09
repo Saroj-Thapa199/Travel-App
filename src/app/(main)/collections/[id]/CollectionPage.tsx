@@ -62,7 +62,7 @@ const CollectionDetailPage = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("latest");
   const [filterBy, setFilterBy] = useState("all");
 
   const queryClient = useQueryClient();
@@ -127,6 +127,11 @@ const CollectionDetailPage = ({
 
   if (!collection) return notFound();
 
+  // Precompute original order map for latest-added sorting
+  const destinationOrderMap = new Map(
+    collection.destinations.map((d, idx) => [d._id, idx]),
+  );
+
   // Filter and sort destinations
   const filteredDestinations = collection.destinations
     .filter((destination) => {
@@ -135,17 +140,15 @@ const CollectionDetailPage = ({
         destination.region.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (filterBy === "all") return matchesSearch;
-      if (filterBy === "new")
-        return (
-          matchesSearch &&
-          isNew({
-            createdAt: new Date(destination.createdAt),
-            type: "day",
-            range: 7,
-          })
-        );
+
       if (filterBy === "high-rated")
         return matchesSearch && destination.averageRating >= 4.5;
+
+      if (filterBy === "most-reviewed")
+        return matchesSearch && destination.reviewCount >= 50;
+
+      if (filterBy === "low-rated")
+        return matchesSearch && destination.averageRating < 3.0;
 
       return matchesSearch;
     })
@@ -157,9 +160,10 @@ const CollectionDetailPage = ({
           return b.averageRating - a.averageRating;
         case "reviews":
           return b.reviewCount - a.reviewCount;
-        case "newest":
+        case "default":
           return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (destinationOrderMap.get(b._id) ?? 0) -
+            (destinationOrderMap.get(a._id) ?? 0)
           );
         default:
           return 0;
@@ -213,7 +217,10 @@ const CollectionDetailPage = ({
                       <Edit className="h-4 w-4" />
                       Edit Collection
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)} className="text-destructive hover:!bg-destructive/5 hover:!text-destructive gap-2">
+                    <DropdownMenuItem
+                      onClick={() => setDeleteDialogOpen(true)}
+                      className="text-destructive hover:!bg-destructive/5 hover:!text-destructive gap-2"
+                    >
                       <Trash2 className="text-destructive h-4 w-4" />
                       Delete Collection
                     </DropdownMenuItem>
@@ -290,21 +297,23 @@ const CollectionDetailPage = ({
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="latest">Latest</SelectItem>
                 <SelectItem value="name">Name</SelectItem>
                 <SelectItem value="rating">Rating</SelectItem>
                 <SelectItem value="reviews">Reviews</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
+                {/* <SelectItem value="newest">Newest</SelectItem> */}
               </SelectContent>
             </Select>
             <Select value={filterBy} onValueChange={setFilterBy}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-52">
                 <Filter className="mr-2 h-4 w-4" />
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="high-rated">High Rated</SelectItem>
+                <SelectItem value="high-rated">High Rated (≥ 4.5)</SelectItem>
+                <SelectItem value="most-reviewed">Most Reviewed</SelectItem>
+                <SelectItem value="low-rated">Low Rated (≤ 3.0)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -332,8 +341,6 @@ const CollectionDetailPage = ({
                 rating={destination.averageRating || 0}
                 slug={destination.slug}
                 reviewCount={destination.reviewCount}
-                isNew={true}
-                featured
                 action={
                   collection.user === userId ? (
                     <DropdownMenu>

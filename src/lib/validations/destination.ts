@@ -61,7 +61,7 @@ const trekSchema = z
 export const destinationSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
   user: z.preprocess((val) => val?.toString(), z.string()),
-  favorites: z.array(z.preprocess((val) => val?.toString(), z.string())),
+  favorites: z.number(),
   name: requiredString(),
   slug: z.string(),
   region: requiredString(),

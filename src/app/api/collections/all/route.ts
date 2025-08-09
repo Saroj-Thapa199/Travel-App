@@ -6,9 +6,9 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const session = await auth();
     await dbConnect();
-
+    const session = await auth();
+    
     if (!session || !session.user.id) {
       return NextResponse.json(
         {
@@ -30,7 +30,7 @@ export const GET = async () => {
     return NextResponse.json(collections);
   } catch (error) {
     console.error(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to fetch collections" },
       { status: 500 },
     );

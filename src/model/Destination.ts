@@ -10,17 +10,16 @@ const transportTypeEnum = [
   "Flight",
 ] as const;
 
-interface DestinationInterface
+export interface DestinationInterface
   extends Omit<
       DestinationType,
-      "_id" | "createdAt" | "updatedAt" | "user" | "favorites"
+      "_id" | "createdAt" | "updatedAt" | "user"
     >,
     Document {
   slug: string;
   createdAt?: Date;
   updatedAt?: Date;
   user: mongoose.Types.ObjectId;
-  favorites: mongoose.Types.ObjectId[];
 }
 
 const PublicTransportSegmentSchema = new Schema(
@@ -76,13 +75,8 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       required: true,
     },
     favorites: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "MotorableRoute",
-        },
-      ],
-      default: [],
+      type: Number,
+      default: 0,
     },
     name: {
       type: String,

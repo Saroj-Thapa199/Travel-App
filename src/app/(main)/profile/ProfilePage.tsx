@@ -143,7 +143,7 @@ const ProfilePage = ({userId, name, image}: ProfilePageProps) => {
         </TabsContent>
 
         <TabsContent value="saved" className="space-y-6">
-          <FavoritesTab />
+          <FavoritesTab userId={userId} />
         </TabsContent>
 
         <TabsContent value="reviews" className="space-y-6">

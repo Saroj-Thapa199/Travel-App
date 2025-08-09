@@ -115,12 +115,19 @@ const page = () => {
     
     // fetchCollections();
 
-    const fetchCollectionsNames = async () => {
-      const res1 = await axios.get("/api/collections/all/names");
-      console.log(res1.data);
-    };
+    // const fetchCollectionsNames = async () => {
+    //   const res1 = await axios.get("/api/collections/all/names");
+    //   console.log(res1.data);
+    // };
 
-    fetchCollectionsNames()
+    // fetchCollectionsNames()
+
+    const fetchFavoriteDestinations = async () => {
+      const res = await axios.get("api/destinations/favorites")
+      console.log(res.data)
+    }
+
+    fetchFavoriteDestinations()
   }, []);
 
   return (

@@ -52,9 +52,13 @@ const AddToFavoritesBtn = ({
       console.error(error);
       if (error instanceof AxiosError && error.response?.data.error) {
         toast.warning(error.response?.data.error);
+        return
       }
       toast.error("Something went wrong. Please try again");
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey})
+    }
   });
 
   return btnStyle === "icon" ? (
@@ -69,7 +73,11 @@ const AddToFavoritesBtn = ({
         data.addedToFavoritesByUser &&
           "dark:border-red-400 dark:bg-red-500/70 dark:text-white dark:hover:bg-red-500",
       )}
-      onClick={() => mutate()}
+      onClick={(e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        mutate()
+      }}
     >
       <Heart
         className={cn("h-4 w-4", data.addedToFavoritesByUser && "fill-current")}

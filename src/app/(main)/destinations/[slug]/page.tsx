@@ -9,6 +9,10 @@ import RouteSection from "./RouteSection";
 import DestinationInfoCard from "./DestinationInfoCard";
 import { auth } from "@/auth";
 import { FavoritesInfo } from "@/lib/types";
+import axios from "axios";
+import dbConnect from "@/lib/dbConnect";
+import mongoose from "mongoose";
+import Favorite from "@/model/Favorite";
 
 export const getCachedDestinationFromSlug = cache(async (slug: string) => {
   return getDestinationFromSlug(slug);
@@ -34,18 +38,35 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const data = await getCachedDestinationFromSlug(slug);
   if (!data) return notFound();
 
-  const session = await auth();
-
-  console.log(data);
-
   const destination = destinationSchema.parse(data);
 
-  const favoritesData: FavoritesInfo = {
-    favorites: destination.favorites.length,
-    addedToFavoritesByUser: destination.favorites.some(
-      (id) => id === session?.user.id,
-    ),
+  let favoritesData: FavoritesInfo = {
+    favorites: 0,
+    addedToFavoritesByUser: false,
   };
+
+  try {
+    await dbConnect();
+    const session = await auth();
+
+    // Count how many users favorited this destination
+    const favoritesCount = await Favorite.countDocuments({
+      destination: destination._id,
+    });
+
+    favoritesData.favorites = favoritesCount;
+
+    if (session?.user?.id && mongoose.isValidObjectId(session.user.id)) {
+      // Check if current user has favorited this destination
+      const existingFavorite = await Favorite.findOne({
+        destination: destination._id,
+        user: session.user.id,
+      });
+      favoritesData.addedToFavoritesByUser = !!existingFavorite;
+    }
+  } catch (error) {
+    console.error("Failed to fetch favorites info", error);
+  }
 
   return (
     <main className="my-15">
