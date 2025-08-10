@@ -2,12 +2,18 @@ import { FavoritesInfo } from "@/lib/types";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProtectedActionButton from "./ProtectedActionButton";
-import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  QueryKey,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import useFavoritesInfo from "@/app/hooks/useFavoritesInfo";
 import axios, { AxiosError } from "axios";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { FavoriteDestinationsApiResponse } from "@/app/hooks/useFavoriteDestinations";
 
 interface AddToFavoritesBtnProps {
   destinationId: string;
@@ -37,6 +43,31 @@ const AddToFavoritesBtn = ({
       await queryClient.cancelQueries({ queryKey });
 
       const previousState = queryClient.getQueryData<FavoritesInfo>(queryKey);
+      const favoriteDestinationsPreviousState =
+        queryClient.getQueryData<
+          InfiniteData<FavoriteDestinationsApiResponse, number>
+        >(["user", sessionData?.user.id, "favorite-destinations"]);
+
+      // queryClient.setQueryData()
+
+      if (sessionData?.user.id) {
+        queryClient.setQueryData<
+          InfiniteData<FavoriteDestinationsApiResponse, number>
+        >(["user", sessionData.user.id, "favorite-destinations"], (oldData) => {
+          if (!oldData) return;
+          if (previousState?.addedToFavoritesByUser) {
+            return {
+              pageParams: oldData.pageParams,
+              pages: oldData.pages.map((page) => ({
+                nextCursor: page.nextCursor,
+                destinations: page.destinations.filter(
+                  (destination) => destination._id !== destinationId,
+                ),
+              })),
+            };
+          }
+        });
+      }
 
       queryClient.setQueryData<FavoritesInfo>(queryKey, () => ({
         favorites:
@@ -45,20 +76,22 @@ const AddToFavoritesBtn = ({
         addedToFavoritesByUser: !previousState?.addedToFavoritesByUser,
       }));
 
-      return { previousState };
+      return { previousState, favoriteDestinationsPreviousState };
     },
     onError(error, variables, context) {
       queryClient.setQueryData(queryKey, context?.previousState);
+      queryClient.setQueryData(["user", sessionData?.user.id, "favorite-destinations"], context?.favoriteDestinationsPreviousState);
       console.error(error);
       if (error instanceof AxiosError && error.response?.data.error) {
         toast.warning(error.response?.data.error);
-        return
+        return;
       }
       toast.error("Something went wrong. Please try again");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey})
-    }
+      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: ["user", sessionData?.user.id, "favorite-destinations"]});
+    },
   });
 
   return btnStyle === "icon" ? (
@@ -74,9 +107,9 @@ const AddToFavoritesBtn = ({
           "dark:border-red-400 dark:bg-red-500/70 dark:text-white dark:hover:bg-red-500",
       )}
       onClick={(e) => {
-        e.stopPropagation()
-        e.preventDefault()
-        mutate()
+        e.stopPropagation();
+        e.preventDefault();
+        mutate();
       }}
     >
       <Heart

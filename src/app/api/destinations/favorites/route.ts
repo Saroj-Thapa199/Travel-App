@@ -11,8 +11,10 @@ export const GET = async (request: NextRequest) => {
     await dbConnect();
 
     const searchParams = request.nextUrl.searchParams;
-    const cursor = Number(searchParams.get("cursor"))
-    const limit = (searchParams.get("limit")) ? Number(searchParams.get("limit")) : 12;
+    const cursor = Number(searchParams.get("cursor"));
+    const limit = searchParams.get("limit")
+      ? Number(searchParams.get("limit"))
+      : 12;
     const session = await auth();
 
     if (!session || !session.user.id) {
@@ -23,16 +25,18 @@ export const GET = async (request: NextRequest) => {
         { status: 401 },
       );
     }
-console.log(cursor)
+
     const results = await Favorite.find({ user: session.user.id })
       .populate<{ destination: DestinationInterface }>("destination")
-      .sort({ createdAt: -1 }).skip(cursor).limit(limit + 1);
+      .sort({ createdAt: -1 })
+      .skip(cursor)
+      .limit(limit + 1);
 
-      const hasNextPage = results.length > limit
+    const hasNextPage = results.length > limit;
 
-      const nextCursor = hasNextPage ? cursor + limit : null
+    const nextCursor = hasNextPage ? cursor + limit : null;
 
-      const favorites = hasNextPage ? results.slice(0, -1) : results;
+    const favorites = hasNextPage ? results.slice(0, -1) : results;
 
     const favoriteDestinations = favorites.map((favorite) =>
       favorite.destination.toObject(),
@@ -40,7 +44,7 @@ console.log(cursor)
 
     return NextResponse.json<FavoriteDestinationsApiResponse>({
       destinations: favoriteDestinations,
-      nextCursor
+      nextCursor,
     });
   } catch (error) {
     console.error(error);
