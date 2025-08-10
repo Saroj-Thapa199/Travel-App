@@ -74,7 +74,7 @@ const ReviewSection = ({
             </ProtectedActionButton>
           </DialogTrigger>
           <DialogContent className="space-y-8">
-            <DialogHeader>
+            <DialogHeader className="mb-0">
               <DialogTitle>Share Your Experience</DialogTitle>
               <DialogDescription className="mb-4">
                 Tell other travelers about your visit to {destinationName}

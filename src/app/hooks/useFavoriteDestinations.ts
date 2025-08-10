@@ -18,7 +18,6 @@ export const useFavoriteDestinations = ({
     queryKey: ["user", userId, "favorite-destinations"],
     queryFn: async ({ pageParam }) => {
       const params: Record<string, any> = {};
-      params.limit = 6;
       if (pageParam) {
         params.cursor = pageParam;
       }

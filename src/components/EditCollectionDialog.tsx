@@ -100,7 +100,7 @@ const EditCollectionDialog = ({
     >
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Create New Collection</DialogTitle>
+          <DialogTitle>Edit Collection</DialogTitle>
           <DialogDescription>
             Organize your favorite places into a themed collection to share with
             others or keep for yourself.

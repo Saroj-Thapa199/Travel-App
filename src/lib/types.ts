@@ -16,7 +16,7 @@ export type DestinationFormType = Omit<
 
 export type ReviewFormType = Omit<
   ReviewType,
-  "_id" | "createdAt" | "updatedAt" | "user" | "destination"
+  "_id" | "createdAt" | "updatedAt" | "user" | "destination" 
 >;
 
 export type DestinationsPage = {
@@ -35,6 +35,10 @@ export type ReviewStatApiResponse = {
     5: number;
   };
 };
+
+export type DestinationPopulatedReviewType = Omit<ReviewType, "destination"> & {
+  destination: Pick<DestinationType, "_id" | "name" | "slug">
+}
 
 export type DestinationRoute = {
   _id: string;

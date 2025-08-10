@@ -18,6 +18,7 @@ import { reviewSchema } from "@/lib/validations/review";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type ReviewFormProps = {
   destinationName: string;
@@ -56,11 +57,13 @@ const ReviewForm = ({
       { ...values, destinationId },
       {
         onSuccess: () => {
+          toast.success("Review added")
           setLoading(false);
           closeDialog();
         },
         onError: (error) => {
           console.log(error);
+          toast.error(error.message || "Something went wrong. Please try again");
           setError(error.message || "Something went wrong. Please try again");
           setLoading(false);
         },
@@ -105,9 +108,11 @@ const ReviewForm = ({
             </FormItem>
           )}
         />
-        <LoadingButton loading={loading} type="submit">
+        <div className="flex justify-end">
+          <LoadingButton loading={loading} type="submit">
           Submit Review
         </LoadingButton>
+        </div>
       </form>
     </Form>
   );

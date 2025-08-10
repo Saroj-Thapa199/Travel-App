@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,31 +12,31 @@ import FavoritesTab from "./FavoritesTab";
 import ReviewsTab from "./ReviewsTab";
 import SettingsTab from "./SettingsTab";
 import CollectionsTab from "./CollectionsTab";
+import { ReviewActionsDialogProvider } from "@/providers/ReviewActionsDialogProvider";
 
 type ProfilePageProps = {
-    userId: string
-    name?: string
-    image?: string
-}
+  userId: string;
+  name?: string;
+  image?: string;
+};
 
+const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
+  const searchParams = useSearchParams();
 
-const ProfilePage = ({userId, name, image}: ProfilePageProps) => {
-    const searchParams = useSearchParams();
-    
-      const tabQuery = searchParams.get("tab");
-    
-    const [tab, setTab] = useState<string>(() => {
-        const validTabs = [
-          "overview",
-          "collections",
-          "saved",
-          "reviews",
-          "settings",
-        ];
-        return typeof tabQuery === "string" && validTabs.includes(tabQuery)
-          ? tabQuery
-          : "overview";
-      });
+  const tabQuery = searchParams.get("tab");
+
+  const [tab, setTab] = useState<string>(() => {
+    const validTabs = [
+      "overview",
+      "collections",
+      "saved",
+      "reviews",
+      "settings",
+    ];
+    return typeof tabQuery === "string" && validTabs.includes(tabQuery)
+      ? tabQuery
+      : "overview";
+  });
   return (
     <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       {/* Profile Header */}
@@ -52,19 +52,12 @@ const ProfilePage = ({userId, name, image}: ProfilePageProps) => {
 
         <div className="absolute right-0 bottom-0 left-0 flex translate-y-1/2 transform flex-col items-center gap-4 px-4 md:flex-row md:items-end md:px-8">
           <Avatar className="border-background h-24 w-24 border-4 md:h-32 md:w-32">
-            <AvatarImage
-              src={image}
-              alt={name || "username"}
-            />
-            <AvatarFallback>
-              {name ? name.charAt(0) : "UN"}
-            </AvatarFallback>
+            <AvatarImage src={image} alt={name || "username"} />
+            <AvatarFallback>{name ? name.charAt(0) : "UN"}</AvatarFallback>
           </Avatar>
 
           <div className="bg-background/80 mt-8 flex-1 rounded-lg p-4 text-center backdrop-blur-sm md:mt-0 md:bg-transparent md:p-0 md:text-left md:backdrop-blur-none">
-            <h1 className="text-2xl font-bold md:mb-1 md:text-3xl">
-              {name}
-            </h1>
+            <h1 className="text-2xl font-bold md:mb-1 md:text-3xl">{name}</h1>
             <p className="flex items-center justify-center gap-1 text-sm md:justify-start">
               <MapPin className="h-4 w-4" />
               {/* {user.location} */}
@@ -147,7 +140,9 @@ const ProfilePage = ({userId, name, image}: ProfilePageProps) => {
         </TabsContent>
 
         <TabsContent value="reviews" className="space-y-6">
-          <ReviewsTab />
+          <ReviewActionsDialogProvider userId={userId}>
+            <ReviewsTab userId={userId} />
+          </ReviewActionsDialogProvider>
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-8">
@@ -159,7 +154,7 @@ const ProfilePage = ({userId, name, image}: ProfilePageProps) => {
         </TabsContent>
       </Tabs>
     </main>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;

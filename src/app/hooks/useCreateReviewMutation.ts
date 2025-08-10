@@ -1,25 +1,24 @@
 import { createReview } from "@/lib/actions/review";
-import { populatedReviewSchema } from "@/lib/validations/review";
 import {
   QueryFilters,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export const useCreateReviewMutation = () => {
   const queryClient = useQueryClient();
 
+  const session = useSession();
+
   return useMutation({
     mutationFn: createReview,
-    onSuccess: async ({ success, data, error }) => {
-      if (!success) {
-        throw new Error(error);
+    onSuccess: async (data) => {
+      if (!data.success) {
+        throw new Error(data.error);
       }
 
-      const newReview = populatedReviewSchema.parse(data);
-      if (!newReview) {
-        throw new Error("Something went wrong");
-      }
+      const newReview = data.review
 
       const queryFilter = {
         queryKey: ["reviews"],
@@ -28,11 +27,17 @@ export const useCreateReviewMutation = () => {
           (query.queryKey.includes("all") ||
             query.queryKey.includes("stats") ||
             query.queryKey.includes(
-              `${newReview.rating} star${newReview.rating > 1 ? "s" : ""}`,
+              `${newReview.rating} star${newReview?.rating > 1 ? "s" : ""}`,
             )),
       } satisfies QueryFilters;
 
       await queryClient.invalidateQueries(queryFilter);
+
+      if (session.data?.user.id) {
+        await queryClient.invalidateQueries({
+          queryKey: ["user", session.data.user.id, "reviews"],
+        });
+      }
       // await queryClient.refetchQueries(queryFilter);
     },
     onError: (error) => {

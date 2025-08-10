@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 interface FavoriteInterface extends Document {
   user: mongoose.Types.ObjectId;
   destination: mongoose.Types.ObjectId;
+  createdAt: Date;
 }
 
 const FavoriteSchema: Schema<FavoriteInterface> = new Schema(

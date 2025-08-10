@@ -3,16 +3,28 @@
 import Review from "@/model/Review";
 import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import { ReviewFormType } from "../types";
-import { populatedReviewSchema } from "../validations/review";
-import { z } from "zod";
-import { IUserDocument } from "@/model/User";
+import {
+  EditReviewType,
+  reviewSchema,
+  ReviewType,
+} from "../validations/review";
 import Destination from "@/model/Destination";
+
+type createReviewReturnType =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      review: ReviewType;
+    };
 
 export const createReview = async (
   values: ReviewFormType & { destinationId: string },
-) => {
+): Promise<createReviewReturnType> => {
   try {
     await dbConnect();
 
@@ -55,40 +67,118 @@ export const createReview = async (
       await destination.save();
     }
 
-    const populatedReview = await reviewDoc.populate<{
-      user: IUserDocument;
-    }>("user", "name image -_id");
+    const review = reviewSchema.parse(reviewDoc);
 
-    console.log(populatedReview);
+    // const review = populatedReviewSchema.parse(populatedReview);
 
-    const review = populatedReviewSchema.parse(populatedReview);
-
-    return { success: true, data: review };
+    return { success: true, review };
   } catch (error) {
     console.error("Review creation failed:", error);
     return { success: false, error: "Something went wrong. Please try again." };
   }
 };
 
-export const getDestinationReviews = async (destinationId: string) => {
+type deleteReviewReturnType =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      userId: string;
+      destinationId: string;
+    };
+
+export const deleteReview = async (
+  reviewId: string,
+): Promise<deleteReviewReturnType> => {
   try {
     await dbConnect();
 
-    const reviewsDoc = await Review.find({
-      destination: destinationId,
-    }).populate<{ user: IUserDocument }>("user", "name image -_id");
-    if (reviewsDoc.length === 0) return { success: false, error: "No reviews" };
+    const session = await auth();
+    if (!session || !session.user?.id) {
+      return { success: false, error: "Unauthenticated" };
+    }
 
-    // const formattedReviewsDoc = reviewsDoc.map((review) => {
-    //   const obj = review.toObject();
-    //   return { ...obj };
-    // });
+    if (!isValidObjectId(reviewId)) {
+      return { success: false, error: "Invalid review id" };
+    }
 
-    const reviews = z.array(populatedReviewSchema).parse(reviewsDoc);
+    const review = await Review.findById(reviewId, "user destination").lean();
 
-    return { success: true, data: reviews };
+    if (!review) {
+      return { success: false, error: "Unable to find matching review" };
+    }
+
+    if (review.user.toString() !== session.user.id) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+
+    return {
+      success: true,
+      userId: session.user.id,
+      destinationId: review.destination.toString(),
+    };
   } catch (error) {
     console.error(error);
-    return { success: false, error: "Something went wrong." };
+    return {
+      success: false,
+      error: "Something went wrong. Please try again later",
+    };
+  }
+};
+
+type editReviewParams = {
+  editData: EditReviewType;
+  reviewId: string;
+};
+
+export const editReview = async ({
+  editData,
+  reviewId,
+}: editReviewParams): Promise<createReviewReturnType> => {
+  try {
+    const session = await auth();
+    if (!session || !session.user.id) {
+      return { success: false, error: "Unauthenticated" };
+    }
+
+    if (!isValidObjectId(reviewId)) {
+      return { success: false, error: "Invalid review id" };
+    }
+
+    const reviewDoc = await Review.findById(reviewId);
+
+    console.log({ before: reviewDoc });
+
+    if (!reviewDoc) {
+      return { success: false, error: "Unable to find matching review" };
+    }
+
+    if (reviewDoc.user.toString() !== session.user.id) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    reviewDoc.rating = editData.rating;
+    reviewDoc.comment = editData.comment;
+
+    await reviewDoc.save();
+
+    console.log({ after: reviewDoc });
+
+    const review = reviewSchema.parse(reviewDoc);
+
+    return {
+      success: true,
+      review,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "Something went wrong. Please try again later",
+    };
   }
 };

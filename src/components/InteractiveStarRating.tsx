@@ -5,11 +5,13 @@ import { Star } from "lucide-react";
 
 const InteractiveStarRating = ({
   onRate,
+  defaultValue = 0
 }: {
   onRate: (rating: number) => void;
+  defaultValue?: number
 }) => {
   const [hovered, setHovered] = useState(0);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(defaultValue);
 
   return (
     <div className="flex">

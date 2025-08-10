@@ -11,7 +11,7 @@ export const GET = async (request: NextRequest) => {
     await dbConnect();
 
     const searchParams = request.nextUrl.searchParams;
-    const cursor = Number(searchParams.get("cursor"));
+    const cursor = searchParams.get("cursor");
     const limit = searchParams.get("limit")
       ? Number(searchParams.get("limit"))
       : 12;
@@ -26,15 +26,24 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
-    const results = await Favorite.find({ user: session.user.id })
+    // Start building the query
+    let query: any = { user: session.user.id };
+
+    // If a cursor is provided, query for documents created before the cursor (or use _id if preferred)
+    if (cursor) {
+      query.createdAt = { $lt: new Date(Number(cursor)) }; // Assuming cursor is a timestamp of 'createdAt'
+    }
+
+    const results = await Favorite.find(query)
       .populate<{ destination: DestinationInterface }>("destination")
-      .sort({ createdAt: -1 })
-      .skip(cursor)
-      .limit(limit + 1);
+      .sort({ createdAt: -1 }) // Sort by createdAt descending
+      .limit(limit + 1); // Fetch limit + 1 to check for next page
 
     const hasNextPage = results.length > limit;
 
-    const nextCursor = hasNextPage ? cursor + limit : null;
+    const nextCursor = hasNextPage
+      ? results[results.length - 1].createdAt.getTime()
+      : null;
 
     const favorites = hasNextPage ? results.slice(0, -1) : results;
 
