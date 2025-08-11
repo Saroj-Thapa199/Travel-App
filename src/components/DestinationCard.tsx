@@ -48,7 +48,10 @@ const DestinationCard = ({
             </Badge>
           )}
           {featured && (
-            <Badge variant={"secondary"} className="absolute top-3 left-3 not-dark:hidden">
+            <Badge
+              variant={"secondary"}
+              className="absolute top-3 left-3 not-dark:hidden"
+            >
               Featured
             </Badge>
           )}
@@ -83,7 +86,9 @@ const DestinationCard = ({
                   strokeWidth={0}
                 />
               ))}
-              <span className="ml-1 font-semibold">{rating.toFixed(1)}</span>
+              {rating > 0 && (
+                <span className="ml-1 font-semibold">{rating.toFixed(1)}</span>
+              )}
             </div>
             <p className="text-muted-foreground">
               •{" "}

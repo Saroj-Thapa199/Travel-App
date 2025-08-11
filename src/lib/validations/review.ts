@@ -37,6 +37,7 @@ export type EditReviewType = z.infer<typeof editReviewSchema>;
 
 export const populatedReviewSchema = reviewSchema.omit({ user: true }).extend({
   user: z.object({
+    _id: z.string(),
     name: z.string(),
     image: z.string().optional(),
   }),

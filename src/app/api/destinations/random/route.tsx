@@ -10,9 +10,6 @@ export const GET = async () => {
       { $sample: { size: 6 } },
     ]);
 
-    // TODO: Remove this delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     return NextResponse.json(destinations);
   } catch (error) {
     console.error(error);

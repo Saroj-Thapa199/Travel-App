@@ -18,8 +18,6 @@ export const GET = async (
     await MotorableRoute.countDocuments();
     await TrekRoute.countDocuments();
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const route = await Route.find({ destination: destinationId })
       .populate("motorableRoute")
       .populate("trekRoute");

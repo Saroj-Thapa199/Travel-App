@@ -20,11 +20,10 @@ export const GET = async () => {
 
     const collections = await Collection.find({
       user: session.user.id,
-    }).select("name destinations visibility").sort({createdAt: -1})
+    })
+      .select("name destinations visibility")
+      .sort({ createdAt: -1 });
 
-    // TODO: remove this delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
     return NextResponse.json(collections);
   } catch (error) {
     console.error(error);

@@ -2,7 +2,9 @@
 
 import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
+import Collection from "@/model/Collection";
 import Destination from "@/model/Destination";
+import Favorite from "@/model/Favorite";
 import slugify from "slugify";
 
 const imageUrls = [
@@ -195,7 +197,7 @@ const destinationsList: {
 ];
 export const seedDestinations = async () => {
   const session = await auth();
-  if (!session) return;
+  if (!session || !session.user.id) return;
 
   const destinations = destinationsList.map((loc, idx) => {
     const categories = getRandomCategories();
@@ -219,8 +221,27 @@ export const seedDestinations = async () => {
 
   try {
     await dbConnect();
+
     await Destination.deleteMany({});
-    await Destination.insertMany(destinations);
+    await Favorite.deleteMany();
+    await Collection.deleteMany();
+
+    const createdDestinations = await Destination.insertMany(destinations);
+
+    const favorites = createdDestinations.map((destination) => ({
+      user: session.user.id,
+      destination: destination._id,
+    }));
+
+    await Favorite.insertMany(favorites);
+    await Collection.create({
+      name: "Sample Collection",
+      description: "Description for sample collection",
+      visibility: "public",
+      destinations: createdDestinations.map((destination) => destination._id),
+      user: session.user.id,
+    });
+
     console.log(
       "✅ Destinations seeded with public transport, personal vehicle, and trek data!",
     );

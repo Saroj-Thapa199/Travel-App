@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import Image from "next/image";
-import { Heart, ImageIcon, Share, Star } from "lucide-react";
+import { Share, Star } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -33,7 +32,6 @@ const DestinationHeaderImage = ({
   favoritesData,
   className,
 }: DestinationHeaderImageProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
   return (
     <Card className={cn("overflow-clip p-0", className)}>
       <CardContent className="h-full p-0">
@@ -73,9 +71,11 @@ const DestinationHeaderImage = ({
                       className={`h-4 w-4 ${index < Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                     />
                   ))}
-                  <span className="text-secondary dark:text-primary ml-2 font-medium">
-                    {rating.toFixed(1)}
-                  </span>
+                  {rating > 0 && (
+                    <span className="text-secondary dark:text-primary ml-2 font-medium">
+                      {rating.toFixed(1)}
+                    </span>
+                  )}
                   <span className="text-secondary dark:text-primary ml-2 font-medium">
                     •
                   </span>
@@ -100,21 +100,6 @@ const DestinationHeaderImage = ({
               destinationId={destinationId}
               initialState={favoritesData}
             />
-            {/* <Button
-              variant="outline"
-              size="icon"
-              className={cn(
-                "border-white/20 bg-black/30 text-white hover:bg-black/50 hover:text-white",
-                "dark:border-white/20 dark:bg-black/30 dark:text-white dark:hover:bg-black/50 dark:hover:text-white",
-                isFavorite &&
-                  "border-red-400 bg-red-500/70 text-white hover:bg-red-500",
-                isFavorite &&
-                  "dark:border-red-400 dark:bg-red-500/70 dark:text-white dark:hover:bg-red-500",
-              )}
-              onClick={() => setIsFavorite(!isFavorite)}
-            >
-              <Heart className={cn("h-4 w-4", isFavorite && "fill-current")} />
-            </Button> */}
             <Button
               variant="outline"
               size="icon"

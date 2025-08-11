@@ -6,6 +6,7 @@ import { createContext, useContext, useState } from "react";
 type ActionsDialogContextType = {
   openEditDialog: (reviewId: string, originalData: EditReviewType) => void;
   openDeleteDialog: (reviewId: string) => void;
+  setUserId: (userId: string) => void
 };
 
 const ActionsDialogContext = createContext<ActionsDialogContextType | null>(
@@ -23,8 +24,10 @@ export const ReviewActionsDialogProvider = ({
   userId,
 }: {
   children: React.ReactNode;
-  userId: string;
+  userId?: string;
 }) => {
+  const [user, setUser] = useState<string | undefined>(userId)
+
   // EDIT state
   const [openEdit, setOpenEdit] = useState(false);
   const [editReviewId, setEditReviewId] = useState<string | null>(null);
@@ -33,6 +36,10 @@ export const ReviewActionsDialogProvider = ({
   // DELETE state
   const [openDelete, setOpenDelete] = useState(false);
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
+
+  const setUserId = (id: string) => {
+    setUser(id)
+  }
 
   const openEditDialog = (id: string, originalData: EditReviewType) => {
     setEditReviewId(id);
@@ -44,28 +51,30 @@ export const ReviewActionsDialogProvider = ({
     setDeleteReviewId(id);
     setOpenDelete(true);
   };
+
+  console.log(user)
   
   return (
-    <ActionsDialogContext.Provider value={{ openEditDialog, openDeleteDialog }}>
+    <ActionsDialogContext.Provider value={{ openEditDialog, openDeleteDialog, setUserId }}>
       {children}
 
       {/* Edit Dialog (shared instance) */}
-      {editReviewId && originalReviewData && (
+      {user && editReviewId && originalReviewData && (
         <EditReviewDialog
           reviewId={editReviewId}
           destinationName="my destination"
           originalData={originalReviewData}
-          userId={userId}
+          userId={user}
           open={openEdit}
           setOpen={setOpenEdit}
         />
       )}
 
       {/* Delete Dialog (shared instance) */}
-      {deleteReviewId && (
+      {user && deleteReviewId && (
         <DeleteReviewDialog
           reviewId={deleteReviewId}
-          userId={userId}
+          userId={user}
           open={openDelete}
           setOpen={setOpenDelete}
         />

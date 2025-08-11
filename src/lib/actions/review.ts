@@ -116,6 +116,22 @@ export const deleteReview = async (
 
     await Review.findByIdAndDelete(reviewId);
 
+    const destination = await Destination.findById(review.destination);
+
+    if (destination) {
+      if (destination.reviewCount > 1) {
+        destination.averageRating =
+          (destination.averageRating * destination.reviewCount -
+            review.rating) /
+          (destination.reviewCount - 1);
+        destination.reviewCount -= 1;
+      } else {
+        destination.averageRating = 0;
+        destination.reviewCount = 0;
+      }
+      await destination.save();
+    }
+
     return {
       success: true,
       userId: session.user.id,
@@ -140,6 +156,7 @@ export const editReview = async ({
   reviewId,
 }: editReviewParams): Promise<createReviewReturnType> => {
   try {
+    await dbConnect();
     const session = await auth();
     if (!session || !session.user.id) {
       return { success: false, error: "Unauthenticated" };
@@ -150,9 +167,6 @@ export const editReview = async ({
     }
 
     const reviewDoc = await Review.findById(reviewId);
-
-    console.log({ before: reviewDoc });
-
     if (!reviewDoc) {
       return { success: false, error: "Unable to find matching review" };
     }
@@ -161,12 +175,25 @@ export const editReview = async ({
       return { success: false, error: "Unauthorized" };
     }
 
-    reviewDoc.rating = editData.rating;
-    reviewDoc.comment = editData.comment;
+    // Store old rating before updating
+    const oldRating = reviewDoc.rating;
+    const newRating = editData.rating;
 
+    // Update review fields
+    reviewDoc.rating = newRating;
+    reviewDoc.comment = editData.comment;
     await reviewDoc.save();
 
-    console.log({ after: reviewDoc });
+    // Update destination average
+    const destination = await Destination.findById(reviewDoc.destination);
+    if (destination && destination.reviewCount > 0) {
+      destination.averageRating =
+        (destination.averageRating * destination.reviewCount -
+          oldRating +
+          newRating) /
+        destination.reviewCount;
+      await destination.save();
+    }
 
     const review = reviewSchema.parse(reviewDoc);
 

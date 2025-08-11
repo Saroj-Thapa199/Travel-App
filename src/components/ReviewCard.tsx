@@ -3,15 +3,19 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import avatarPlaceholder from "@/assets/avatar-placeholder.png";
 import Image from "next/image";
-import { Flag, Star, ThumbsUp } from "lucide-react";
+import { Flag, Pen, Star, ThumbsUp, Trash2 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { useReviewActionsDialog } from "@/providers/ReviewActionsDialogProvider";
 
 type ReviewCardProps = {
   review: PopulatedReviewType;
+  userId?: string;
 };
 
-const ReviewCard = ({ review }: ReviewCardProps) => {
+const ReviewCard = ({ review, userId }: ReviewCardProps) => {
+  const { setUserId, openDeleteDialog, openEditDialog } =
+    useReviewActionsDialog();
   return (
     <div className="bg-background rounded-lg border p-4 transition-all hover:shadow-sm">
       <div className="flex items-start gap-4">
@@ -69,28 +73,36 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
           <p className="mt-3 text-sm">{review.comment}</p>
 
           <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                // onClick={() => handleHelpful(review.name)}
-                className={cn(
-                  "text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors",
-                  //   helpfulReviews.includes(review.name) &&
-                  "text-primary hover:text-primary",
-                )}
-              >
-                <ThumbsUp className="h-3.5 w-3.5" />
-                <span>
-                  {/* {helpfulReviews.includes(review.name)
-                    ? "Helpful"
-                    : "Mark as helpful"} */}
-                  Helpful
-                </span>
-              </button>
-
-              <button className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors">
-                <Flag className="h-3.5 w-3.5" />
-                <span>Report</span>
-              </button>
+            <div className="flex items-center gap-8">
+              {userId && review.user._id === userId && (
+                <button
+                  onClick={() => {
+                    setUserId(userId);
+                    openEditDialog(review._id, {
+                      rating: review.rating,
+                      comment: review.comment,
+                    });
+                  }}
+                  className={cn(
+                    "text-muted-foreground hover:text-primary/90 flex items-center gap-1 text-xs transition-colors hover:cursor-pointer",
+                  )}
+                >
+                  <Pen className="h-3.5 w-3.5" />
+                  <span>Edit</span>
+                </button>
+              )}
+              {userId && review.user._id === userId && (
+                <button
+                  onClick={() => {
+                    setUserId(userId);
+                    openDeleteDialog(review._id);
+                  }}
+                  className="text-muted-foreground hover:text-destructive/90 flex items-center gap-1 text-xs transition-colors hover:cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Delete</span>
+                </button>
+              )}
             </div>
 
             <div className="text-muted-foreground text-xs">

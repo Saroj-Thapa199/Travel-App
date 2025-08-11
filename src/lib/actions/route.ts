@@ -36,8 +36,6 @@ export const createMotorableRoute = async (
 
     console.log("parsedData", JSON.stringify(data, null, 2));
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const motorableRoute = await MotorableRoute.create(data);
 
     return {
@@ -71,8 +69,6 @@ export const createTrekRoute = async (
     await dbConnect();
 
     console.log("parsedData", JSON.stringify(data, null, 2));
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const trekRoute = await TrekRoute.create(data);
 

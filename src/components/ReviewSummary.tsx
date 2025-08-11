@@ -47,12 +47,22 @@ const ReviewSummary = ({
     },
   });
 
-  console.log(data);
+  const finalAverageRating = data?.averageRating ?? averageRating
 
   const finalReviewCount = data?.totalCount ?? reviewCount;
 
   useEffect(() => {
     if (data) {
+      if (data.totalCount === 0) {
+        setAnimatedWidth({
+          5: 0,
+          4: 0,
+          3: 0,
+          2: 0,
+          1: 0,
+        });
+        return;
+      }
       setAnimatedWidth({
         5: (data.ratings[5] / data.totalCount) * 100,
         4: (data.ratings[4] / data.totalCount) * 100,
@@ -68,7 +78,7 @@ const ReviewSummary = ({
       <div className="bg-muted/50 space-y-4 rounded-lg p-5">
         <div className="flex items-center gap-4">
           <h2 className="text-4xl font-bold">
-            {(data?.averageRating || averageRating).toFixed(1)}
+            {finalAverageRating === 0 ? 0 : finalAverageRating.toFixed(1)}
           </h2>
           <div className="flex flex-col gap-1">
             <div className="flex">
@@ -109,7 +119,7 @@ const ReviewSummary = ({
           <Select
             value={filter}
             onValueChange={setFilter}
-            disabled={reviewCount === 0}
+            disabled={finalReviewCount === 0}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="All ratings" />

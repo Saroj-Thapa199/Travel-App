@@ -8,7 +8,7 @@ export const GET = async () => {
   try {
     await dbConnect();
     const session = await auth();
-    
+
     if (!session || !session.user.id) {
       return NextResponse.json(
         {
@@ -23,9 +23,6 @@ export const GET = async () => {
     })
       .populate("destinations", "name region image")
       .sort({ createdAt: -1 });
-
-    // TODO: remove this delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return NextResponse.json(collections);
   } catch (error) {

@@ -24,7 +24,6 @@ export const GET = async (request: NextRequest) => {
 
     const andConditions: any[] = [];
 
-    // TODO: remove unnecessary console logs
     if (searchTerm) {
       andConditions.push({
         $or: [
@@ -100,9 +99,6 @@ export const GET = async (request: NextRequest) => {
             cursorId: lastItem._id.toString(),
           }
         : null;
-
-    // TODO: remove this delay
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return NextResponse.json({
       destinations,
