@@ -277,7 +277,7 @@ const AddToCollectionsBtn = ({ destinationId }: AddToCollectionsBtnProps) => {
                         checked={collection.destinations.includes(
                           destinationId,
                         )}
-                        className="pointer-events-none"
+                        className="[&_svg]:!text-primary-foreground pointer-events-none"
                       />
                       <Label
                         htmlFor={collection._id}
