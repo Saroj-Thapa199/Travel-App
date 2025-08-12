@@ -32,7 +32,7 @@ const DestinationCard = ({
 }: DestinationCardProps) => {
   return (
     <Link href={`/destinations/${slug}`} className="group">
-      <div className="border-border/50 dark:border-border bg-card h-full overflow-clip rounded-lg border shadow-md transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-lg dark:shadow-gray-800">
+      <div className="border-border/50 dark:border-border bg-card flex h-full flex-col overflow-clip rounded-lg border shadow-md transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-lg dark:shadow-gray-800">
         <div className="relative h-56 overflow-hidden">
           <Image
             src={image || Image1}
@@ -62,20 +62,22 @@ const DestinationCard = ({
             {action && action}
           </div>
         </div>
-        <div className="p-5">
-          <div className="mb-2">
-            <Badge
-              variant="outline"
-              className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 rounded-xl"
-            >
-              <MapPin />
-              {region}
-            </Badge>
+        <div className="flex flex-1 flex-col justify-between gap-3 p-5">
+          <div>
+            <div className="mb-2">
+              <Badge
+                variant="outline"
+                className="bg-primary/10 text-primary border-primary/20 flex items-center gap-1 rounded-xl"
+              >
+                <MapPin />
+                {region}
+              </Badge>
+            </div>
+            <h3 className="mb-1 text-xl font-bold">{name}</h3>
+            <p className="text-muted-foreground line-clamp-2 text-sm">
+              {shortDescription}
+            </p>
           </div>
-          <h3 className="mb-1 text-xl font-bold">{name}</h3>
-          <p className="text-muted-foreground mb-3 line-clamp-2 text-sm">
-            {shortDescription}
-          </p>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">

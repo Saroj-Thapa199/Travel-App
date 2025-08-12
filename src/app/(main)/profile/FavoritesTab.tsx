@@ -19,9 +19,7 @@ const FavoritesTab = ({ userId }: favoritesTabProps) => {
     fetchNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useFavoriteDestinations({
-    userId,
-  });
+  } = useFavoriteDestinations(userId);
 
   const favoriteDestinations = data?.pages.flatMap((page) => page.destinations);
 

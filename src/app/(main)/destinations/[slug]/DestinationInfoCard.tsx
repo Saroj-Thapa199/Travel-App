@@ -1,23 +1,13 @@
 "use client";
 
-import useFavoritesInfo from "@/app/hooks/useFavoritesInfo";
 import AddToCollectionsBtn from "@/components/AddToCollectionsBtn";
 import AddToFavoritesBtn from "@/components/AddToFavoritesBtn";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoritesInfo } from "@/lib/types";
-// import { addDestinationToFavorites } from "@/lib/actions/destination";
 import { DestinationType } from "@/lib/validations/destination";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import {
-  Calendar,
-  Clock,
-  DollarSign,
-  ImageIcon,
-  MapPin,
-  Tags,
-} from "lucide-react";
+import { Calendar, DollarSign, Tags } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -66,8 +56,6 @@ const DestinationInfoCard = ({
           <div>
             <p className="font-medium">Best time to visit</p>
             <p className="text-muted-foreground text-sm">
-              {/* {destination.quickFacts.crowdedDays} */}
-              {/* Weekends and local festivals */}
               {bestSeason.join(", ").replace(/, ([^,]*)$/, " and $1")}
             </p>
           </div>
@@ -77,10 +65,7 @@ const DestinationInfoCard = ({
           <DollarSign className="text-muted-foreground mt-0.5 h-5 w-5" />
           <div>
             <p className="font-medium">Estimated Budget</p>
-            <p className="text-muted-foreground text-sm">
-              {/* {destination.quickFacts.crowdedDays} */}
-              NPR 10K - 20K
-            </p>
+            <p className="text-muted-foreground text-sm">NPR 10K - 20K</p>
           </div>
         </div>
 
@@ -89,8 +74,6 @@ const DestinationInfoCard = ({
           <div>
             <p className="font-medium">Categories</p>
             <p className="text-muted-foreground text-sm">
-              {/* {destination.quickFacts.arrivalDeparture} */}
-              {/* 3-4 hour drive from Kathmandu */}
               {categories.join(", ")}
             </p>
           </div>
@@ -149,11 +132,8 @@ export default DestinationInfoCard;
 
 const DestinationSkeleton = () => {
   return (
-    <div className="bg-background dark:bg-primary-foreground flex items-center gap-3 rounded-lg p-2">
-      {/* <Skeleton className="size-12 bg-card" /> */}
-      {/* <Skeleton className="size-12 grid place-items-center"> */}
-      <ImageIcon className="text-input size-12 animate-pulse" />
-      {/* </Skeleton> */}
+    <div className="flex items-center gap-3 p-2">
+      <Skeleton className="bg-input size-12 animate-pulse" />
       <div className="space-y-2">
         <Skeleton className="bg-input h-4 w-44" />
         <Skeleton className="bg-input h-4 w-32" />

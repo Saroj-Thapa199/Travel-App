@@ -1,9 +1,7 @@
-import { Badge } from "@/components/ui/badge";
+import { useFavoriteDestinations } from "@/app/hooks/useFavoriteDestinations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DestinationsPage } from "@/lib/types";
-import { DestinationType } from "@/lib/validations/destination";
-import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Calendar,
   CheckCircle,
@@ -14,38 +12,25 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type OverviewTabProps = {
+  userId: string;
   bio: string;
   joinDate: string;
   location: string;
-  setTab: Dispatch<SetStateAction<string>>;
+  handleTabChange: (value: string) => void;
 };
 
-const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
-  const [savedDestinations, setSavedDestinations] = useState<DestinationType[]>(
-    [],
-  );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
+const OverviewTab = ({
+  userId,
+  bio,
+  joinDate,
+  location,
+  handleTabChange,
+}: OverviewTabProps) => {
+  const { data, isPending } = useFavoriteDestinations(userId);
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchDestination = async () => {
-      const { data, status } = await axios.get<DestinationsPage>(
-        "/api/destinations/all",
-      );
-      if (!data) {
-        setError("Failed to fetch destinations");
-        return;
-      }
-      setSavedDestinations(data.destinations);
-      setLoading(false);
-    };
-
-    fetchDestination();
-  }, []);
+  const favoriteDestinations = data?.pages.flatMap((page) => page.destinations);
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
       <div className="space-y-6 md:col-span-2">
@@ -138,8 +123,12 @@ const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {savedDestinations.length > 4 &&
-              savedDestinations.slice(0, 3).map((destination, index) => (
+            {isPending ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <DestinationSkeleton key={index} />
+              ))
+            ) : favoriteDestinations && favoriteDestinations.length > 0 ? (
+              favoriteDestinations.slice(0, 3).map((destination, index) => (
                 <Link
                   key={index}
                   href={`/destinations/${destination.slug}`}
@@ -157,67 +146,41 @@ const OverviewTab = ({ bio, joinDate, location, setTab }: OverviewTabProps) => {
                     </p>
                   </div>
                 </Link>
-              ))}
+              ))
+            ) : (
+              <p className="text-muted-foreground py-4 text-center text-sm">
+                No saved places yet
+              </p>
+            )}
 
-            <Button
-              variant="link"
-              size="sm"
-              onClick={() => setTab("saved")}
-              className="w-full text-xs"
-            >
-              View All Saved Places
-            </Button>
+            {favoriteDestinations && favoriteDestinations.length > 0 && (
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => handleTabChange("saved")}
+                className="w-full text-xs"
+              >
+                View All Saved Places
+              </Button>
+            )}
           </CardContent>
         </Card>
-
-        {/* <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="text-primary h-5 w-5" />
-              Upcoming Trip
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {trips
-              .filter((trip) => trip.status === "upcoming")
-              .slice(0, 1)
-              .map((trip, index) => (
-                <div key={index} className="space-y-3">
-                  <div className="relative h-32 overflow-hidden rounded-md">
-                    <img
-                      src={trip.image || "/placeholder.svg"}
-                      alt={trip.destination}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    <div className="absolute bottom-2 left-2 font-medium text-white">
-                      {trip.destination}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="text-muted-foreground h-4 w-4" />
-                      <span>
-                        {trip.startDate} - {trip.endDate}
-                      </span>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="border-green-500/20 bg-green-500/10 text-green-500"
-                    >
-                      Upcoming
-                    </Badge>
-                  </div>
-                  <Button size="sm" className="w-full">
-                    View Trip Details
-                  </Button>
-                </div>
-              ))}
-          </CardContent>
-        </Card> */}
       </div>
     </div>
   );
 };
 
 export default OverviewTab;
+
+const DestinationSkeleton = () => {
+  return (
+    <div className="flex items-center gap-3 rounded-lg p-2">
+      {/* Can change bg of skeleton to input if not visible*/}
+      <Skeleton className="size-12" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-44" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+    </div>
+  );
+};

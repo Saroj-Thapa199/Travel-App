@@ -6,8 +6,10 @@ import { Share, Star } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { FavoritesInfo } from "@/lib/types";
+import { FavoritesInfo, ReviewStatApiResponse } from "@/lib/types";
 import AddToFavoritesBtn from "./AddToFavoritesBtn";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type DestinationHeaderImageProps = {
   destinationId: string;
@@ -32,6 +34,19 @@ const DestinationHeaderImage = ({
   favoritesData,
   className,
 }: DestinationHeaderImageProps) => {
+
+  const { data, status } = useQuery({
+    queryKey: ["reviews", destinationId, "stats"],
+    queryFn: async () => {
+      const res = await axios.get<ReviewStatApiResponse>(
+        `/api/reviews/${destinationId}/stats`,
+      );
+      return res.data;
+    },
+  });
+
+  const finalRating = data?.averageRating ?? rating
+  const finalReviewCount = data?.totalCount ?? reviewCount;
   return (
     <Card className={cn("overflow-clip p-0", className)}>
       <CardContent className="h-full p-0">
@@ -68,21 +83,21 @@ const DestinationHeaderImage = ({
                   {[...Array(5)].map((_, index) => (
                     <Star
                       key={index}
-                      className={`h-4 w-4 ${index < Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                      className={`h-4 w-4 ${index < Math.round(finalRating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                     />
                   ))}
-                  {rating > 0 && (
+                  {finalRating > 0 && (
                     <span className="text-secondary dark:text-primary ml-2 font-medium">
-                      {rating.toFixed(1)}
+                      {finalRating.toFixed(1)}
                     </span>
                   )}
                   <span className="text-secondary dark:text-primary ml-2 font-medium">
                     •
                   </span>
                   <span className="text-secondary dark:text-primary ml-2 font-medium">
-                    {reviewCount === 0
+                    {finalReviewCount === 0
                       ? "No reviews yet"
-                      : `${reviewCount} ${reviewCount > 1 ? "reviews" : "review"}`}
+                      : `${finalReviewCount} ${finalReviewCount > 1 ? "reviews" : "review"}`}
                   </span>
                   <span className="text-secondary dark:text-primary ml-2 font-medium max-sm:hidden">
                     |

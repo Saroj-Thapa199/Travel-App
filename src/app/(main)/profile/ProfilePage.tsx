@@ -3,8 +3,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Camera, Edit, MapPin } from "lucide-react";
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OverviewTab from "./OverviewTab";
@@ -23,6 +23,7 @@ type ProfilePageProps = {
 const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
   const searchParams = useSearchParams();
 
+  const router = useRouter();
   const tabQuery = searchParams.get("tab");
 
   const [tab, setTab] = useState<string>(() => {
@@ -37,6 +38,30 @@ const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
       ? tabQuery
       : "overview";
   });
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("tab", value);
+    router.replace(`?${params.toString()}`, { scroll: false }); // replace avoids extra history entries
+    setTab(value);
+  };
+
+  useEffect(() => {
+    const validTabs = [
+      "overview",
+      "collections",
+      "saved",
+      "reviews",
+      "settings",
+    ];
+
+    if (tabQuery && validTabs.includes(tabQuery)) {
+      handleTabChange(tabQuery);
+    } else {
+      handleTabChange("overview")
+    }
+  }, [tabQuery]);
+
   return (
     <main className="mx-auto min-h-screen w-full px-4 py-15 sm:px-8 md:px-14 lg:px-20 xl:container">
       {/* Profile Header */}
@@ -117,7 +142,7 @@ const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs value={tab} onValueChange={setTab} className="mt-8">
+      <Tabs value={tab} onValueChange={handleTabChange} className="mt-8">
         <TabsList className="mb-8 w-full max-sm:grid max-sm:h-fit max-sm:grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="collections">Collections</TabsTrigger>
@@ -128,10 +153,11 @@ const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
 
         <TabsContent value="overview" className="space-y-8">
           <OverviewTab
+            userId={userId}
             bio="This is my bio"
             joinDate="March 2022"
             location="Kathmandu, Nepal"
-            setTab={setTab}
+            handleTabChange={handleTabChange}
           />
         </TabsContent>
 

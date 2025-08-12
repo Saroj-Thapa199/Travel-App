@@ -7,13 +7,7 @@ export type FavoriteDestinationsApiResponse = {
   nextCursor: number | null;
 };
 
-type useFavoriteDestinationsParams = {
-  userId: string;
-};
-
-export const useFavoriteDestinations = ({
-  userId,
-}: useFavoriteDestinationsParams) => {
+export const useFavoriteDestinations = (userId: string) => {
   return useInfiniteQuery({
     queryKey: ["user", userId, "favorite-destinations"],
     queryFn: async ({ pageParam }) => {
