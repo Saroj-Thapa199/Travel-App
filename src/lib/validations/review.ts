@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { requiredString } from "../zodUtils";
+import { trimmedString } from "../zodUtils";
 
 export const reviewSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
@@ -30,7 +30,7 @@ export const editReviewSchema = z.object({
     .number()
     .gte(1, "Rating cannot be 0")
     .lte(5, "Rating cannot be more than 5"),
-  comment: z.string().trim().optional(),
+  comment: trimmedString().optional(),
 });
 
 export type EditReviewType = z.infer<typeof editReviewSchema>;
@@ -39,7 +39,7 @@ export const populatedReviewSchema = reviewSchema.omit({ user: true }).extend({
   user: z.object({
     _id: z.string(),
     name: z.string(),
-    image: z.string().optional(),
+    image: trimmedString().optional(),
   }),
 });
 

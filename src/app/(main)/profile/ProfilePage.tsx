@@ -172,7 +172,7 @@ const ProfilePage = ({ userId, name, image }: ProfilePageProps) => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-8">
-          <SettingsTab />
+          <SettingsTab userId={userId} />
         </TabsContent>
 
         <TabsContent value="collections" className="space-y-6">

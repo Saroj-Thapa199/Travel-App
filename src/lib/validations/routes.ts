@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { requiredString } from "../zodUtils";
+import { requiredString, trimmedString } from "../zodUtils";
 
 export const transportTypeEnum = z.enum([
   "Local Bus",
@@ -21,40 +21,40 @@ export const motorableRouteSchema = z.object({
     .array(transportTypeEnum)
     .min(1, "Please add the available services"),
   fare: z.string(),
-  bookingInfo: z.string().optional(),
-  frequency: z.string().optional(),
+  bookingInfo: trimmedString().optional(),
+  frequency: trimmedString().optional(),
   landmarks: z.array(requiredString()),
   // Private Transports
   route: requiredString(),
   roadCondition: z.object({
     type: z.enum(["Good", "Fair", "Poor", "Bad"]),
-    description: z.string().optional(),
+    description: trimmedString().optional(),
   }),
   fuelAvailability: z.object({
     hasStations: z.boolean(),
-    description: z.string().optional(),
+    description: trimmedString().optional(),
     recommendedStops: z.array(requiredString()),
   }),
   warnings: z.array(requiredString()),
-  note: z.string().optional(),
+  note: trimmedString().optional(),
 });
 
 export type MotorableRouteType = z.infer<typeof motorableRouteSchema>;
 
 const permitSchema = z.object({
   name: requiredString("Permit name is required"),
-  cost: z.string().optional(),
-  where: z.string().optional(),
+  cost: trimmedString().optional(),
+  where: trimmedString().optional(),
 });
 
 export const trekRouteSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
   trekName: requiredString(),
   startingPoint: requiredString(),
-  destinationPoint: z.string().optional(),
+  destinationPoint: trimmedString().optional(),
   duration: z.object({
     roundTrip: requiredString(),
-    oneWay: requiredString().optional(),
+    oneWay: trimmedString().optional(),
   }),
   difficulty: z.enum([
     "Easy",

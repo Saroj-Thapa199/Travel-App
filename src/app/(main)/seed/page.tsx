@@ -124,12 +124,19 @@ const page = () => {
 
     // fetchCollectionsNames()
 
-    const fetchFavoriteDestinations = async () => {
-      const res = await axios.get("api/destinations/favorites");
+    // const fetchFavoriteDestinations = async () => {
+    //   const res = await axios.get("api/destinations/favorites");
+    //   console.log(res.data);
+    // };
+
+    // fetchFavoriteDestinations();
+
+    const fetchUserData = async () => {
+      const res = await axios.get("api/profile");
       console.log(res.data);
     };
 
-    fetchFavoriteDestinations();
+    fetchUserData();
   }, []);
 
   return (

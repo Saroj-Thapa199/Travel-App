@@ -1,6 +1,7 @@
 import { MotorableRouteType, TrekRouteType } from "./validations/routes";
 import { ReviewType } from "./validations/review";
 import { DestinationType } from "./validations/destination";
+import { UpdateProfileValues } from "./validations/auth";
 
 export type DestinationFormType = Omit<
   DestinationType,
@@ -81,3 +82,9 @@ export type UnPopulatedCollectionsResponse = {
   // createdAt: string;
   // updatedAt: string;
 }[];
+
+export type ProfileData = UpdateProfileValues & {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}

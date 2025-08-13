@@ -5,7 +5,7 @@ import { UserInterface } from "@/model/User";
 import { Types } from "mongoose";
 
 declare module "next-auth" {
-  interface User extends Omit<UserInterface, "password"> {}
+  interface User extends Pick<UserInterface, "name" | "email"> {}
   interface Session {
     user: User & DefaultSession["user"];
   }

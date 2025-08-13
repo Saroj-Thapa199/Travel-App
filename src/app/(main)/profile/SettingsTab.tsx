@@ -1,3 +1,4 @@
+import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,6 +7,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,17 +27,100 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Bell, LogOut, Shield, User } from "lucide-react";
-import React from "react";
+import { ProfileData } from "@/lib/types";
+import {
+  updateProfileSchema,
+  UpdateProfileValues,
+} from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  QueryKey,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { Bell, CheckCircle, LogOut, Shield, User } from "lucide-react";
+import { useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-const SettingsTab = () => {
-  const user = {
-    bio: "This is my bio",
-    name: "Saroj Thapa",
-    username: "saroj_thapa199",
-    email: "sarojthapa199@gmail.com",
-    location: "Kathmandu, Nepal",
+type SettingsTabProps = {
+  userId: string;
+};
+
+const SettingsTab = ({ userId }: SettingsTabProps) => {
+  const { data: session, update } = useSession();
+  console.log("in session:", session?.user);
+
+  const queryClient = useQueryClient();
+  const queryKey: QueryKey = ["user", userId, "profile"];
+  const { data: profileData } = useQuery({
+    queryKey: queryKey,
+    queryFn: async () => {
+      const { data } = await axios.get<ProfileData>("/api/profile");
+      return data;
+    },
+    enabled: !!userId,
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (values: UpdateProfileValues) => {
+      const { data } = await axios.patch<ProfileData>("/api/profile", values);
+      return data;
+    },
+    onSuccess: async (updatedData) => {
+      console.log("updatedData in onsuccess", updatedData)
+      await queryClient.invalidateQueries({ queryKey });
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          ...updatedData,
+        },
+      });
+
+      toast("Success!", {
+        description: "Profile updated successfully",
+        icon: <CheckCircle className="size-4" />,
+      });
+    },
+    onError: (error, variables) => {
+      console.error(error);
+      if (error instanceof AxiosError && error.response?.data.error) {
+        toast.error(error.response?.data.error);
+      }
+      toast.error("Something went wrong. Please try again");
+    },
+  });
+  const form = useForm<UpdateProfileValues>({
+    resolver: zodResolver(updateProfileSchema),
+    defaultValues: {
+      name: "",
+      // username: "",
+      email: "",
+      bio: "",
+      location: "",
+    },
+  });
+
+  const onSubmit = (values: UpdateProfileValues) => {
+    console.log(values);
+    mutate(values);
   };
+
+  useEffect(() => {
+    if (profileData) {
+      form.reset({
+        name: profileData.name,
+        username: profileData?.username,
+        email: profileData.email,
+        location: profileData?.location,
+        bio: profileData?.bio,
+      });
+    }
+  }, [profileData]);
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
       <div className="md:col-span-1">
@@ -80,7 +173,112 @@ const SettingsTab = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your full name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    disabled
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input placeholder="eg. username_123" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            readOnly
+                            placeholder="example@gmail.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="eg. Kathmandu, Nepal"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bio</FormLabel>
+                      <FormControl>
+                        <Textarea rows={3} maxLength={200} {...field} />
+                        {/* <Input placeholder="Enter your full name" {...field} /> */}
+                      </FormControl>
+                      <FormDescription className="flex items-center justify-between text-xs">
+                        {/* Brief description for your profile. Maximum 200 characters. */}
+                        <span>
+                          Brief description for your profile. Maximum 200
+                          characters.
+                        </span>
+                        <span>
+                          {form.getValues("bio")?.trim().length ?? 0}/200
+                          characters
+                        </span>
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end pt-4">
+                  <LoadingButton loading={isPending} type="submit">
+                    Save Changes
+                  </LoadingButton>
+                </div>
+              </form>
+            </Form>
+
+            {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input id="name" defaultValue={user.name} />
@@ -97,19 +295,19 @@ const SettingsTab = () => {
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" defaultValue={user.location} />
               </div>
-            </div>
+            </div> */}
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
               <Textarea id="bio" defaultValue={user.bio} rows={4} />
               <p className="text-muted-foreground text-xs">
                 Brief description for your profile. Maximum 200 characters.
               </p>
-            </div>
+            </div> */}
 
-            <div className="flex justify-end pt-4">
+            {/* <div className="flex justify-end pt-4">
               <Button>Save Changes</Button>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
