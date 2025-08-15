@@ -104,7 +104,7 @@ export const deleteReview = async (
       return { success: false, error: "Invalid review id" };
     }
 
-    const review = await Review.findById(reviewId, "user destination").lean();
+    const review = await Review.findById(reviewId, "user destination rating").lean();
 
     if (!review) {
       return { success: false, error: "Unable to find matching review" };

@@ -39,6 +39,7 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   if (!data) return notFound();
 
   const destination = destinationSchema.parse(data);
+  console.log(destination)
 
   let favoritesData: FavoritesInfo = {
     favorites: 0,

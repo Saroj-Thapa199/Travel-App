@@ -3,8 +3,19 @@ import DestinationCard from "./DestinationCard";
 import img1 from "@/assets/hero-image-3.jpg";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import dbConnect from "@/lib/dbConnect";
+import Destination from "@/model/Destination";
+import { z } from "zod";
+import { destinationSchema } from "@/lib/validations/destination";
 
-const DestinationsSection = () => {
+const DestinationsSection = async() => {
+  await dbConnect();
+
+    const data = await Destination.aggregate([
+      { $sample: { size: 6 } },
+    ]);
+
+    const destinations = z.array(destinationSchema).parse(data)
   return (
     <section
       className="mx-auto my-16 scroll-mt-20 px-4 sm:px-8 md:px-14 lg:px-20"
@@ -19,7 +30,19 @@ const DestinationsSection = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((destination, index) => (
+        {destinations.map(destination => (
+          <DestinationCard
+            key={destination._id}
+            name={destination.name}
+            region={destination.region}
+            image={destination.image}
+            shortDescription={destination.shortDescription}
+            rating={destination.averageRating}
+            reviewCount={destination.reviewCount}
+            slug={destination.slug}
+          />
+        ))}
+        {/* {[1, 2, 3, 4, 5, 6].map((destination, index) => (
           <DestinationCard
             key={index}
             name="Bethanchowk Narayanthan"
@@ -29,7 +52,7 @@ const DestinationsSection = () => {
             reviewCount={0}
             slug="#"
           />
-        ))}
+        ))} */}
       </div>
       <div className="mt-10">
         <div className="flex items-center justify-start">
