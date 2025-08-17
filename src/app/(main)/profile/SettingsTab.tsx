@@ -1,3 +1,4 @@
+import useProfileData from "@/app/hooks/useProfileData";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,14 +57,8 @@ const SettingsTab = ({ userId }: SettingsTabProps) => {
 
   const queryClient = useQueryClient();
   const queryKey: QueryKey = ["user", userId, "profile"];
-  const { data: profileData } = useQuery({
-    queryKey: queryKey,
-    queryFn: async () => {
-      const { data } = await axios.get<ProfileData>("/api/profile");
-      return data;
-    },
-    enabled: !!userId,
-  });
+  
+  const { data: profileData } = useProfileData(userId)
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: UpdateProfileValues) => {

@@ -1,4 +1,5 @@
 import { useFavoriteDestinations } from "@/app/hooks/useFavoriteDestinations";
+import useProfileData from "@/app/hooks/useProfileData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,6 +29,8 @@ const OverviewTab = ({
   location,
   handleTabChange,
 }: OverviewTabProps) => {
+  const {data: profileData, isPending: loadingProfileData} = useProfileData(userId)
+
   const { data, isPending } = useFavoriteDestinations(userId);
 
   const favoriteDestinations = data?.pages.flatMap((page) => page.destinations);
@@ -42,7 +45,8 @@ const OverviewTab = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">{bio}</p>
+            {/* <p className="text-muted-foreground">{bio}</p> */}
+            <p className="text-muted-foreground">{loadingProfileData ? "Loading..." : profileData?.bio || "No bio added yet"}</p>
             <div className="mt-4 grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
               <div className="flex items-center gap-2">
                 <Calendar className="text-muted-foreground h-4 w-4" />
