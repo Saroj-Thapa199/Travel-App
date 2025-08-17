@@ -13,17 +13,19 @@ export const GET = async (request: NextRequest) => {
     const category = searchParams.get("category") || "";
     const searchTerm = searchParams.get("searchTerm") || "";
     const sortBy = searchParams.get("sortBy");
+
     const cursorRatingRaw = searchParams.get("cursorRating");
     const cursorRating = cursorRatingRaw
       ? parseFloat(cursorRatingRaw)
       : undefined;
 
     const cursorId = searchParams.get("cursorId");
+    const cursorName = searchParams.get("cursorName");
 
     const query: any = {};
-
     const andConditions: any[] = [];
 
+    // --- filters ---
     if (searchTerm) {
       andConditions.push({
         $or: [
@@ -39,13 +41,14 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
+    // --- cursor conditions ---
     if (
       sortBy !== "default" &&
       typeof cursorRating === "number" &&
       !isNaN(cursorRating) &&
       cursorId
     ) {
-      console.log("first true");
+      // pagination for rating sorts
       const id = new mongoose.Types.ObjectId(cursorId);
       const cursorCondition =
         sortBy === "rating-desc"
@@ -62,10 +65,14 @@ export const GET = async (request: NextRequest) => {
               ],
             };
       andConditions.push(cursorCondition);
-    } else if (cursorId && sortBy === "default") {
-      console.log("second true");
+    } else if (sortBy === "default" && cursorId && cursorName) {
+      // pagination for alphabetical sort
+      const id = new mongoose.Types.ObjectId(cursorId);
       andConditions.push({
-        _id: { $gt: new mongoose.Types.ObjectId(cursorId) },
+        $or: [
+          { name: { $gt: cursorName } },
+          { name: cursorName, _id: { $gt: id } },
+        ],
       });
     }
 
@@ -73,17 +80,15 @@ export const GET = async (request: NextRequest) => {
       query.$and = andConditions;
     }
 
-    let sort: any = { _id: 1 }; //default: oldest to latest
+    // sorting
+    let sort: any = { name: 1 }; // default will be alphabetical from a to z
     if (sortBy === "rating-asc") {
       sort = { averageRating: 1, _id: 1 };
     } else if (sortBy === "rating-desc") {
       sort = { averageRating: -1, _id: 1 };
     }
 
-    // TODO: remove unnecessary consoles
-    // console.dir(query, { depth: null, colors: true });
-    // console.log(JSON.stringify(query, null, 2));
-
+    // running the queries
     const results = await Destination.find(query)
       .sort(sort)
       .limit(limit + 1)
@@ -92,12 +97,18 @@ export const GET = async (request: NextRequest) => {
     const hasNextPage = results.length > limit;
     const destinations = hasNextPage ? results.slice(0, -1) : results;
     const lastItem = destinations[destinations.length - 1];
+
     const nextCursor =
       hasNextPage && lastItem
-        ? {
-            cursorRating: lastItem.averageRating,
-            cursorId: lastItem._id.toString(),
-          }
+        ? sortBy === "default"
+          ? {
+              cursorName: lastItem.name,
+              cursorId: lastItem._id.toString(),
+            }
+          : {
+              cursorRating: lastItem.averageRating,
+              cursorId: lastItem._id.toString(),
+            }
         : null;
 
     return NextResponse.json({
