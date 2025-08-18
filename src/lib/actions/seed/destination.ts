@@ -8,12 +8,12 @@ import Favorite from "@/model/Favorite";
 import slugify from "slugify";
 
 const imageUrls = [
-  "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bW91bnRhaW4lMjBsYWtlfGVufDB8fDB8fHww",
-  "https://images.unsplash.com/photo-1607836046730-3317bd58a31b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1747118435378-50b16d63dd4b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1717054493682-ffe9e25fd82f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTh8fHZpbGxhZ2UlMjBsYW5kc2NhcGV8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1623492701360-fb4a1205c789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0",
+  "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+  "https://images.unsplash.com/photo-1607836046730-3317bd58a31b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+  "https://images.unsplash.com/photo-1747118435378-50b16d63dd4b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+  "https://images.unsplash.com/photo-1717054493682-ffe9e25fd82f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+  "https://images.unsplash.com/photo-1623492701360-fb4a1205c789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
 ];
 
 const getRandomRating = () => parseFloat((Math.random() * 4 + 1).toFixed(1));
@@ -36,6 +36,43 @@ const getRandomCategories = (): Category[] => {
   const count = Math.floor(Math.random() * 3) + 1;
   const shuffled = [...categoriesPool].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
+};
+
+// 🎯 Activities pool
+const activitiesPool = [
+  "Hiking",
+  "Trekking",
+  "Boating",
+  "Wildlife Safari",
+  "Cultural Tour",
+  "Photography",
+  "Camping",
+  "Paragliding",
+  "Sightseeing",
+];
+
+// Helper: random activities
+const getRandomActivities = (): string[] => {
+  const count = Math.floor(Math.random() * 3) + 1;
+  const shuffled = [...activitiesPool].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
+// 🎯 Highlights generator
+const getHighlights = (name: string, region: string) => {
+  const highlightTemplates = [
+    `Breathtaking sunrise and sunset views at ${name}`,
+    `Rich cultural and historical significance in ${region}`,
+    `Panoramic Himalayan landscapes and natural beauty`,
+    `Opportunities for adventure and exploration`,
+    `Unique local traditions and warm hospitality`,
+    `Perfect escape for peace-seekers and nature lovers`,
+  ];
+  const shuffled = [...highlightTemplates].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, Math.floor(Math.random() * 3) + 3).map((h) => ({
+    title: h.split(" ")[0] + " Highlight",
+    description: h,
+  }));
 };
 
 const destinationsList: {
@@ -195,6 +232,7 @@ const destinationsList: {
     bestSeason: ["Winter", "Spring"],
   },
 ];
+
 export const seedDestinations = async () => {
   const session = await auth();
   if (!session || !session.user.id) return;
@@ -216,6 +254,8 @@ export const seedDestinations = async () => {
       averageRating: getRandomRating(),
       reviewCount: 0,
       featured: false,
+      activities: getRandomActivities(),
+      highlights: getHighlights(loc.name, loc.region),
     };
   });
 
@@ -242,9 +282,7 @@ export const seedDestinations = async () => {
       user: session.user.id,
     });
 
-    console.log(
-      "✅ Destinations seeded with public transport, personal vehicle, and trek data!",
-    );
+    console.log("✅ Destinations seeded with activities and highlights!");
   } catch (err) {
     console.error("❌ Seeding error:", err);
   }

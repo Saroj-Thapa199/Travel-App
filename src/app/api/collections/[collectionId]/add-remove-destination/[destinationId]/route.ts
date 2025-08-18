@@ -40,7 +40,10 @@ export const POST = async (
     }
 
     // Add destination only if it's not already present
-    collection.destinations.push(new mongoose.Types.ObjectId(destinationId));
+    collection.destinations = [
+      new mongoose.Types.ObjectId(destinationId),
+      ...collection.destinations,
+    ];
 
     const uniqueDestinations = [
       ...new Set(collection.destinations.map((id) => id.toString())),

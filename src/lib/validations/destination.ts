@@ -10,54 +10,6 @@ const bestSeasonEnum = z.enum([
   "Year-round",
 ]);
 
-const publicTransportSegmentSchema = z.object({
-  from: requiredString(),
-  to: requiredString(),
-  // transportType: transportTypeEnum,
-  approxTime: makeUndefinedIfEmpty(),
-  fare: z.number().positive().optional(),
-  busTypes: z.array(z.string()).optional(),
-  lastDeparture: makeUndefinedIfEmpty(),
-  note: makeUndefinedIfEmpty(),
-});
-
-const publicTransportSchema = z
-  .array(publicTransportSegmentSchema)
-  .min(1, "Cannot be empty");
-
-const individualPersonalVehicleSchema = z.object({
-  startingPoint: requiredString(),
-  route: requiredString(),
-  approxTime: makeUndefinedIfEmpty(),
-  roadCondition: makeUndefinedIfEmpty(),
-});
-
-const personalVehicleSchema = z
-  .array(individualPersonalVehicleSchema)
-  .min(1, "Cannot be empty");
-
-const trekSchema = z
-  .object({
-    // required: z.boolean().default(false).optional(),
-    startingPoint: requiredString(),
-    duration: makeUndefinedIfEmpty(),
-    distance: z.number().positive().optional(),
-    difficulty: makeUndefinedIfEmpty(),
-    altitudeGain: z.number().positive().optional(),
-    maxAltitude: z.number().positive().optional(),
-    trailDescription: requiredString(),
-    checkpoints: z.array(z.string()).optional(),
-    permits: z.array(z.string()).optional(),
-    note: makeUndefinedIfEmpty(),
-  })
-  .transform((obj) => {
-    const allEmpty = Object.values(obj).every(
-      (val) => val === undefined || (Array.isArray(val) && val.length === 0),
-    );
-
-    return allEmpty ? undefined : obj;
-  });
-
 export const destinationSchema = z.object({
   _id: z.preprocess((val) => val?.toString(), z.string()),
   user: z.preprocess((val) => val?.toString(), z.string()),
@@ -90,24 +42,16 @@ export const destinationSchema = z.object({
   budget: requiredString(),
   averageRating: z.number().lte(5),
   reviewCount: z.number(),
-  destinationRoute: z
-    .object({
-      publicTransport: publicTransportSchema.optional(),
-      personalVehicle: personalVehicleSchema.optional(),
-      trek: trekSchema.optional(),
-    })
-    .optional(),
-  // .refine(
-  //   (val) =>
-  //     val.publicTransport !== undefined ||
-  //     val.personalVehicle !== undefined ||
-  //     val.trek !== undefined,
-  //   {
-  //     message: "At least one route option must be provided",
-  //     path: ["destinationRoute"],
-  //   },
-  // ),
-
+  activities: z.array(requiredString()).min(1, "At least one activity is required"),
+  highlights: z
+      .array(
+        z.object({
+          title: requiredString("Highlight title is required"),
+          description: requiredString("Highlight description is required"),
+        }),
+      )
+      .min(3, "At least 3 highlights are required")
+      .max(8, "Maximum 8 highlights allowed"),
   createdAt: z.preprocess(
     (val) => (typeof val === "string" ? new Date(val) : val),
     z.date(),
@@ -117,9 +61,5 @@ export const destinationSchema = z.object({
     z.date(),
   ),
 });
-
-export type DestinationRouteType = z.infer<
-  typeof destinationSchema
->["destinationRoute"];
 
 export type DestinationType = z.infer<typeof destinationSchema>;

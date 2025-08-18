@@ -13,6 +13,7 @@ import axios from "axios";
 import dbConnect from "@/lib/dbConnect";
 import mongoose from "mongoose";
 import Favorite from "@/model/Favorite";
+import DestinationOverview from "./OverviewTab";
 
 export const getCachedDestinationFromSlug = cache(async (slug: string) => {
   return getDestinationFromSlug(slug);
@@ -39,7 +40,7 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   if (!data) return notFound();
 
   const destination = destinationSchema.parse(data);
-  console.log(destination)
+  console.log(destination);
 
   let favoritesData: FavoritesInfo = {
     favorites: 0,
@@ -101,7 +102,7 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="overview">
-              <div className="">
+              {/* <div className="">
                 <div>
                   <h2 className="mb-3 text-xl font-semibold">
                     About {destination.name}
@@ -123,7 +124,16 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
                     {destination.longDescription}
                   </p>
                 </div>
-              </div>
+              </div> */}
+              <DestinationOverview
+                name={destination.name}
+                region={destination.region}
+                shortDescription={destination.shortDescription}
+                longDescription={destination.longDescription}
+                activities={destination.activities}
+                highlights={destination.highlights}
+                image={destination.image}
+              />
             </TabsContent>
             <TabsContent value="routes">
               <RouteSection destinationId={destination._id} />

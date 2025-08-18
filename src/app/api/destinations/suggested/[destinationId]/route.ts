@@ -24,7 +24,7 @@ export const GET = async (
       );
     }
 
-    const destination = await Destination.findById(destinationId, "categories");
+    const destination = await Destination.findById(destinationId, "categories bestSeason");
     if (!destination) {
       return NextResponse.json(
         {
@@ -67,6 +67,56 @@ export const GET = async (
         },
       },
     ]);
+
+    const alreadyIncludedIds = [
+      destination._id,
+      ...suggestedDestinations.map((d) => d._id),
+    ];
+
+    // --- Step 2: If < 3, add season-based suggestions ---
+    if (suggestedDestinations.length < 3 && destination.bestSeason.length) {
+      const seasonMatches = await Destination.aggregate([
+        {
+          $match: {
+            _id: { $nin: alreadyIncludedIds },
+            season: { $in: destination.bestSeason },
+          },
+        },
+        {
+          $addFields: {
+            matchCount: {
+              $size: { $setIntersection: ["$season", destination.bestSeason] },
+            },
+            randomOrder: { $rand: {} },
+          },
+        },
+        { $sort: { matchCount: -1, randomOrder: 1 } },
+        { $limit: 3 - suggestedDestinations.length },
+        { $project: { matchCount: 0, randomOrder: 0 } },
+      ]);
+
+      seasonMatches.forEach(destination => {
+        suggestedDestinations.push(destination)
+      })
+
+      alreadyIncludedIds.push(...seasonMatches.map((d) => d._id));
+    }
+
+    // --- Step 3: If still < 3, random fallback ---
+    if (suggestedDestinations.length < 3) {
+      const randomFill = await Destination.aggregate([
+        {
+          $match: {
+            _id: { $nin: alreadyIncludedIds },
+          },
+        },
+        { $sample: { size: 3 - suggestedDestinations.length } },
+      ]);
+
+      randomFill.forEach(destination => {
+        suggestedDestinations.push(destination)
+      })
+    }
 
     return NextResponse.json(suggestedDestinations);
   } catch (error) {

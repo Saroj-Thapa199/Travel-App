@@ -1,20 +1,8 @@
 import { DestinationType } from "@/lib/validations/destination";
 import mongoose, { Document, Schema } from "mongoose";
 
-const transportTypeEnum = [
-  "Bus",
-  "Jeep",
-  "Microbus",
-  "Van",
-  "Tempo",
-  "Flight",
-] as const;
-
 export interface DestinationInterface
-  extends Omit<
-      DestinationType,
-      "_id" | "createdAt" | "updatedAt" | "user"
-    >,
+  extends Omit<DestinationType, "_id" | "createdAt" | "updatedAt" | "user">,
     Document {
   slug: string;
   createdAt?: Date;
@@ -22,50 +10,16 @@ export interface DestinationInterface
   user: mongoose.Types.ObjectId;
 }
 
-const PublicTransportSegmentSchema = new Schema(
-  {
-    from: { type: String, required: true },
-    to: { type: String, required: true },
-    // transportType: {
-    //   type: String,
-    //   enum: transportTypeEnum,
-    //   required: true,
-    // },
-    approxTime: { type: String },
-    fare: { type: Number }, // Rs
-    busTypes: [String],
-    lastDeparture: { type: String },
-    note: { type: String },
+const highlightSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
   },
-  { _id: false },
-);
-
-const PersonalVehicleSchema = new Schema(
-  {
-    startingPoint: { type: String, required: true },
-    route: { type: String, required: true },
-    approxTime: { type: String },
-    roadCondition: { type: String },
+  description: {
+    type: String,
+    required: true,
   },
-  { _id: false },
-);
-
-const TrekSchema = new Schema(
-  {
-    // required: { type: Boolean, default: false },
-    startingPoint: { type: String, required: true },
-    duration: { type: String },
-    distance: { type: Number }, // kms
-    difficulty: { type: String },
-    altitudeGain: { type: Number }, // meters
-    maxAltitude: { type: Number }, // meters
-    trailDescription: { type: String, required: true },
-    checkpoints: [String],
-    permits: [String],
-    note: { type: String },
-  },
-  { _id: false },
-);
+});
 
 const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
   {
@@ -145,23 +99,29 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
     averageRating: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 5,
     },
     reviewCount: {
       type: Number,
       default: 0,
+      min: 0,
     },
-    destinationRoute: {
-      publicTransport: {
-        type: [PublicTransportSegmentSchema],
-        required: false,
-        default: undefined,
+    activities: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: (val: string[]) => val.length >= 1,
+        message: "At least 1 activity required",
       },
-      personalVehicle: {
-        type: [PersonalVehicleSchema],
-        required: false,
-        default: undefined,
+    },
+    highlights: {
+      type: [highlightSchema],
+      required: true,
+      validate: {
+        validator: (val: typeof highlightSchema[]) => val.length >= 3 && val.length <= 8,
+        message: "3 - 8 highlights required",
       },
-      trek: TrekSchema,
     },
   },
   { timestamps: true },
