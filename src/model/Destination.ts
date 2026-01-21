@@ -10,16 +10,65 @@ export interface DestinationInterface
   user: mongoose.Types.ObjectId;
 }
 
-const highlightSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+const highlightSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
   },
-  description: {
-    type: String,
-    required: true,
+  { _id: false },
+);
+
+const localCuisineSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      maxLength: [200, "Cuisine description cannot exceed 200 characters"],
+    },
   },
-});
+  { _id: false },
+);
+
+const accommodationschema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      maxLength: [150, "accommodation description cannot exceed 150 characters"],
+    },
+  },
+  { _id: false },
+);
+
+const seasonDetailSchema = new mongoose.Schema(
+  {
+    season: {
+      type: String,
+      enum: ["Spring", "Summer", "Monsoon", "Autumn", "Winter"],
+      required: true,
+    },
+    bestFor: {
+      type: [String], // e.g. ["Bird watching", "Photography"]
+      required: true,
+    },
+    weather: String, // short explanation
+    notes: String,   // hazards, festivals, tips
+  },
+  { _id: false }
+);
+
 
 const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
   {
@@ -119,9 +168,18 @@ const DestinationSchema: Schema<DestinationInterface> = new mongoose.Schema(
       type: [highlightSchema],
       required: true,
       validate: {
-        validator: (val: typeof highlightSchema[]) => val.length >= 3 && val.length <= 8,
+        validator: (val: any[]) =>
+          val.length >= 3 && val.length <= 8,
         message: "3 - 8 highlights required",
       },
+    },
+    localCuisines: {
+      type: [localCuisineSchema],
+      default: [],
+    },
+    accommodations: {
+      type: [accommodationschema],
+      default: [],
     },
   },
   { timestamps: true },

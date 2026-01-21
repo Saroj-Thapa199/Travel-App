@@ -256,6 +256,42 @@ export const seedDestinations = async () => {
       featured: false,
       activities: getRandomActivities(),
       highlights: getHighlights(loc.name, loc.region),
+      localCuisines: [
+        {
+          name: "Himachali Chikhalwali",
+          description:
+            "A traditional dish made from barley and local vegetables, served with ghee and spices.",
+        },
+        {
+          name: "Tandoori Trout",
+          description:
+            "Fresh mountain trout marinated in yogurt and spices, cooked in a tandoor for a smoky flavor.",
+        },
+        {
+          name: "Siddu",
+          description:
+            "A steamed bread dumpling filled with lentils or vegetables, a staple comfort food of Himachal Pradesh.",
+        },
+        {
+          name: "Kinema",
+          description:
+            "Fermented soybeans prepared with local spices, providing a unique and nutritious taste of local cuisine.",
+        },
+      ],
+      accommodations: [
+        {
+          type: "Hotels",
+          description: "Different hotels are available throughout the place.",
+        },
+        {
+          type: "Resorts",
+          description: "Resorts can be found ranging from low to high price.",
+        },
+        {
+          type: "Tents",
+          description: "Tents are available to help people enjoy camping.",
+        },
+      ],
     };
   });
 
@@ -274,6 +310,12 @@ export const seedDestinations = async () => {
     }));
 
     await Favorite.insertMany(favorites);
+
+    for (const destination of createdDestinations) {
+      destination.favorites += 1;
+      await destination.save(); // Ensure we wait for the save to complete
+    }
+
     await Collection.create({
       name: "Sample Collection",
       description: "Description for sample collection",

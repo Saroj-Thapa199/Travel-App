@@ -9,11 +9,11 @@ import RouteSection from "./RouteSection";
 import DestinationInfoCard from "./DestinationInfoCard";
 import { auth } from "@/auth";
 import { FavoritesInfo } from "@/lib/types";
-import axios from "axios";
 import dbConnect from "@/lib/dbConnect";
 import mongoose from "mongoose";
 import Favorite from "@/model/Favorite";
 import DestinationOverview from "./OverviewTab";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const getCachedDestinationFromSlug = cache(async (slug: string) => {
   return getDestinationFromSlug(slug);
@@ -133,13 +133,55 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
                 activities={destination.activities}
                 highlights={destination.highlights}
                 image={destination.image}
+                destination={destination}
               />
+              {/* <DestinationOverview destination={destination} /> */}
             </TabsContent>
             <TabsContent value="routes">
               <RouteSection destinationId={destination._id} />
             </TabsContent>
             <TabsContent value="attractions">
-              Change your password here.
+              <div>
+                  <h2 className="text-xl font-semibold mb-4">Top Attractions</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {destination.highlights.map((attraction, index) => (
+                      <Card key={index} className="overflow-hidden pt-0">
+                        <div className="h-40 overflow-hidden">
+                          <img
+                            src={`https://images.unsplash.com/photo-1553886334-43d24f24d3bd?q=80&w=1177&auto=format&fit=crop&ixlib=rb-4.1.0`}
+                            alt={attraction.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold mb-1">{attraction.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            A popular attraction in {destination.name} that visitors love to explore.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-semibold mb-4">Popular Activities</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {destination.activities.map((activity, index) => (
+                      <div key={index} className="flex items-start gap-3 p-3 rounded-lg border">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{activity}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Experience this popular activity during your visit.
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
             </TabsContent>
             <TabsContent value="review">
               <ReviewSection
